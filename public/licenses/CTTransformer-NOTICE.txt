@@ -1,0 +1,25 @@
+CT-Transformer Chinese punctuation model
+
+Original model author: Alibaba DAMO / FunASR (model metadata: damo).
+Original model: iic/punc_ct-transformer_zh-cn-common-vocab272727-pytorch
+Model card and declared Apache License 2.0:
+https://modelscope.cn/models/iic/punc_ct-transformer_zh-cn-common-vocab272727-pytorch/summary
+Official related model card:
+https://huggingface.co/funasr/ct-punc
+
+ONNX int8 conversion distributed by k2-fsa/sherpa-onnx:
+https://k2-fsa.github.io/sherpa/onnx/punctuation/pretrained_models.html
+https://github.com/k2-fsa/sherpa-onnx/releases/tag/punctuation-models
+
+This distribution modifies the ONNX input embedding table and vocabulary only.
+All single Unicode characters, ASCII tokens of at most three characters, and
+special tokens from the original vocabulary are retained. Other tokens use the
+original unknown-token embedding. Remaining model operators and parameters are
+unchanged. scripts/prepare-punctuation.mjs documents and reproduces the change,
+and verifies the original archive, original model and resulting model SHA-256.
+
+The application preserves the user's characters, case, whitespace and existing
+punctuation. This model adds punctuation, never missing words. The smaller
+vocabulary is intended for Chinese; long English words lose model context.
+
+See CTTransformer-Apache-2.0.txt for the license.
