@@ -6,3 +6,5 @@ public/models-v2/
 *.log
 .sites-runtime/
 analysis-model-cache/
+public/models-ocr/
+public/vendor/opencv/
