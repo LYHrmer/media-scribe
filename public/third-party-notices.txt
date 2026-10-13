@@ -1,0 +1,31 @@
+听写匣 浏览器本地版
+
+Transformers.js — Apache License 2.0
+https://github.com/huggingface/transformers.js
+
+ONNX Runtime — MIT License, with applicable third-party notices
+https://github.com/microsoft/onnxruntime
+
+Whisper speech models — MIT License
+https://github.com/openai/whisper
+https://huggingface.co/Xenova/whisper-tiny
+https://huggingface.co/Xenova/whisper-base
+https://huggingface.co/Xenova/whisper-small
+
+Bundled dependency license files are copied to vendor/ort/ during the build.
+Models are obtained from Hugging Face at build time, served as same-origin
+static assets to users, and retain their own licenses.
+
+RapidOCR / PaddleOCR PP-OCRv4 — Apache License 2.0
+https://github.com/RapidAI/RapidOCR
+https://github.com/PaddlePaddle/PaddleOCR
+Pre/postprocessing adapted from RapidOCR 1.4.4. Exact weights and dictionary
+SHA-256 digests are recorded in src/video-ocr-assets.js and the build manifest.
+License: licenses/RapidOCR-PaddleOCR-Apache-2.0.txt
+
+OpenCV.js 4.9.0 — Apache License 2.0
+https://github.com/opencv/opencv
+https://github.com/TechStark/opencv-js
+
+js-clipper 1.0.1 — Boost Software License 1.0
+https://github.com/junmer/clipper-lib
