@@ -64,11 +64,13 @@
             <details class="advanced-settings">
               <summary><span>更多设置</span><span id="settings-summary" class="settings-summary">中文 · 高精度</span><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
               <div class="settings-fields">
+                <label for="recognition-source" class="source-setting">识别方式<select id="recognition-source"><option value="auto" selected>自动 · 视频优先读取画面字幕</option><option value="audio">仅识别声音</option><option value="video">仅识别画面字幕</option></select></label>
                 <label for="language">识别语言<select id="language"><option value="chinese" selected>中文</option><option value="english">英语</option></select></label>
                 <label for="model">识别精度<select id="model"><option value="Xenova/whisper-tiny">快速 · 耗时较短</option><option value="Xenova/whisper-small" selected>高精度 · 下载较大</option></select></label>
               </div>
-              <p class="settings-help">默认按中文、高精度识别，可切换为英语或快速模式。首次下载：快速约 40 MB，高精度约 190 MB。高精度需要更多时间与内存；切换精度会下载另一份模型。部分视频编码可能不受浏览器支持，可先转换为 MP3 或 WAV。</p>
+              <p id="model-help" class="settings-help">默认按中文、高精度识别，可切换为英语或快速模式。首次下载：快速约 40 MB，高精度约 190 MB。高精度需要更多时间与内存；切换精度会下载另一份模型。部分视频编码可能不受浏览器支持，可先转换为 MP3 或 WAV。</p>
               <p class="settings-help">歌声、伴奏或现场回声较强时可能漏字，需要人工校对。</p>
+              <p class="settings-help">视频会先在本机读取画面文字，对照多帧后生成字幕；没有可靠字幕时自动识别声音。画面文字可能包含标题或招牌，请核对是否与内容相符。也可切换「仅识别声音」比较结果。</p>
             </details>
 
             <div class="start-row">
@@ -107,6 +109,11 @@
               <p id="rerun-help" class="rerun-help" aria-live="polite">重新转写会使用所选精度；相同设置通常结果相同。</p>
             </div>
             <p id="result-warning" class="result-warning" role="status" hidden></p>
+            <details id="visual-candidates" class="visual-candidates" hidden>
+              <summary>查看画面文字候选 · 待核对</summary>
+              <p>这些文字尚不可靠，可能包含模糊字、固定标题或无关背景文字，未自动拼入正文。请对照视频后手动编辑。</p>
+              <div id="visual-candidate-list" class="visual-candidate-list"></div>
+            </details>
 
             <div id="output-empty" class="output-empty">
               <div class="paper-illustration" aria-hidden="true"><span></span><span></span><span></span><span></span><svg viewBox="0 0 28 28" fill="none"><path d="M5 12v4m6-8v12m6-16v20m6-13v6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></div>
@@ -131,7 +138,7 @@
         </section>
       </main>
 
-      <footer class="site-footer"><span>听写匣 <span class="footer-dot">·</span> 让声音成为文字</span><span>开源 Whisper 模型 <span class="footer-dot">·</span> 文件不上传</span></footer>
+      <footer class="site-footer"><span>听写匣 <span class="footer-dot">·</span> 让声音成为文字</span><span>开源语音 / 画面识别 <span class="footer-dot">·</span> 文件不上传</span></footer>
     </div>
     <script type="module" src="/src/main.js"></script>
   </body>
