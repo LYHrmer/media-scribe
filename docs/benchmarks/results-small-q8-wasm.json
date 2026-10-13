@@ -1,0 +1,209 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-10-13T15:08:57.653Z",
+  "model": "Xenova/whisper-small",
+  "engine": "Production worker and built Transformers.js 3.8.1 browser bundle + actual ONNX WebAssembly; one reused pipeline",
+  "runtime": {
+    "wasm_sha256": "f061472c6e77d6d50d079aacdc0ff9b63fee287ddd2cbf46cf62438d3891de2b",
+    "browser_bundle_sha256": "6886f55555f4c913ebec1841c5107b4ad4046bb0e7fbd4ef2a918b10eaf5943b",
+    "source_sha256": {
+      "transcriber.worker.js": "c6f757909d82abaaba164be12f5f85e92bd7514bf3856a1aba921e3615069b2a",
+      "model-assets.js": "3db6377bade9dd90e34fb1dc1032a9207ed57b70aa594991162144eb6c0fe199",
+      "audio-segments.js": "8c6dbfaf7faeed742a88823167b631b0353c65c94880f384fd6ea11515b8c362"
+    },
+    "num_threads": 1,
+    "host": "linux x64",
+    "node": "v24.19.0"
+  },
+  "model_allowlist_experiment": "Small q8 ablation: dtype and exact ONNX filename regex changed only; no generation/preprocessing change",
+  "transport": "Virtual same-origin model GET + SHA-256 checked production part loader; memory Cache API; only WASM helper URL remapped to file: import.",
+  "limitations": [
+    "Not an actual Huawei/Chrome run; browser decoder, UI and hardware timing not verified.",
+    "Reference text is only consumed by scorer after inference, never by worker.",
+    "Small non-independent set is a diagnostic regression suite, not a general accuracy estimate.",
+    "Vendor reference punctuation may have multiple equally valid alternatives."
+  ],
+  "cases": [
+    {
+      "id": "zh-clean",
+      "title": "普通中文短句",
+      "pcm_sha256": "32679c5676d4a67bab7d297da1db34f92ec8a2f4899f4a03c6c80b3f4efdabdd",
+      "sample_rate": 16000,
+      "duration_seconds": 5.592,
+      "language": "chinese",
+      "reference": "开放时间早上9点至下午5点。",
+      "source": {
+        "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-int8-2024-07-17.tar.bz2",
+        "member": "test_wavs/zh.wav",
+        "original_sha256": "b77f1794fe374a0ba1ee1dc458bfaf9349496cbbfc32780c50ba3c5a7ad8e373",
+        "rights": "Public vendor test asset; audio not redistributed in repository."
+      },
+      "reference_source": {
+        "url": "https://k2-fsa.github.io/sherpa/onnx/sense-voice/python-api.html",
+        "type": "vendor-documentation-example-not-independent-human-gold"
+      },
+      "kind": "independent-real-recording",
+      "parent": null,
+      "recipe": null,
+      "sex_metadata": "not_verified",
+      "seconds_elapsed": 17.733572568,
+      "additional_asset_gets": 25,
+      "output": {
+        "type": "result",
+        "id": "zh-clean",
+        "text": "开放时间早上9点至下午5点。",
+        "segments": [
+          {
+            "start": 0,
+            "end": 5,
+            "text": "开放时间早上9点至下午5点。"
+          }
+        ],
+        "duration": 5.592,
+        "warnings": []
+      },
+      "score": {
+        "reference_character_count": 13,
+        "hypothesis_character_count": 13,
+        "character_errors": 0,
+        "cer": 0,
+        "exact_lexical_match": true,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 1,
+          "hypothesis_count": 1,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 0,
+          "boundary_exact_when_lexical_exact": true
+        },
+        "digit_equivalent_cer": 0
+      }
+    },
+    {
+      "id": "zh-fast",
+      "title": "中文极快语速",
+      "pcm_sha256": "8ed6de5a6673e93d5bba306db190ab8f5ca786f2b01d85de328a47312ca0ba00",
+      "sample_rate": 16000,
+      "duration_seconds": 11.380375,
+      "language": "chinese",
+      "reference": "蹦出来之后，左手、右手接一个慢动作，右边再直接拉到这上面之后，直接拉到这个轮胎上，上边再接过去之后，然后上边再直接拉到这个位置了之后，右边再直接这个位置接倒过去的之后，再倒一下，然后右边再直接抓住这个上边了之后，直接从这边上边过去了之后，直接抓住这个树杈，然后这个位置直接倒到这个树杈",
+      "source": {
+        "url": "https://huggingface.co/csukuangfj2/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25/resolve/main/test_wavs/fast1.wav",
+        "original_sha256": "b43bbd0bd982c3cc88081f64389bf29fe9e9a01287d44f0b15887bc49c2b352a",
+        "rights": "Public vendor test asset; license for sample audio is not separately stated; not redistributed."
+      },
+      "reference_source": {
+        "url": "https://huggingface.co/csukuangfj2/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25/blob/main/test_wavs/transcript.txt",
+        "type": "vendor-provided-reference-not-independent-human-gold"
+      },
+      "kind": "independent-real-recording",
+      "parent": null,
+      "recipe": null,
+      "sex_metadata": "not_verified",
+      "seconds_elapsed": 12.958521751000001,
+      "additional_asset_gets": 0,
+      "output": {
+        "type": "result",
+        "id": "zh-fast",
+        "text": "(字幕製作:貝爾)",
+        "segments": [
+          {
+            "start": 0,
+            "end": 11.380375,
+            "text": "(字幕製作:貝爾)"
+          }
+        ],
+        "duration": 11.380375,
+        "warnings": []
+      },
+      "score": {
+        "reference_character_count": 130,
+        "hypothesis_character_count": 6,
+        "character_errors": 129,
+        "cer": 0.9923076923076923,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 11,
+          "hypothesis_count": 1,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 11,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "digit_equivalent_cer": 0.9923076923076923
+      }
+    },
+    {
+      "id": "zh-noisy-digits",
+      "title": "中文背景噪声与号码",
+      "pcm_sha256": "162c06cacf17383517878f77d0b9d2ed91a6085f56859f8164c8da15a8388434",
+      "sample_rate": 16000,
+      "duration_seconds": 22.833,
+      "language": "chinese",
+      "reference": "拨号，请再说一次，请说出您要拨打的号码。幺三五八幺八八七五七。一三五八二八八八幺八八。纠正纠正。九六九。纠正纠正，不是九六。",
+      "source": {
+        "url": "https://huggingface.co/csukuangfj2/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25/resolve/main/test_wavs/noise2.wav",
+        "original_sha256": "33f85268f7fbad6b3152b9ab051edab1a85082fde66bccff61d7f5ef7b437e58",
+        "rights": "Public vendor test asset; license for sample audio is not separately stated; not redistributed."
+      },
+      "reference_source": {
+        "url": "https://huggingface.co/csukuangfj2/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25/blob/main/test_wavs/transcript.txt",
+        "type": "vendor-provided-reference-not-independent-human-gold"
+      },
+      "kind": "independent-real-recording",
+      "parent": null,
+      "recipe": null,
+      "sex_metadata": "not_verified",
+      "seconds_elapsed": 13.1831489,
+      "additional_asset_gets": 0,
+      "output": {
+        "type": "result",
+        "id": "zh-noisy-digits",
+        "text": "(音量不足)",
+        "segments": [
+          {
+            "start": 0,
+            "end": 2,
+            "text": "(音量不足)"
+          }
+        ],
+        "duration": 22.833,
+        "warnings": [
+          "音频中有声音的时段较长，但识别文字较少，可能存在漏识别。歌声、伴奏或现场回声较强时，请对照原音校对。"
+        ]
+      },
+      "score": {
+        "reference_character_count": 53,
+        "hypothesis_character_count": 4,
+        "character_errors": 52,
+        "cer": 0.9811320754716981,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 9,
+          "hypothesis_count": 0,
+          "has_sentence_punctuation": false,
+          "sequence_errors": 9,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "digit_equivalent_cer": 0.9811320754716981
+      }
+    }
+  ],
+  "completed_at": "2026-10-13T15:09:41.573Z",
+  "total_asset_gets": 25,
+  "model_assets": {
+    "encoder_model_quantized.onnx": {
+      "bytes": 92324809,
+      "sha256": "969f5ac12974340386bf7a02ea6626003e5e2dee396ffc6ab0eec282bf55ba06",
+      "parts": 6
+    },
+    "decoder_model_merged_quantized.onnx": {
+      "bytes": 156780950,
+      "sha256": "fcfc6100dc7339e7507e10f8b274350be7c4f8d8b575f0293f94cc0e156d6d24",
+      "parts": 10
+    }
+  },
+  "baseline_app_version": "0.3.2",
+  "baseline_source_commit": "afcff5a10372ed3d54ff14f84ed963d6a4c75563"
+}
