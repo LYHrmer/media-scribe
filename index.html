@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f5f0" />
+    <meta name="description" content="听写匣：免费的浏览器本地音视频转文字工具。无需安装、账号或 API Key，文件在你的浏览器里处理，支持文字和字幕导出。" />
+    <title>听写匣 · 音视频，转成文字</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="site-header">
+        <a class="brand" href="./" aria-label="听写匣首页">
+          <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 10v4M9 6v12M13 3v18M17 7v10M21 10v4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></span>
+          <span>听写匣<span class="brand-edition">浏览器版</span></span>
+        </a>
+        <span class="local-badge"><span class="status-dot" aria-hidden="true"></span>本地识别，安心使用</span>
+      </header>
+
+      <main>
+        <section class="intro" aria-labelledby="page-title">
+          <p class="eyebrow">免费使用 <span>·</span> 不用安装 <span>·</span> 无需账号 / API Key</p>
+          <h1 id="page-title">音视频，<span>转成文字。</span></h1>
+          <p class="intro-description">拖入录音、课程视频或访谈，让文字留下来。</p>
+          <p class="privacy-line"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2 16 4.5v5c0 3.9-6 7.5-6 7.5S4 13.4 4 9.5v-5L10 2Z" stroke="currentColor" stroke-width="1.5"/><path d="m7 9.5 2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>文件只在你的浏览器里处理</p>
+        </section>
+
+        <div class="workspace">
+          <section class="panel file-panel" aria-labelledby="files-title">
+            <div class="panel-heading">
+              <div class="heading-group"><span class="step-number">01</span><h2 id="files-title">添加文件</h2></div>
+              <button id="clear-files" class="text-button" type="button" hidden>清空</button>
+            </div>
+
+            <input id="file-input" type="file" multiple hidden />
+            <input id="audio-input" type="file" accept="audio/*" hidden />
+            <input id="video-input" type="file" accept="video/*" hidden />
+            <button id="drop-zone" class="drop-zone" type="button" aria-describedby="file-limit">
+              <span class="upload-icon" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M9 23H7.5a5.5 5.5 0 0 1-.3-11 9 9 0 0 1 17.1-1.8A6.5 6.5 0 0 1 25 23h-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M16 25V14m-4 4 4-4 4 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              <strong>拖入音频或视频</strong>
+              <span>或点击这里选择文件</span>
+              <span class="drop-types">支持一次添加多个文件</span>
+            </button>
+            <div class="single-file-picker">
+              <label for="single-file-input">手机推荐：直接从文件中选取</label>
+              <input id="single-file-input" type="file" />
+            </div>
+            <div class="picker-options" aria-label="其他文件选择方式">
+              <button id="choose-audio" class="secondary-button" type="button">选择录音</button>
+              <button id="choose-video" class="secondary-button" type="button">选择视频</button>
+            </div>
+            <details id="picker-help" class="picker-help">
+              <summary>手机提示「暂无可用打开方式」？</summary>
+              <p>先试上方「手机推荐」单文件入口，再从「文件」中选取已保存的录音或视频。</p>
+              <p>如果仍无法选择，请打开右上角菜单，选择「在浏览器中打开」。也可以复制网址，粘贴到系统浏览器地址栏。部分应用内置浏览器不支持文件选择。</p>
+              <div class="browser-link-row"><input id="browser-link" type="text" readonly aria-label="当前网页地址" /><button id="copy-link" class="secondary-button" type="button">复制网址</button></div>
+            </details>
+            <p id="picker-status" class="picker-status" role="status" hidden></p>
+            <p id="file-limit" class="file-limit">单文件 ≤ 300 MB · 时长 ≤ 30 分钟</p>
+
+            <div id="file-queue" class="file-queue" aria-label="待转写文件列表" hidden></div>
+            <div id="inline-error" class="inline-error" role="alert" hidden></div>
+
+            <details class="advanced-settings">
+              <summary><span>更多设置</span><span id="settings-summary" class="settings-summary">中文 · 高精度</span><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+              <div class="settings-fields">
+                <label for="language">识别语言<select id="language"><option value="chinese" selected>中文</option><option value="english">英语</option></select></label>
+                <label for="model">识别精度<select id="model"><option value="Xenova/whisper-tiny">快速 · 耗时较短</option><option value="Xenova/whisper-small" selected>高精度 · 下载较大</option></select></label>
+              </div>
+              <p class="settings-help">默认按中文、高精度识别，可切换为英语或快速模式。首次下载：快速约 40 MB，高精度约 190 MB。高精度需要更多时间与内存；切换精度会下载另一份模型。部分视频编码可能不受浏览器支持，可先转换为 MP3 或 WAV。</p>
+              <p class="settings-help">歌声、伴奏或现场回声较强时可能漏字，需要人工校对。</p>
+            </details>
+
+            <div class="start-row">
+              <button id="start-button" class="primary-button" type="button" disabled><span id="start-label">开始转写</span><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              <button id="stop-button" class="stop-button" type="button" hidden><span aria-hidden="true">■</span>停止</button>
+            </div>
+
+            <div id="progress-region" class="progress-region" aria-live="polite" hidden>
+              <div class="progress-heading"><span id="progress-stage">准备中</span><span id="progress-count"></span></div>
+              <div id="progress-track" class="progress-track indeterminate" role="progressbar" aria-label="转写进度"><span id="progress-fill"></span></div>
+              <p id="progress-message" class="progress-message"></p>
+            </div>
+
+            <div class="model-notice"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.4"/><path d="M10 9v4m0-6v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><p>第一次转写会从本站下载开源模型，之后优先使用浏览器缓存。清理缓存或空间被回收后，可能需要重新下载。<strong>识别不收取按次费用。</strong></p></div>
+          </section>
+
+          <section class="panel result-panel" aria-labelledby="results-title">
+            <div class="panel-heading">
+              <div class="heading-group"><span class="step-number">02</span><h2 id="results-title">转写结果</h2></div>
+              <span id="result-meta" class="result-meta">可编辑 · 可导出</span>
+            </div>
+
+            <div class="result-toolbar">
+              <div class="result-tabs" role="tablist" aria-label="结果显示方式">
+                <button id="text-tab" class="tab-button active" type="button" role="tab" aria-selected="true" aria-controls="text-view">文字</button>
+                <button id="timeline-tab" class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="timeline-view" tabindex="-1">时间轴</button>
+              </div>
+              <button id="copy-button" class="secondary-button copy-button" type="button" disabled><svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><rect x="6" y="6" width="9" height="9" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M11 6V4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2" stroke="currentColor" stroke-width="1.3"/></svg><span id="copy-label">复制文字</span></button>
+            </div>
+
+            <div id="rerun-actions" class="rerun-actions" hidden>
+              <div class="rerun-buttons">
+                <button id="rerun-button" class="secondary-button rerun-button" type="button">不满意，重新转写</button>
+                <button id="restore-button" class="text-button restore-button" type="button" hidden>恢复上一版</button>
+              </div>
+              <p id="rerun-help" class="rerun-help" aria-live="polite">重新转写会使用所选精度；相同设置通常结果相同。</p>
+            </div>
+            <p id="result-warning" class="result-warning" role="status" hidden></p>
+
+            <div id="output-empty" class="output-empty">
+              <div class="paper-illustration" aria-hidden="true"><span></span><span></span><span></span><span></span><svg viewBox="0 0 28 28" fill="none"><path d="M5 12v4m6-8v12m6-16v20m6-13v6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></div>
+              <h3 id="empty-title">留一份文字，少一次回放</h3>
+              <p id="empty-description">添加文件，点击「开始转写」。<br />完成后可校对文字、复制或导出字幕。</p>
+            </div>
+
+            <div id="text-view" class="text-view" role="tabpanel" aria-labelledby="text-tab" hidden><label class="sr-only" for="transcript">可编辑的转写文字</label><textarea id="transcript" spellcheck="false" placeholder="这份文件没有识别到文字。可以换一段包含清晰语音的音频再试。"></textarea></div>
+            <div id="timeline-view" class="timeline-view" role="tabpanel" aria-labelledby="timeline-tab" tabindex="0" hidden></div>
+
+            <div class="result-footer">
+              <span id="character-count" class="character-count">0 个字符</span>
+              <div class="export-controls"><label class="sr-only" for="export-format">导出格式</label><select id="export-format" aria-label="导出格式"><option value="txt">TXT 文字</option><option value="srt">SRT 字幕</option><option value="vtt">VTT 字幕</option><option value="json">JSON 数据</option></select><button id="export-button" class="secondary-button export-button" type="button" disabled><svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M9 2v9m-3-3 3 3 3-3M3 12v3h12v-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>导出</button></div>
+            </div>
+            <p class="export-note">TXT 导出当前编辑的文字；字幕和 JSON 保留原始识别时间轴。</p>
+          </section>
+        </div>
+
+        <section class="help-strip" aria-label="使用提示">
+          <p><span class="help-symbol" aria-hidden="true">↳</span><strong>第一次慢一点，之后轻一点。</strong><span>保持页面打开，模型下载与转写速度取决于网络和电脑性能。</span></p>
+          <p class="shortcut-note"><kbd>Ctrl</kbd> / <kbd>⌘</kbd> + <kbd>O</kbd> 添加文件</p>
+        </section>
+      </main>
+
+      <footer class="site-footer"><span>听写匣 <span class="footer-dot">·</span> 让声音成为文字</span><span>开源 Whisper 模型 <span class="footer-dot">·</span> 文件不上传</span></footer>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
