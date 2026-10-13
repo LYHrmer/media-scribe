@@ -29,3 +29,9 @@ https://github.com/TechStark/opencv-js
 
 js-clipper 1.0.1 — Boost Software License 1.0
 https://github.com/junmer/clipper-lib
+
+CT-Transformer punctuation model — Apache License 2.0
+https://modelscope.cn/models/iic/punc_ct-transformer_zh-cn-common-vocab272727-pytorch
+https://github.com/k2-fsa/sherpa-onnx
+The build trims input vocabulary rows; the remaining transformer parameters
+are unchanged. Provenance and modification notice: licenses/CTTransformer-NOTICE.txt
