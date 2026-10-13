@@ -1,0 +1,460 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-10-13T15:05:07.543Z",
+  "model": "Xenova/whisper-tiny",
+  "engine": "Production worker and built Transformers.js 3.8.1 browser bundle + actual ONNX WebAssembly; one reused pipeline",
+  "runtime": {
+    "wasm_sha256": "f061472c6e77d6d50d079aacdc0ff9b63fee287ddd2cbf46cf62438d3891de2b",
+    "browser_bundle_sha256": "6886f55555f4c913ebec1841c5107b4ad4046bb0e7fbd4ef2a918b10eaf5943b",
+    "source_sha256": {
+      "transcriber.worker.js": "d940528b31d78e172556f00652809c83d56990d3c30a0bd29a771f65e317e9ae",
+      "model-assets.js": "01c3bf5c61326267304cf23170d41027a4c45f871a65c670521f55cae6285722",
+      "audio-segments.js": "8c6dbfaf7faeed742a88823167b631b0353c65c94880f384fd6ea11515b8c362"
+    },
+    "num_threads": 1,
+    "host": "linux x64",
+    "node": "v24.19.0"
+  },
+  "transport": "Virtual same-origin model GET + SHA-256 checked production part loader; memory Cache API; only WASM helper URL remapped to file: import.",
+  "limitations": [
+    "Not an actual Huawei/Chrome run; browser decoder, UI and hardware timing not verified.",
+    "Reference text is only consumed by scorer after inference, never by worker.",
+    "Small non-independent set is a diagnostic regression suite, not a general accuracy estimate.",
+    "Vendor reference punctuation may have multiple equally valid alternatives."
+  ],
+  "cases": [
+    {
+      "id": "zh-clean",
+      "title": "普通中文短句",
+      "pcm_sha256": "32679c5676d4a67bab7d297da1db34f92ec8a2f4899f4a03c6c80b3f4efdabdd",
+      "sample_rate": 16000,
+      "duration_seconds": 5.592,
+      "language": "chinese",
+      "reference": "开放时间早上9点至下午5点。",
+      "source": {
+        "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-int8-2024-07-17.tar.bz2",
+        "member": "test_wavs/zh.wav",
+        "original_sha256": "b77f1794fe374a0ba1ee1dc458bfaf9349496cbbfc32780c50ba3c5a7ad8e373",
+        "rights": "Public vendor test asset; audio not redistributed in repository."
+      },
+      "reference_source": {
+        "url": "https://k2-fsa.github.io/sherpa/onnx/sense-voice/python-api.html",
+        "type": "vendor-documentation-example-not-independent-human-gold"
+      },
+      "kind": "independent-real-recording",
+      "parent": null,
+      "recipe": null,
+      "sex_metadata": "not_verified",
+      "seconds_elapsed": 3.8372088580000003,
+      "additional_asset_gets": 12,
+      "output": {
+        "type": "result",
+        "id": "zh-clean",
+        "text": "开放时间早上9点,至于下午5点。",
+        "segments": [
+          {
+            "start": 0,
+            "end": 5,
+            "text": "开放时间早上9点,至于下午5点。"
+          }
+        ],
+        "duration": 5.592,
+        "warnings": []
+      },
+      "score": {
+        "reference_character_count": 13,
+        "hypothesis_character_count": 14,
+        "character_errors": 1,
+        "cer": 0.07692307692307693,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 1,
+          "hypothesis_count": 2,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 1,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "digit_equivalent_cer": 0.07692307692307693
+      }
+    },
+    {
+      "id": "zh-fast",
+      "title": "中文极快语速",
+      "pcm_sha256": "8ed6de5a6673e93d5bba306db190ab8f5ca786f2b01d85de328a47312ca0ba00",
+      "sample_rate": 16000,
+      "duration_seconds": 11.380375,
+      "language": "chinese",
+      "reference": "蹦出来之后，左手、右手接一个慢动作，右边再直接拉到这上面之后，直接拉到这个轮胎上，上边再接过去之后，然后上边再直接拉到这个位置了之后，右边再直接这个位置接倒过去的之后，再倒一下，然后右边再直接抓住这个上边了之后，直接从这边上边过去了之后，直接抓住这个树杈，然后这个位置直接倒到这个树杈",
+      "source": {
+        "url": "https://huggingface.co/csukuangfj2/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25/resolve/main/test_wavs/fast1.wav",
+        "original_sha256": "b43bbd0bd982c3cc88081f64389bf29fe9e9a01287d44f0b15887bc49c2b352a",
+        "rights": "Public vendor test asset; license for sample audio is not separately stated; not redistributed."
+      },
+      "reference_source": {
+        "url": "https://huggingface.co/csukuangfj2/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25/blob/main/test_wavs/transcript.txt",
+        "type": "vendor-provided-reference-not-independent-human-gold"
+      },
+      "kind": "independent-real-recording",
+      "parent": null,
+      "recipe": null,
+      "sex_metadata": "not_verified",
+      "seconds_elapsed": 3.7675216770000004,
+      "additional_asset_gets": 0,
+      "output": {
+        "type": "result",
+        "id": "zh-fast",
+        "text": "我说我说有什么问题我说有没有问题我说有没有问题我说有没有问题我说有没有问题我说有没有问题我说有没有问题",
+        "segments": [
+          {
+            "start": 0,
+            "end": 1,
+            "text": "我说我说有什么问题"
+          },
+          {
+            "start": 1,
+            "end": 2,
+            "text": "我说有没有问题"
+          },
+          {
+            "start": 2,
+            "end": 3,
+            "text": "我说有没有问题"
+          },
+          {
+            "start": 3,
+            "end": 4,
+            "text": "我说有没有问题"
+          },
+          {
+            "start": 4,
+            "end": 5,
+            "text": "我说有没有问题"
+          },
+          {
+            "start": 5,
+            "end": 6,
+            "text": "我说有没有问题"
+          },
+          {
+            "start": 6,
+            "end": 7,
+            "text": "我说有没有问题"
+          }
+        ],
+        "duration": 11.380375,
+        "warnings": [
+          "结果中有连续多次重复的文字，可能是模型误识别，也可能是原音重复。请对照原音检查，或尝试更大模型重新转写。"
+        ]
+      },
+      "score": {
+        "reference_character_count": 130,
+        "hypothesis_character_count": 51,
+        "character_errors": 130,
+        "cer": 1,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 11,
+          "hypothesis_count": 0,
+          "has_sentence_punctuation": false,
+          "sequence_errors": 11,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "digit_equivalent_cer": 1
+      }
+    },
+    {
+      "id": "zh-noisy-digits",
+      "title": "中文背景噪声与号码",
+      "pcm_sha256": "162c06cacf17383517878f77d0b9d2ed91a6085f56859f8164c8da15a8388434",
+      "sample_rate": 16000,
+      "duration_seconds": 22.833,
+      "language": "chinese",
+      "reference": "拨号，请再说一次，请说出您要拨打的号码。幺三五八幺八八七五七。一三五八二八八八幺八八。纠正纠正。九六九。纠正纠正，不是九六。",
+      "source": {
+        "url": "https://huggingface.co/csukuangfj2/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25/resolve/main/test_wavs/noise2.wav",
+        "original_sha256": "33f85268f7fbad6b3152b9ab051edab1a85082fde66bccff61d7f5ef7b437e58",
+        "rights": "Public vendor test asset; license for sample audio is not separately stated; not redistributed."
+      },
+      "reference_source": {
+        "url": "https://huggingface.co/csukuangfj2/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25/blob/main/test_wavs/transcript.txt",
+        "type": "vendor-provided-reference-not-independent-human-gold"
+      },
+      "kind": "independent-real-recording",
+      "parent": null,
+      "recipe": null,
+      "sex_metadata": "not_verified",
+      "seconds_elapsed": 15.194813847,
+      "additional_asset_gets": 0,
+      "output": {
+        "type": "result",
+        "id": "zh-noisy-digits",
+        "text": "我把我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了我打提了",
+        "segments": [
+          {
+            "start": 0,
+            "end": 1,
+            "text": "我把我打提了"
+          },
+          {
+            "start": 1,
+            "end": 3,
+            "text": "我打提了"
+          },
+          {
+            "start": 3,
+            "end": 4,
+            "text": "我打提了"
+          },
+          {
+            "start": 4,
+            "end": 5,
+            "text": "我打提了"
+          },
+          {
+            "start": 5,
+            "end": 6,
+            "text": "我打提了"
+          },
+          {
+            "start": 6,
+            "end": 7,
+            "text": "我打提了"
+          },
+          {
+            "start": 7,
+            "end": 8,
+            "text": "我打提了"
+          },
+          {
+            "start": 8,
+            "end": 9,
+            "text": "我打提了"
+          },
+          {
+            "start": 9,
+            "end": 10,
+            "text": "我打提了"
+          },
+          {
+            "start": 10,
+            "end": 11,
+            "text": "我打提了"
+          },
+          {
+            "start": 11,
+            "end": 12,
+            "text": "我打提了"
+          },
+          {
+            "start": 12,
+            "end": 13,
+            "text": "我打提了"
+          },
+          {
+            "start": 13,
+            "end": 14,
+            "text": "我打提了"
+          },
+          {
+            "start": 14,
+            "end": 15,
+            "text": "我打提了"
+          },
+          {
+            "start": 15,
+            "end": 16,
+            "text": "我打提了"
+          },
+          {
+            "start": 16,
+            "end": 17,
+            "text": "我打提了"
+          },
+          {
+            "start": 17,
+            "end": 18,
+            "text": "我打提了"
+          },
+          {
+            "start": 18,
+            "end": 19,
+            "text": "我打提了"
+          },
+          {
+            "start": 19,
+            "end": 20,
+            "text": "我打提了"
+          },
+          {
+            "start": 20,
+            "end": 21,
+            "text": "我打提了"
+          },
+          {
+            "start": 21,
+            "end": 22,
+            "text": "我打提了我打提了我打提了"
+          },
+          {
+            "start": 22,
+            "end": 22.833,
+            "text": "我打提了我打提了"
+          }
+        ],
+        "duration": 22.833,
+        "warnings": [
+          "结果中有连续多次重复的文字，可能是模型误识别，也可能是原音重复。请对照原音检查，或尝试更大模型重新转写。"
+        ]
+      },
+      "score": {
+        "reference_character_count": 53,
+        "hypothesis_character_count": 278,
+        "character_errors": 277,
+        "cer": 5.226415094339623,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 9,
+          "hypothesis_count": 0,
+          "has_sentence_punctuation": false,
+          "sequence_errors": 9,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "digit_equivalent_cer": 5.226415094339623
+      }
+    },
+    {
+      "id": "user-lyrics",
+      "title": "用户有画面字幕的歌声视频",
+      "pcm_sha256": "8933b1e813ec67abeb6de3067625a2dfec13672fd7706181cd571d143617794b",
+      "sample_rate": 16000,
+      "duration_seconds": 21.696,
+      "language": "chinese",
+      "reference": "满天红伞，无人生还。我的遗憾，是不能洁白的带你离开。",
+      "source": {
+        "type": "user-upload",
+        "sha256": "122e5f277c6e20efcfd515e1549cb45cb40b89998d265589725fe5bdd75952bd",
+        "private": true,
+        "rights": "Private user recording; never publish video or PCM."
+      },
+      "reference_source": {
+        "type": "user-provided-text",
+        "given_to_inference": false
+      },
+      "kind": "independent-real-recording",
+      "parent": null,
+      "recipe": null,
+      "sex_metadata": "not_verified",
+      "seconds_elapsed": 15.194151847000004,
+      "additional_asset_gets": 0,
+      "output": {
+        "type": "result",
+        "id": "user-lyrics",
+        "text": "(我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘",
+        "segments": [
+          {
+            "start": 0,
+            "end": 21.696,
+            "text": "(我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘了我不要忘"
+          }
+        ],
+        "duration": 21.696,
+        "warnings": [
+          "结果中有连续多次重复的文字，可能是模型误识别，也可能是原音重复。请对照原音检查，或尝试更大模型重新转写。"
+        ]
+      },
+      "score": {
+        "reference_character_count": 22,
+        "hypothesis_character_count": 554,
+        "character_errors": 552,
+        "cer": 25.09090909090909,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 4,
+          "hypothesis_count": 0,
+          "has_sentence_punctuation": false,
+          "sequence_errors": 4,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "digit_equivalent_cer": 25.09090909090909
+      }
+    },
+    {
+      "id": "noise",
+      "title": "无语音均匀随机噪声 5 秒",
+      "pcm_sha256": "60ce8607268552a37e3d1e2022d7629db4d6d63b4d07cb0c9b5396558e56930d",
+      "sample_rate": 16000,
+      "duration_seconds": 5,
+      "language": "chinese",
+      "reference": "",
+      "source": {
+        "type": "generated-seeded-noise"
+      },
+      "reference_source": {
+        "type": "known-empty-by-construction"
+      },
+      "kind": "synthetic-negative-control",
+      "parent": null,
+      "recipe": {
+        "rng": "Python random.Random",
+        "seed": 20261013,
+        "uniform": [
+          -0.03,
+          0.03
+        ],
+        "samples": 80000
+      },
+      "sex_metadata": "not_verified",
+      "seconds_elapsed": 1.907649016999996,
+      "additional_asset_gets": 0,
+      "output": {
+        "type": "result",
+        "id": "noise",
+        "text": "謝謝大家",
+        "segments": [
+          {
+            "start": 0,
+            "end": 2,
+            "text": "謝謝大家"
+          }
+        ],
+        "duration": 5,
+        "warnings": []
+      },
+      "score": {
+        "reference_character_count": 0,
+        "hypothesis_character_count": 4,
+        "character_errors": 4,
+        "cer": null,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": true,
+        "punctuation": {
+          "reference_count": 0,
+          "hypothesis_count": 0,
+          "has_sentence_punctuation": false,
+          "sequence_errors": 0,
+          "boundary_exact_when_lexical_exact": null
+        }
+      }
+    }
+  ],
+  "completed_at": "2026-10-13T15:05:47.501Z",
+  "total_asset_gets": 12,
+  "model_assets": {
+    "encoder_model_quantized.onnx": {
+      "bytes": 10124910,
+      "sha256": "fd9d995b9dcb0520f0dbf6cf68651af639fc385f594d9d876e69ca2802dc438e",
+      "parts": 1
+    },
+    "decoder_model_merged_quantized.onnx": {
+      "bytes": 30727765,
+      "sha256": "6c0c125986b007d2e3734bec84c18bda0152071b90b87fadac6d7764499927a0",
+      "parts": 2
+    }
+  },
+  "baseline_app_version": "0.3.2",
+  "baseline_source_commit": "afcff5a10372ed3d54ff14f84ed963d6a4c75563"
+}
