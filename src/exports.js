@@ -58,7 +58,11 @@ export function renderJson(result) {
   if (segments.some(segment => segment.end > result.duration + 0.001)) {
     throw new RangeError('字幕时间超出了音频时长。');
   }
-  return `${JSON.stringify({ text: requireText(result.text), duration: result.duration, segments }, null, 2)}\n`;
+  const metadata = {};
+  if (['audio', 'video_ocr'].includes(result.source)) metadata.source = result.source;
+  if (typeof result.rawText === 'string') metadata.rawText = result.rawText;
+  if (Array.isArray(result.warnings)) metadata.warnings = result.warnings.filter(value => typeof value === 'string');
+  return `${JSON.stringify({ text: requireText(result.text), duration: result.duration, segments, ...metadata }, null, 2)}\n`;
 }
 
 export function downloadText(text, filename, mime = 'text/plain') {
