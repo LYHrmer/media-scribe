@@ -1,6 +1,10 @@
 import './styles.css';
 import { decodeAudio, MAX_FILE_BYTES } from './audio.js';
 import { renderTxt, renderSrt, renderVtt, renderJson, downloadText } from './exports.js';
+import { isVideoFile, readVideoFrames } from './video-frames.js';
+import { createVideoOcrClient } from './video-ocr.js';
+import { fuseVideoCaptions } from './video-captions.js';
+import { punctuateResult } from './punctuation.js';
 
 const $ = id => document.getElementById(id);
 const ui = Object.fromEntries([
@@ -14,7 +18,14 @@ const ui = Object.fromEntries([
   'rerun-actions', 'rerun-button', 'restore-button', 'rerun-help', 'result-warning',
   'audio-input', 'video-input', 'single-file-input', 'choose-audio', 'choose-video',
   'picker-help', 'picker-status', 'browser-link', 'copy-link',
+  'recognition-source', 'visual-candidates', 'visual-candidate-list',
 ].map(id => [id, $(id)]));
+
+if (import.meta.env.VITE_COMPACT_BUILD === '1') {
+  ui.model.querySelector('option[value="Xenova/whisper-tiny"]')?.remove();
+  ui.model.value = 'Xenova/whisper-small';
+  $('model-help').textContent = '默认按中文、高精度识别，可切换为英语。语音模型首次下载约 190 MB，需要一定时间与内存；画面识别使用另一份较小的模型。部分视频编码可能不受浏览器支持，可先转换为 MP3 或 WAV。';
+}
 
 const fileInputs = ['file-input', 'audio-input', 'video-input', 'single-file-input'];
 const pickerControls = [...fileInputs, 'drop-zone', 'choose-audio', 'choose-video'];
@@ -63,6 +74,7 @@ let outputRenderKey = '';
 let errorMessage = '';
 let copyTimer;
 let modelSelectionRevision = 0;
+let activeAbort = null;
 let progress = { stage: '', message: '', percent: null };
 
 const statusLabels = { pending: '待转写', decoding: '读取中', running: '转写中', done: '已完成', error: '未完成', canceled: '已停止' };
@@ -75,9 +87,9 @@ function modelLabel(model) {
   return { tiny: '快速', base: '标准', small: '高精度' }[name] || model || '未记录';
 }
 function languageLabel(language) { return { chinese: '中文', english: '英语' }[language] || '未记录'; }
-function resultRevision(entry) { return { result: entry.result, draft: entry.draft, model: entry.model, language: entry.language, modelSelectionRevision: entry.modelSelectionRevision }; }
+function resultRevision(entry) { return { result: entry.result, draft: entry.draft, model: entry.model, language: entry.language, modelSelectionRevision: entry.modelSelectionRevision, visualCandidates: entry.visualCandidates, sourceMode: entry.sourceMode }; }
 function shouldUpgradeOnRerun(entry) {
-  return Boolean(entry?.result && entry.model === 'Xenova/whisper-tiny'
+  return Boolean(entry?.result && entry.result.source !== 'video_ocr' && entry.model === 'Xenova/whisper-tiny'
     && ui.model.value === entry.model && modelSelectionRevision === entry.modelSelectionRevision);
 }
 function bytesLabel(bytes) { return bytes >= 1024 * 1024 ? `${(bytes / 1024 / 1024).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} KB`; }
@@ -149,7 +161,9 @@ function renderControls() {
   ui['clear-files'].disabled = busy;
   ui.language.disabled = busy;
   ui.model.disabled = busy;
-  ui['settings-summary'].textContent = `${languageLabel(ui.language.value)} · ${modelLabel(ui.model.value)}`;
+  ui['recognition-source'].disabled = busy;
+  const mode = { auto: '自动', audio: '仅声音', video: '仅画面' }[ui['recognition-source'].value] || '自动';
+  ui['settings-summary'].textContent = `${languageLabel(ui.language.value)} · ${mode} · ${modelLabel(ui.model.value)}`;
 }
 
 function renderProgress() {
@@ -164,7 +178,7 @@ function renderProgress() {
   ui['progress-fill'].style.width = numeric ? `${Math.max(0, Math.min(100, progress.percent))}%` : '';
   if (numeric) ui['progress-track'].setAttribute('aria-valuenow', String(Math.round(progress.percent)));
   else ui['progress-track'].removeAttribute('aria-valuenow');
-  ui['progress-track'].setAttribute('aria-valuetext', numeric ? `当前模型文件下载 ${Math.round(progress.percent)}%` : progress.stage);
+  ui['progress-track'].setAttribute('aria-valuetext', numeric ? `${progress.stage} ${Math.round(progress.percent)}%` : progress.stage);
 }
 
 function renderOutput() {
@@ -177,17 +191,19 @@ function renderOutput() {
   ui['export-button'].disabled = !hasResult;
   ui['export-format'].disabled = !hasResult;
   ui['character-count'].textContent = `${hasResult ? [...entry.draft].length.toLocaleString('zh-CN') : 0} 个字符`;
-  ui['result-meta'].textContent = hasResult ? `${timeLabel(entry.result.duration)} · ${modelLabel(entry.model)} · ${languageLabel(entry.language)}` : '可编辑 · 可导出';
+  ui['result-meta'].textContent = hasResult ? `${timeLabel(entry.result.duration)} · ${entry.result.source === 'video_ocr' ? '画面字幕 · 待核对' : `${modelLabel(entry.model)} · ${languageLabel(entry.language)}`}` : '可编辑 · 可导出';
   ui['rerun-actions'].hidden = !hasResult;
   ui['rerun-button'].disabled = busy || !hasResult;
   ui['restore-button'].hidden = !entry?.previousRevision;
   ui['restore-button'].disabled = busy || !entry?.previousRevision;
   ui.transcript.disabled = Boolean(rerunning);
-  const rerunHelp = '重新转写会使用所选精度；相同设置通常结果相同。';
+  const rerunHelp = '可在更多设置中切换画面 / 声音和精度，再重新转写；相同设置通常结果相同。';
   ui['rerun-help'].textContent = rerunning ? '正在重新转写，原结果已保留。停止或失败后，仍可使用原结果。' : hasResult && entry.error ? `重新转写未完成：${entry.error} 原结果已保留，可再试一次。` : shouldUpgradeOnRerun(entry) ? `未切换精度时，重转将改用高精度，下载约 190 MB 且更慢。${rerunHelp}` : rerunHelp;
   const warnings = Array.isArray(entry?.result?.warnings) ? entry.result.warnings.filter(message => typeof message === 'string' && message.trim()) : [];
   ui['result-warning'].hidden = !warnings.length;
   ui['result-warning'].textContent = warnings.join(' ');
+  const candidates = Array.isArray(entry?.visualCandidates) ? entry.visualCandidates : [];
+  ui['visual-candidates'].hidden = !candidates.length;
   ui['text-tab'].classList.toggle('active', currentTab === 'text');
   ui['timeline-tab'].classList.toggle('active', currentTab === 'timeline');
   ui['text-tab'].setAttribute('aria-selected', String(currentTab === 'text'));
@@ -199,6 +215,14 @@ function renderOutput() {
   ui['timeline-view'].hidden = !hasResult || currentTab !== 'timeline';
   if (outputRenderKey === key) return;
   outputRenderKey = key;
+  ui['visual-candidate-list'].replaceChildren(...candidates.map(candidate => {
+    const row = document.createElement('p');
+    const text = String(candidate.text || '').trim();
+    const reason = { static_text: '固定文字，请确认是否为字幕', needs_review: '字形不清或多帧读数不同' }[candidate.reason] || candidate.reason;
+    const alternatives = [...new Set((candidate.alternatives || []).map(item => item.text).filter(Boolean))].slice(0, 3);
+    row.textContent = `${timeLabel(candidate.start ?? candidate.time ?? 0)} · ${text}${reason ? `（${reason}）` : ''}${alternatives.length > 1 ? ` 可对照：${alternatives.join(' / ')}` : ''}`;
+    return row;
+  }));
   if (!hasResult) {
     const title = !entry ? '留一份文字，少一次回放' : entry.status === 'error' ? '这份文件暂未完成' : entry.status === 'canceled' ? '转写已停止' : ['running', 'decoding'].includes(entry.status) ? '正在把声音变成文字' : '文件已就位';
     const description = !entry ? '添加文件，点击「开始转写」。\n完成后可校对文字、复制或导出字幕。' : entry.status === 'error' ? entry.error : entry.status === 'canceled' ? '已完成的文件会保留。点击「开始转写」可重试这份文件。' : ['running', 'decoding'].includes(entry.status) ? '请保持页面打开。长录音需要更长时间，完成后会自动显示。' : '点击「开始转写」，完成后文字就会出现在这里。';
@@ -224,7 +248,7 @@ function renderOutput() {
   if (!rows.length) {
     const empty = document.createElement('p');
     empty.className = 'timeline-empty';
-    empty.textContent = '这份文件没有识别到可用的语音时间段。';
+    empty.textContent = '这份文件没有识别到可用的文字时间段。';
     rows.push(empty);
   }
   ui['timeline-view'].replaceChildren(...rows);
@@ -238,7 +262,7 @@ function addFiles(files) {
   for (const file of files) {
     if (!file.size) { errors.push(`${file.name} 是空文件。`); continue; }
     if (file.size > MAX_FILE_BYTES) { errors.push(`${file.name} 超过 300 MB，请剪短或压缩后再添加。`); continue; }
-    if (!/^(audio|video)\//.test(file.type) && !/\.(wav|mp3|m4a|mp4|webm|ogg|flac|aac|mov|mkv|opus|aiff?|wma|avi)$/i.test(file.name)) {
+    if (!/^(audio|video)\//.test(file.type) && !/\.(wav|mp3|m4a|mp4|m4v|webm|ogg|flac|aac|mov|mkv|opus|aiff?|wma|avi)$/i.test(file.name)) {
       errors.push(`${file.name} 不是可识别的音视频文件。`);
       continue;
     }
@@ -333,9 +357,93 @@ function restorePrevious() {
   render();
 }
 
+async function recognizeVideo(entry, token, signal) {
+  const frames = [];
+  let client;
+  // Do not hold both ASR and OCR model heaps on a phone at the same time.
+  worker?.terminate();
+  worker = null;
+  try {
+    const metadata = await readVideoFrames(entry.file, {
+      signal,
+      onMetadata: info => {
+        if (token !== runToken) return;
+        entry.status = 'running';
+        progress = { stage: '正在读取画面字幕', percent: 0, message: `将检查整段视频的 ${info.frameCount} 帧画面。${info.sparse ? '长视频采用分散抽样，短暂字幕可能遗漏。' : ''}文件留在本机。` };
+        render();
+      },
+      onFrame: async ({ time, pixels, index, frameCount, width, height }) => {
+        if (signal.aborted || token !== runToken) throw cancelError();
+        if (!client) {
+          client = createVideoOcrClient({ signal, onProgress: data => {
+            if (token !== runToken) return;
+            progress = { stage: '正在准备画面识别模型', percent: null, message: data.message || '首次使用将下载本地字幕识别模型。视频不会上传。' };
+            renderProgress();
+          } });
+          await client.initialize();
+        }
+        const result = await client.recognize(pixels, { maxSide: 1920 });
+        if (signal.aborted || token !== runToken) throw cancelError();
+        frames.push({ time, width, height, texts: result.texts || [] });
+        progress = { stage: '正在读取画面字幕', percent: ((index + 1) / frameCount) * 100, message: `已检查 ${index + 1} / ${frameCount} 帧（${timeLabel(time)}）。正在对照多帧，保留有重复证据的文字。` };
+        renderProgress();
+      },
+    });
+    const captions = fuseVideoCaptions(frames, { duration: metadata.duration, sampleInterval: metadata.sampleInterval });
+    entry.visualCandidates = captions.candidates || [];
+    entry.revision++;
+    const segments = captions.segments || [];
+    const warnings = [...(captions.warnings || [])];
+    if (metadata.sparse) warnings.push('长视频采用全时段抽样，短暂出现的字幕可能遗漏；需要完整语音时可切换「仅识别声音」。');
+    if (captions.reliable && segments.length) {
+      warnings.unshift('结果来自画面文字，尚未与声音逐字核验；可能包含歌词、标题或其他屏幕文字。时间轴为字幕出现的抽样时间，可能有误差。');
+      warnings.push('画面中没有出现或看不清的内容可能遗漏。可切换「仅识别声音」重新转写，并用「恢复上一版」比较。');
+      return { source: 'video_ocr', text: segments.map(segment => segment.text).join('\n'), segments, duration: metadata.duration, warnings };
+    }
+    return null;
+  } finally {
+    client?.dispose();
+  }
+}
+
+async function recognizeEntry(entry, token, settings, signal) {
+  const warnings = [];
+  const video = isVideoFile(entry.file);
+  if (settings.sourceMode === 'video' && !video) throw new Error('「仅识别画面字幕」需要视频文件。音频请切换「自动」或「仅识别声音」。');
+  if (video && settings.sourceMode !== 'audio') {
+    progress = { stage: '正在读取视频画面', message: '先检查画面中的字幕，识别过程在本机完成。', percent: null };
+    renderProgress();
+    try {
+      const result = await recognizeVideo(entry, token, signal);
+      if (result) return result;
+      if (settings.sourceMode === 'video') throw new Error(`没有发现证据足够的重复字幕。可查看下方画面文字候选，或切换「仅识别声音」。${entry.result ? '原结果已保留。' : ''}`);
+      warnings.push('未找到足够可靠的画面字幕，本次已改用声音识别。可疑画面文字保留在候选中，未拼入正文。');
+    } catch (error) {
+      if (signal.aborted || error.name === 'AbortError' || token !== runToken) throw cancelError();
+      if (settings.sourceMode === 'video') throw error;
+      warnings.push(`画面字幕识别未完成，已改用声音识别：${error.message}`);
+    }
+  }
+  if (signal.aborted || token !== runToken) throw cancelError();
+  entry.status = 'decoding';
+  progress = { stage: '正在读取声音', message: warnings.length ? `${warnings.at(-1)} 正在本机读取音轨。` : '正在浏览器中读取和整理音频，文件不会上传。', percent: null };
+  render();
+  const decoded = await decodeAudio(entry.file, { onStatus: message => {
+    if (token === runToken) { progress.message = message; renderProgress(); }
+  } });
+  if (signal.aborted || token !== runToken) throw cancelError();
+  entry.status = 'running';
+  progress = { stage: '正在准备识别模型', message: '模型准备好后，会自动开始本地识别。', percent: null };
+  render();
+  const result = await transcribe(decoded.samples, entry, token, settings);
+  return { ...result, source: 'audio', warnings: [...warnings, ...(result.warnings || [])] };
+}
+
 async function runEntries(pending) {
   const token = ++runToken;
-  const settings = { model: ui.model.value, language: ['chinese', 'english'].includes(ui.language.value) ? ui.language.value : 'chinese', selectionRevision: modelSelectionRevision };
+  const controller = new AbortController();
+  activeAbort = controller;
+  const settings = { model: ui.model.value, language: ['chinese', 'english'].includes(ui.language.value) ? ui.language.value : 'chinese', selectionRevision: modelSelectionRevision, sourceMode: ['audio', 'video'].includes(ui['recognition-source'].value) ? ui['recognition-source'].value : 'auto' };
   busy = true;
   showError('');
   for (const entry of pending) {
@@ -348,21 +456,23 @@ async function runEntries(pending) {
     progress = { stage: '正在读取声音', message: '正在浏览器中读取和整理音频，文件不会上传。', percent: null };
     render();
     try {
-      const decoded = await decodeAudio(entry.file, { onStatus: message => {
-        if (token === runToken) { progress.message = message; renderProgress(); }
-      } });
+      let result = await recognizeEntry(entry, token, settings, controller.signal);
       if (token !== runToken) return;
-      entry.status = 'running';
-      progress = { stage: '正在准备识别模型', message: '模型准备好后，会自动开始本地识别。', percent: null };
-      render();
-      const result = await transcribe(decoded.samples, entry, token, settings);
-      if (token !== runToken) return;
+      if (result.text?.trim()) {
+        progress = { stage: '正在整理标点', percent: null, message: '根据识别文字补充标点，保留原始字词。' };
+        renderProgress();
+        result = await punctuateResult(result, { signal: controller.signal, onProgress: () => {
+          if (token === runToken) renderProgress();
+        } });
+        if (token !== runToken) return;
+      }
       entry.previousRevision = previous;
       entry.result = result;
       entry.draft = result.text;
       entry.model = settings.model;
       entry.language = settings.language;
       entry.modelSelectionRevision = settings.selectionRevision;
+      entry.sourceMode = settings.sourceMode;
       entry.revision++;
       entry.status = 'done';
     } catch (error) {
@@ -374,6 +484,7 @@ async function runEntries(pending) {
   }
   if (token !== runToken) return;
   busy = false;
+  activeAbort = null;
   activeFileId = null;
   const failed = queue.filter(entry => entry.status === 'error').length;
   if (failed) showError(`${failed} 个文件未完成，点击对应文件可查看原因。可以点击「重试未完成文件」再次尝试。`);
@@ -383,6 +494,8 @@ async function runEntries(pending) {
 function stopQueue() {
   if (!busy) return;
   ++runToken;
+  activeAbort?.abort();
+  activeAbort = null;
   const entry = queue.find(item => item.id === activeFileId);
   if (entry && ['decoding', 'running'].includes(entry.status)) entry.status = 'canceled';
   const job = activeJob;
@@ -448,6 +561,7 @@ ui['rerun-button'].addEventListener('click', rerunSelected);
 ui['restore-button'].addEventListener('click', restorePrevious);
 ui['stop-button'].addEventListener('click', stopQueue);
 ui.language.addEventListener('change', renderControls);
+ui['recognition-source'].addEventListener('change', () => { renderControls(); renderOutput(); });
 ui.model.addEventListener('change', () => { modelSelectionRevision++; renderControls(); renderOutput(); });
 ui['text-tab'].addEventListener('click', () => setTab('text'));
 ui['timeline-tab'].addEventListener('click', () => setTab('timeline'));
