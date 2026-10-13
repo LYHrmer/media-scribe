@@ -116,3 +116,9 @@ test('both subtitle formats reject nonfinite, reversed, unordered and submillise
   assert.equal(renderSrt([]), '');
   assert.equal(renderVtt([]), 'WEBVTT\n\n');
 });
+
+test('JSON export preserves visual source, unpunctuated evidence and review warnings', () => {
+  const result = { text: '会议开始。', rawText: '会议开始', source: 'video_ocr', duration: 2,
+    segments: [{ start: 0, end: 2, text: '会议开始。' }], warnings: ['画面文字尚未与语音核对。'] };
+  assert.deepEqual(JSON.parse(renderJson(result)), result);
+});
