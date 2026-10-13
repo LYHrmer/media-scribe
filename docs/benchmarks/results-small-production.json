@@ -1,0 +1,701 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-10-13T14:57:39.922Z",
+  "model": "Xenova/whisper-small",
+  "engine": "Production worker and built Transformers.js 3.8.1 browser bundle + actual ONNX WebAssembly; one reused pipeline",
+  "runtime": {
+    "wasm_sha256": "f061472c6e77d6d50d079aacdc0ff9b63fee287ddd2cbf46cf62438d3891de2b",
+    "browser_bundle_sha256": "6886f55555f4c913ebec1841c5107b4ad4046bb0e7fbd4ef2a918b10eaf5943b",
+    "source_sha256": {
+      "transcriber.worker.js": "d940528b31d78e172556f00652809c83d56990d3c30a0bd29a771f65e317e9ae",
+      "model-assets.js": "01c3bf5c61326267304cf23170d41027a4c45f871a65c670521f55cae6285722",
+      "audio-segments.js": "8c6dbfaf7faeed742a88823167b631b0353c65c94880f384fd6ea11515b8c362"
+    },
+    "num_threads": 1,
+    "host": "linux x64",
+    "node": "v24.19.0"
+  },
+  "transport": "Virtual same-origin model GET + SHA-256 checked production part loader; memory Cache API; only WASM helper URL remapped to file: import.",
+  "limitations": [
+    "Not an actual Huawei/Chrome run; browser decoder, UI and hardware timing not verified.",
+    "Reference text is only consumed by scorer after inference, never by worker.",
+    "Small non-independent set is a diagnostic regression suite, not a general accuracy estimate.",
+    "Vendor reference punctuation may have multiple equally valid alternatives."
+  ],
+  "cases": [
+    {
+      "id": "zh-clean",
+      "title": "普通中文短句",
+      "pcm_sha256": "32679c5676d4a67bab7d297da1db34f92ec8a2f4899f4a03c6c80b3f4efdabdd",
+      "sample_rate": 16000,
+      "duration_seconds": 5.592,
+      "language": "chinese",
+      "reference": "开放时间早上9点至下午5点。",
+      "source": {
+        "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-int8-2024-07-17.tar.bz2",
+        "member": "test_wavs/zh.wav",
+        "original_sha256": "b77f1794fe374a0ba1ee1dc458bfaf9349496cbbfc32780c50ba3c5a7ad8e373",
+        "rights": "Public vendor test asset; audio not redistributed in repository."
+      },
+      "reference_source": {
+        "url": "https://k2-fsa.github.io/sherpa/onnx/sense-voice/python-api.html",
+        "type": "vendor-documentation-example-not-independent-human-gold"
+      },
+      "kind": "independent-real-recording",
+      "parent": null,
+      "recipe": null,
+      "sex_metadata": "not_verified",
+      "seconds_elapsed": 28.936106548,
+      "additional_asset_gets": 21,
+      "output": {
+        "type": "result",
+        "id": "zh-clean",
+        "text": "开放时间早上9点至下午5点",
+        "segments": [
+          {
+            "start": 0,
+            "end": 5,
+            "text": "开放时间早上9点至下午5点"
+          }
+        ],
+        "duration": 5.592,
+        "warnings": []
+      },
+      "score": {
+        "reference_character_count": 13,
+        "hypothesis_character_count": 13,
+        "character_errors": 0,
+        "cer": 0,
+        "exact_lexical_match": true,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 1,
+          "hypothesis_count": 0,
+          "has_sentence_punctuation": false,
+          "sequence_errors": 1,
+          "boundary_exact_when_lexical_exact": false
+        },
+        "digit_equivalent_cer": 0
+      }
+    },
+    {
+      "id": "en-jfk",
+      "title": "英语公开演讲",
+      "pcm_sha256": "16ba6e5258b459b41344a5542cf71429dfe446acf32c6a9dbdce02258c1f77e7",
+      "sample_rate": 16000,
+      "duration_seconds": 11,
+      "language": "english",
+      "reference": "And so, my fellow Americans, ask not what your country can do for you, ask what you can do for your country.",
+      "source": {
+        "url": "https://github.com/ggml-org/whisper.cpp/raw/refs/heads/master/samples/jfk.wav",
+        "original_pcm_sha256": "16ba6e5258b459b41344a5542cf71429dfe446acf32c6a9dbdce02258c1f77e7",
+        "rights": "US federal public speech; audio not redistributed."
+      },
+      "reference_source": {
+        "url": "https://www.archives.gov/milestone-documents/president-john-f-kennedys-inaugural-address",
+        "type": "US National Archives transcript"
+      },
+      "kind": "independent-real-recording",
+      "parent": null,
+      "recipe": null,
+      "sex_metadata": "not_verified",
+      "seconds_elapsed": 34.878068259,
+      "additional_asset_gets": 0,
+      "output": {
+        "type": "result",
+        "id": "en-jfk",
+        "text": "And so my fellow Americans, ask not what your country can do for you, ask what you can do for your country.",
+        "segments": [
+          {
+            "start": 0,
+            "end": 11,
+            "text": "And so my fellow Americans, ask not what your country can do for you, ask what you can do for your country."
+          }
+        ],
+        "duration": 11,
+        "warnings": []
+      },
+      "score": {
+        "reference_character_count": 83,
+        "hypothesis_character_count": 83,
+        "character_errors": 0,
+        "cer": 0,
+        "exact_lexical_match": true,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 4,
+          "hypothesis_count": 3,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 1,
+          "boundary_exact_when_lexical_exact": false
+        },
+        "word_errors": 0,
+        "reference_word_count": 22,
+        "wer": 0
+      }
+    },
+    {
+      "id": "zh-fast",
+      "title": "中文极快语速",
+      "pcm_sha256": "8ed6de5a6673e93d5bba306db190ab8f5ca786f2b01d85de328a47312ca0ba00",
+      "sample_rate": 16000,
+      "duration_seconds": 11.380375,
+      "language": "chinese",
+      "reference": "蹦出来之后，左手、右手接一个慢动作，右边再直接拉到这上面之后，直接拉到这个轮胎上，上边再接过去之后，然后上边再直接拉到这个位置了之后，右边再直接这个位置接倒过去的之后，再倒一下，然后右边再直接抓住这个上边了之后，直接从这边上边过去了之后，直接抓住这个树杈，然后这个位置直接倒到这个树杈",
+      "source": {
+        "url": "https://huggingface.co/csukuangfj2/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25/resolve/main/test_wavs/fast1.wav",
+        "original_sha256": "b43bbd0bd982c3cc88081f64389bf29fe9e9a01287d44f0b15887bc49c2b352a",
+        "rights": "Public vendor test asset; license for sample audio is not separately stated; not redistributed."
+      },
+      "reference_source": {
+        "url": "https://huggingface.co/csukuangfj2/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25/blob/main/test_wavs/transcript.txt",
+        "type": "vendor-provided-reference-not-independent-human-gold"
+      },
+      "kind": "independent-real-recording",
+      "parent": null,
+      "recipe": null,
+      "sex_metadata": "not_verified",
+      "seconds_elapsed": 25.093121438,
+      "additional_asset_gets": 0,
+      "output": {
+        "type": "result",
+        "id": "zh-fast",
+        "text": "(字幕君)",
+        "segments": [
+          {
+            "start": 0,
+            "end": 11.380375,
+            "text": "(字幕君)"
+          }
+        ],
+        "duration": 11.380375,
+        "warnings": []
+      },
+      "score": {
+        "reference_character_count": 130,
+        "hypothesis_character_count": 3,
+        "character_errors": 130,
+        "cer": 1,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 11,
+          "hypothesis_count": 0,
+          "has_sentence_punctuation": false,
+          "sequence_errors": 11,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "digit_equivalent_cer": 1
+      }
+    },
+    {
+      "id": "zh-noisy-digits",
+      "title": "中文背景噪声与号码",
+      "pcm_sha256": "162c06cacf17383517878f77d0b9d2ed91a6085f56859f8164c8da15a8388434",
+      "sample_rate": 16000,
+      "duration_seconds": 22.833,
+      "language": "chinese",
+      "reference": "拨号，请再说一次，请说出您要拨打的号码。幺三五八幺八八七五七。一三五八二八八八幺八八。纠正纠正。九六九。纠正纠正，不是九六。",
+      "source": {
+        "url": "https://huggingface.co/csukuangfj2/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25/resolve/main/test_wavs/noise2.wav",
+        "original_sha256": "33f85268f7fbad6b3152b9ab051edab1a85082fde66bccff61d7f5ef7b437e58",
+        "rights": "Public vendor test asset; license for sample audio is not separately stated; not redistributed."
+      },
+      "reference_source": {
+        "url": "https://huggingface.co/csukuangfj2/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25/blob/main/test_wavs/transcript.txt",
+        "type": "vendor-provided-reference-not-independent-human-gold"
+      },
+      "kind": "independent-real-recording",
+      "parent": null,
+      "recipe": null,
+      "sex_metadata": "not_verified",
+      "seconds_elapsed": 22.034132712000005,
+      "additional_asset_gets": 0,
+      "output": {
+        "type": "result",
+        "id": "zh-noisy-digits",
+        "text": "(音)",
+        "segments": [
+          {
+            "start": 0,
+            "end": 2,
+            "text": "(音)"
+          }
+        ],
+        "duration": 22.833,
+        "warnings": [
+          "音频中有声音的时段较长，但识别文字较少，可能存在漏识别。歌声、伴奏或现场回声较强时，请对照原音校对。"
+        ]
+      },
+      "score": {
+        "reference_character_count": 53,
+        "hypothesis_character_count": 1,
+        "character_errors": 53,
+        "cer": 1,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 9,
+          "hypothesis_count": 0,
+          "has_sentence_punctuation": false,
+          "sequence_errors": 9,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "digit_equivalent_cer": 1
+      }
+    },
+    {
+      "id": "en-noisy-dialogue",
+      "title": "英语有噪声对话",
+      "pcm_sha256": "6fbaf85e93aea0be14b8934df691e518e441b0cc7e76012e22a45b2d98cd369f",
+      "sample_rate": 16000,
+      "duration_seconds": 19.02,
+      "language": "english",
+      "reference": "Okay, Charles. It looks like we have a problem with the radio. What happened? Yeah, someone spilled water on their machine. I uh, yeah. Charles, can you hear us? Mamma mia.",
+      "source": {
+        "url": "https://huggingface.co/csukuangfj2/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25/resolve/main/test_wavs/f1_noise.wav",
+        "original_sha256": "7ae35f5d8f038e518f3abdeda5f78d71cb2f67c9ca29cb9a49a0b4d0702909bd",
+        "rights": "Public vendor test asset; license for sample audio is not separately stated; not redistributed."
+      },
+      "reference_source": {
+        "url": "https://huggingface.co/csukuangfj2/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25/blob/main/test_wavs/transcript.txt",
+        "type": "vendor-provided-reference-not-independent-human-gold"
+      },
+      "kind": "independent-real-recording",
+      "parent": null,
+      "recipe": null,
+      "sex_metadata": "not_verified",
+      "seconds_elapsed": 51.320449257000014,
+      "additional_asset_gets": 0,
+      "output": {
+        "type": "result",
+        "id": "en-noisy-dialogue",
+        "text": "*BEEP* Okay Charles, it looks like we have a problem with the radio. What happened? Yeah, someone spilled water on their machine. *BEEP* I uh, yeah. Charles, can you hear us? *BEEP* I'm on the other side.",
+        "segments": [
+          {
+            "start": 0,
+            "end": 1,
+            "text": "*BEEP*"
+          },
+          {
+            "start": 1,
+            "end": 4,
+            "text": "Okay Charles, it looks like we have a problem with the radio."
+          },
+          {
+            "start": 4,
+            "end": 5,
+            "text": "What happened?"
+          },
+          {
+            "start": 5,
+            "end": 8,
+            "text": "Yeah, someone spilled water on their machine."
+          },
+          {
+            "start": 8,
+            "end": 10,
+            "text": "*BEEP*"
+          },
+          {
+            "start": 10,
+            "end": 12,
+            "text": "I uh, yeah."
+          },
+          {
+            "start": 12,
+            "end": 14,
+            "text": "Charles, can you hear us?"
+          },
+          {
+            "start": 14,
+            "end": 16,
+            "text": "*BEEP*"
+          },
+          {
+            "start": 16,
+            "end": 18,
+            "text": "I'm on the other side."
+          }
+        ],
+        "duration": 19.02,
+        "warnings": []
+      },
+      "score": {
+        "reference_character_count": 131,
+        "hypothesis_character_count": 151,
+        "character_errors": 26,
+        "cer": 0.1984732824427481,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 11,
+          "hypothesis_count": 10,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 1,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "word_errors": 9,
+        "reference_word_count": 31,
+        "wer": 0.2903225806451613
+      }
+    },
+    {
+      "id": "user-lyrics",
+      "title": "用户有画面字幕的歌声视频",
+      "pcm_sha256": "8933b1e813ec67abeb6de3067625a2dfec13672fd7706181cd571d143617794b",
+      "sample_rate": 16000,
+      "duration_seconds": 21.696,
+      "language": "chinese",
+      "reference": "满天红伞，无人生还。我的遗憾，是不能洁白的带你离开。",
+      "source": {
+        "type": "user-upload",
+        "sha256": "122e5f277c6e20efcfd515e1549cb45cb40b89998d265589725fe5bdd75952bd",
+        "private": true,
+        "rights": "Private user recording; never publish video or PCM."
+      },
+      "reference_source": {
+        "type": "user-provided-text",
+        "given_to_inference": false
+      },
+      "kind": "independent-real-recording",
+      "parent": null,
+      "recipe": null,
+      "sex_metadata": "not_verified",
+      "seconds_elapsed": 25.406332110999998,
+      "additional_asset_gets": 0,
+      "output": {
+        "type": "result",
+        "id": "user-lyrics",
+        "text": "(字幕製作:貝爾)",
+        "segments": [
+          {
+            "start": 0,
+            "end": 21.64,
+            "text": "(字幕製作:貝爾)"
+          }
+        ],
+        "duration": 21.696,
+        "warnings": [
+          "音频中有声音的时段较长，但识别文字较少，可能存在漏识别。歌声、伴奏或现场回声较强时，请对照原音校对。"
+        ]
+      },
+      "score": {
+        "reference_character_count": 22,
+        "hypothesis_character_count": 6,
+        "character_errors": 22,
+        "cer": 1,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 4,
+          "hypothesis_count": 1,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 4,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "digit_equivalent_cer": 1
+      }
+    },
+    {
+      "id": "zh-low-volume",
+      "title": "中文音量降低 26 dB",
+      "pcm_sha256": "07a3deff6d10f2590d0b652f04ce89d36c74a16acfcdd3b2799996a1ae53701c",
+      "sample_rate": 16000,
+      "duration_seconds": 5.592,
+      "language": "chinese",
+      "reference": "开放时间早上9点至下午5点。",
+      "source": {
+        "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-int8-2024-07-17.tar.bz2",
+        "member": "test_wavs/zh.wav",
+        "original_sha256": "b77f1794fe374a0ba1ee1dc458bfaf9349496cbbfc32780c50ba3c5a7ad8e373",
+        "rights": "Public vendor test asset; audio not redistributed in repository."
+      },
+      "reference_source": {
+        "url": "https://k2-fsa.github.io/sherpa/onnx/sense-voice/python-api.html",
+        "type": "vendor-documentation-example-not-independent-human-gold"
+      },
+      "kind": "derived-control",
+      "parent": "zh-clean",
+      "recipe": {
+        "gain": 0.05
+      },
+      "sex_metadata": "not_verified",
+      "seconds_elapsed": 27.679240405999998,
+      "additional_asset_gets": 0,
+      "output": {
+        "type": "result",
+        "id": "zh-low-volume",
+        "text": "开放时间早上九点至下午五点。",
+        "segments": [
+          {
+            "start": 0,
+            "end": 5,
+            "text": "开放时间早上九点至下午五点。"
+          }
+        ],
+        "duration": 5.592,
+        "warnings": []
+      },
+      "score": {
+        "reference_character_count": 13,
+        "hypothesis_character_count": 13,
+        "character_errors": 2,
+        "cer": 0.15384615384615385,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 1,
+          "hypothesis_count": 1,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 0,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "digit_equivalent_cer": 0
+      }
+    },
+    {
+      "id": "zh-instrumental",
+      "title": "中文叠加合成无歌词伴奏",
+      "pcm_sha256": "a8e620c102abd4e9239d3f355e7463eeb25e44e5e7873affe27e0134843cb06b",
+      "sample_rate": 16000,
+      "duration_seconds": 5.592,
+      "language": "chinese",
+      "reference": "开放时间早上9点至下午5点。",
+      "source": {
+        "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-int8-2024-07-17.tar.bz2",
+        "member": "test_wavs/zh.wav",
+        "original_sha256": "b77f1794fe374a0ba1ee1dc458bfaf9349496cbbfc32780c50ba3c5a7ad8e373",
+        "rights": "Public vendor test asset; audio not redistributed in repository."
+      },
+      "reference_source": {
+        "url": "https://k2-fsa.github.io/sherpa/onnx/sense-voice/python-api.html",
+        "type": "vendor-documentation-example-not-independent-human-gold"
+      },
+      "kind": "derived-control",
+      "parent": "zh-clean",
+      "recipe": {
+        "instrumental": "sine chord at 220,277.18,329.63 Hz; rhythmic amplitude 2 Hz",
+        "amplitude": "0.6 * clean-speech RMS; summed and clipped to [-1,1]"
+      },
+      "sex_metadata": "not_verified",
+      "seconds_elapsed": 25.51197304099999,
+      "additional_asset_gets": 0,
+      "output": {
+        "type": "result",
+        "id": "zh-instrumental",
+        "text": "開放時間早上9點至下午5點",
+        "segments": [
+          {
+            "start": 0,
+            "end": 5.5,
+            "text": "開放時間早上9點至下午5點"
+          }
+        ],
+        "duration": 5.592,
+        "warnings": []
+      },
+      "score": {
+        "reference_character_count": 13,
+        "hypothesis_character_count": 13,
+        "character_errors": 5,
+        "cer": 0.38461538461538464,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 1,
+          "hypothesis_count": 0,
+          "has_sentence_punctuation": false,
+          "sequence_errors": 1,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "digit_equivalent_cer": 0.38461538461538464
+      }
+    },
+    {
+      "id": "silence",
+      "title": "纯静音 5 秒",
+      "pcm_sha256": "ac2878215ad33205d1732578c89f25ededaad1b676911c540825bcf4baa42d9b",
+      "sample_rate": 16000,
+      "duration_seconds": 5,
+      "language": "chinese",
+      "reference": "",
+      "source": {
+        "type": "generated-deterministic"
+      },
+      "reference_source": {
+        "type": "known-empty-by-construction"
+      },
+      "kind": "synthetic-negative-control",
+      "parent": null,
+      "recipe": {
+        "samples": 80000,
+        "value": 0
+      },
+      "sex_metadata": "not_verified",
+      "seconds_elapsed": 0.02685709299999871,
+      "additional_asset_gets": 0,
+      "output": {
+        "type": "result",
+        "id": "silence",
+        "text": "",
+        "segments": [],
+        "duration": 5,
+        "warnings": [
+          "没有检测到可识别的声音，音频可能无声或音量过低。请检查原音，也可以重新转写。"
+        ]
+      },
+      "score": {
+        "reference_character_count": 0,
+        "hypothesis_character_count": 0,
+        "character_errors": 0,
+        "cer": null,
+        "exact_lexical_match": true,
+        "false_positive_for_empty_reference": false,
+        "punctuation": {
+          "reference_count": 0,
+          "hypothesis_count": 0,
+          "has_sentence_punctuation": false,
+          "sequence_errors": 0,
+          "boundary_exact_when_lexical_exact": true
+        }
+      }
+    },
+    {
+      "id": "noise",
+      "title": "无语音均匀随机噪声 5 秒",
+      "pcm_sha256": "60ce8607268552a37e3d1e2022d7629db4d6d63b4d07cb0c9b5396558e56930d",
+      "sample_rate": 16000,
+      "duration_seconds": 5,
+      "language": "chinese",
+      "reference": "",
+      "source": {
+        "type": "generated-seeded-noise"
+      },
+      "reference_source": {
+        "type": "known-empty-by-construction"
+      },
+      "kind": "synthetic-negative-control",
+      "parent": null,
+      "recipe": {
+        "rng": "Python random.Random",
+        "seed": 20261013,
+        "uniform": [
+          -0.03,
+          0.03
+        ],
+        "samples": 80000
+      },
+      "sex_metadata": "not_verified",
+      "seconds_elapsed": 23.935551360000012,
+      "additional_asset_gets": 0,
+      "output": {
+        "type": "result",
+        "id": "noise",
+        "text": "(字幕:貓)",
+        "segments": [
+          {
+            "start": 0,
+            "end": 5,
+            "text": "(字幕:貓)"
+          }
+        ],
+        "duration": 5,
+        "warnings": []
+      },
+      "score": {
+        "reference_character_count": 0,
+        "hypothesis_character_count": 3,
+        "character_errors": 3,
+        "cer": null,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": true,
+        "punctuation": {
+          "reference_count": 0,
+          "hypothesis_count": 1,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 1,
+          "boundary_exact_when_lexical_exact": null
+        }
+      }
+    },
+    {
+      "id": "zh-with-pause",
+      "title": "中文两遍短句中间静音 3 秒",
+      "pcm_sha256": "e0a3e8fea00ca53ec914e92cf2332b8247f678e803c69fce2549120444c6e1f2",
+      "sample_rate": 16000,
+      "duration_seconds": 14.184,
+      "language": "chinese",
+      "reference": "开放时间早上9点至下午5点。开放时间早上9点至下午5点。",
+      "source": {
+        "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-int8-2024-07-17.tar.bz2",
+        "member": "test_wavs/zh.wav",
+        "original_sha256": "b77f1794fe374a0ba1ee1dc458bfaf9349496cbbfc32780c50ba3c5a7ad8e373",
+        "rights": "Public vendor test asset; audio not redistributed in repository."
+      },
+      "reference_source": {
+        "url": "https://k2-fsa.github.io/sherpa/onnx/sense-voice/python-api.html",
+        "type": "vendor-documentation-example-not-independent-human-gold"
+      },
+      "kind": "derived-control",
+      "parent": "zh-clean",
+      "recipe": {
+        "sequence": "clean + exactly 3 seconds zero PCM + clean"
+      },
+      "sex_metadata": "not_verified",
+      "seconds_elapsed": 52.51328694800002,
+      "additional_asset_gets": 0,
+      "output": {
+        "type": "result",
+        "id": "zh-with-pause",
+        "text": "开放时间早上9点至下午5点\n开放时间早上9点至下午5点。",
+        "segments": [
+          {
+            "start": 0,
+            "end": 5,
+            "text": "开放时间早上9点至下午5点"
+          },
+          {
+            "start": 8.28,
+            "end": 14.184,
+            "text": "开放时间早上9点至下午5点。"
+          }
+        ],
+        "duration": 14.184,
+        "warnings": []
+      },
+      "score": {
+        "reference_character_count": 26,
+        "hypothesis_character_count": 26,
+        "character_errors": 0,
+        "cer": 0,
+        "exact_lexical_match": true,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 2,
+          "hypothesis_count": 1,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 1,
+          "boundary_exact_when_lexical_exact": false
+        },
+        "digit_equivalent_cer": 0
+      }
+    }
+  ],
+  "completed_at": "2026-10-13T15:02:57.351Z",
+  "total_asset_gets": 21,
+  "model_assets": {
+    "encoder_model_q4f16.onnx": {
+      "bytes": 54388383,
+      "sha256": "e8b0c741bd5b3d6109ea82392dcb673f7599630e8cf1035fea23847f0f040da0",
+      "parts": 4
+    },
+    "decoder_model_merged_q4f16.onnx": {
+      "bytes": 145836023,
+      "sha256": "7fca7f5949bc2868d83fb18423ba84b897fc648344d69bc88c7e23c75b12a830",
+      "parts": 9
+    }
+  },
+  "baseline_app_version": "0.3.2",
+  "baseline_source_commit": "afcff5a10372ed3d54ff14f84ed963d6a4c75563"
+}
