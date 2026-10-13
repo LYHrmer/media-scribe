@@ -113,6 +113,7 @@ function harness(decode = async () => decoded(), vision = {}) {
     decodeAudio: decode, MAX_FILE_BYTES: 300 * 1024 * 1024,
     Worker: WorkerDouble, URL: BrowserURL, Blob, Float32Array, AbortController,
     isVideoFile,
+    punctuateResult: vision.punctuate || (async result => result),
     readVideoFrames: vision.readFrames || (async () => { throw new Error('模拟浏览器不能读取画面'); }),
     createVideoOcrClient: vision.createClient || (() => ({ initialize: async () => {}, recognize: async () => ({ texts: [] }), dispose() {} })),
     fuseVideoCaptions: vision.fuse || (() => ({ reliable: false, segments: [], candidates: [], warnings: [] })),
@@ -727,5 +728,31 @@ test('stopping an OCR run disposes the worker and cannot submit a late audio fal
   assert.equal(disposed, true);
   assert.equal(h.workers.length, 0);
   assert.deepEqual(h.states(), ['已停止']);
+  h.controlsRestored();
+});
+
+test('stopping during punctuation preserves a manually edited previous result', async () => {
+  const pending = deferred();
+  let calls = 0;
+  let punctuationSignal;
+  const h = harness(undefined, { punctuate: (result, { signal }) => {
+    if (++calls === 1) return Promise.resolve(result);
+    punctuationSignal = signal;
+    return pending.promise;
+  } });
+  await h.add([file('punctuation.wav')]);
+  const initial = h.ui['start-button'].click();
+  await flush(); h.workers[0].result('原始文字'); await initial;
+  h.ui.transcript.value = '保留我校对的文字。';
+  await h.ui.transcript.emit('input');
+  const rerun = h.ui['rerun-button'].click();
+  await flush(); h.workers[0].result('新的识别文字'); await flush();
+  assert.match(h.ui['progress-stage'].textContent, /标点/);
+  await h.ui['stop-button'].click();
+  assert.equal(punctuationSignal.aborted, true);
+  pending.resolve({ text: '迟到的标点结果。', duration: 1, segments: [] });
+  await rerun;
+  assert.equal(h.ui.transcript.value, '保留我校对的文字。');
+  assert.equal(h.ui['restore-button'].hidden, true);
   h.controlsRestored();
 });
