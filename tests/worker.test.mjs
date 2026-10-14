@@ -156,8 +156,8 @@ test('text decoding is a separate generation attempt with one approximate range 
   assert.match(result.warnings[0], /字幕时间.*粗略范围/);
   const options = h.calls.find(call => call.audio).options;
   assert.equal(options.return_timestamps, false);
-  assert.equal(options.chunk_length_s, 20);
-  assert.equal(options.stride_length_s, 3);
+  assert.equal(options.chunk_length_s, 30);
+  assert.equal(options.stride_length_s, 5);
   assert.equal(options.task, 'transcribe');
   assert.equal(options.language, 'english');
   assert.equal(h.fetches, 0);
