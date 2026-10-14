@@ -16,10 +16,15 @@ assert.equal(source.split("import { installModelAssetFetch } from './model-asset
 assert.equal(source.split("import { findAudioRanges } from './audio-segments.js';").length, 2);
 assert.equal(modelAssetSource.split('export function installModelAssetFetch').length, 2);
 assert.equal(audioSegmentSource.split('export function findAudioRanges').length, 2);
-const executable = audioSegmentSource.replace('export function findAudioRanges', 'function findAudioRanges') + '\n'
+const mergeGuardSource = await readFile(new URL('../src/nonoverlap-guard.js', import.meta.url), 'utf8');
+const mergeWrapperSource = await readFile(new URL('../src/whisper-nonoverlap-wrapper.js', import.meta.url), 'utf8');
+const executable = mergeGuardSource.replace('export function nonoverlapGuard', 'function nonoverlapGuard') + '\n'
+  + mergeWrapperSource.replace("import { nonoverlapGuard } from './nonoverlap-guard.js';", '').replaceAll('export ', '') + '\n'
+  + audioSegmentSource.replace('export function findAudioRanges', 'function findAudioRanges') + '\n'
   + modelAssetSource.replace('export function installModelAssetFetch', 'function installModelAssetFetch') + '\n' + source
   .replace("import { installModelAssetFetch } from './model-assets.js';", '')
   .replace("import { findAudioRanges } from './audio-segments.js';", '')
+  .replace("import { transcribeWithSafeTimestampMerge } from './whisper-nonoverlap-wrapper.js';", '')
   .replace("import('@huggingface/transformers')", '__loadLibrary()')
   .replaceAll('import.meta.env.BASE_URL', "'/test/'");
 
@@ -35,7 +40,7 @@ function harness({ infer = async audio => ({ text: '  你好，世界。  ', chu
   let listener;
   let imports = 0;
   let fetches = 0;
-  const env = { allowLocalModels: true, useBrowserCache: false, backends: { onnx: { wasm: {} } } };
+  const env = { version: '3.8.1', allowLocalModels: true, useBrowserCache: false, backends: { onnx: { wasm: {} } } };
   const library = {
     env,
     async pipeline(task, model, options) {
@@ -44,6 +49,7 @@ function harness({ infer = async audio => ({ text: '  你好，世界。  ', chu
         calls.push({ audio, options });
         return infer(audio, options);
       };
+      transcriber.tokenizer ??= { _decode_asr() { throw new Error('Model inference is mocked in worker protocol tests'); } };
       if (!transcriber.dispose) transcriber.dispose = async () => {
         calls.push({ dispose: model });
         await dispose?.(model);

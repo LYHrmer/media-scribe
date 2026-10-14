@@ -1,0 +1,595 @@
+{
+  "schema_version": 1,
+  "provenance": {
+    "description": "Real generated q8 Whisper Small token windows from one MELI F00A interview excerpt; expected outputs are model-token merge behavior, NOT a human reference transcript or accuracy target.",
+    "case_id": "meli-f00a-en",
+    "model": "Xenova/whisper-small",
+    "dtype": "q8",
+    "transformers_version": "3.8.1",
+    "diagnostic_sha256": "cb0335a8e59804eb9a186c651656237a05eb0e671b36c6512e7aa907d62ec554",
+    "pcm_sha256": "851649f5812e85129633774e3ed12cd142845d587cad389cd839e61cf6ef36f8",
+    "stride_provenance": "Exact original production 30/5 pipeline strides reconstructed and independently verified against original PCM sample count, findAudioRanges and each observed generation num_frames; no rounded duration inference.",
+    "window_sample_ranges": [
+      {
+        "start": 0,
+        "end": 480000
+      },
+      {
+        "start": 320000,
+        "end": 555039
+      }
+    ],
+    "sample_rate": 16000,
+    "decode_piece_validation": "Each recorded complete tokenizer.decode call was checked byte for byte against concatenated single-token pieces using the actual full official tokenizer during fixture preparation.",
+    "tokenizer_json_sha256": "27fc476bfe7f17299480be2273fc0608e4d5a99aba2ab5dec5374b4482d1a566",
+    "tokenizer_config_json_sha256": "2a4c4281cf9f51ac6ccc406fdc711a087afe6530f671fa7b80953edc498275ce",
+    "reference_used": false,
+    "model_inference_run_for_fixture": false
+  },
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+    "attribution": "Suyuan Liu and Molly Babel, University of British Columbia, MELI: Mandarin-English Language Interview, participant F00A.",
+    "source": "https://doi.org/10.5683/SP3/5WMRUO",
+    "notice": "This small diagnostic fixture is derived from corpus audio. Its license is separate from application source-code licensing. It contains generated model tokens and reconstructed model outputs, not corpus reference annotations; no media is included."
+  },
+  "timestamp_begin": 50364,
+  "all_special_ids": [
+    50257,
+    50258,
+    50259,
+    50260,
+    50261,
+    50262,
+    50263,
+    50264,
+    50265,
+    50266,
+    50267,
+    50268,
+    50269,
+    50270,
+    50271,
+    50272,
+    50273,
+    50274,
+    50275,
+    50276,
+    50277,
+    50278,
+    50279,
+    50280,
+    50281,
+    50282,
+    50283,
+    50284,
+    50285,
+    50286,
+    50287,
+    50288,
+    50289,
+    50290,
+    50291,
+    50292,
+    50293,
+    50294,
+    50295,
+    50296,
+    50297,
+    50298,
+    50299,
+    50300,
+    50301,
+    50302,
+    50303,
+    50304,
+    50305,
+    50306,
+    50307,
+    50308,
+    50309,
+    50310,
+    50311,
+    50312,
+    50313,
+    50314,
+    50315,
+    50316,
+    50317,
+    50318,
+    50319,
+    50320,
+    50321,
+    50322,
+    50323,
+    50324,
+    50325,
+    50326,
+    50327,
+    50328,
+    50329,
+    50330,
+    50331,
+    50332,
+    50333,
+    50334,
+    50335,
+    50336,
+    50337,
+    50338,
+    50339,
+    50340,
+    50341,
+    50342,
+    50343,
+    50344,
+    50345,
+    50346,
+    50347,
+    50348,
+    50349,
+    50350,
+    50351,
+    50352,
+    50353,
+    50354,
+    50355,
+    50356,
+    50357,
+    50358,
+    50359,
+    50360,
+    50361,
+    50362,
+    50363
+  ],
+  "token_pieces": {
+    "11": ",",
+    "13": ".",
+    "264": " the",
+    "286": " I",
+    "293": " and",
+    "295": " of",
+    "300": " that",
+    "307": " is",
+    "309": " it",
+    "311": "'s",
+    "337": " for",
+    "365": " with",
+    "370": " so",
+    "385": " me",
+    "400": " And",
+    "406": " not",
+    "411": " like",
+    "412": " at",
+    "445": " just",
+    "452": " my",
+    "457": " but",
+    "478": "'m",
+    "519": " think",
+    "544": " more",
+    "570": " because",
+    "665": " good",
+    "733": " kind",
+    "841": " feel",
+    "1079": " Yes",
+    "1152": " hard",
+    "1338": " yeah",
+    "1392": " okay",
+    "1743": " Like",
+    "2539": " learning",
+    "3233": " stage",
+    "3579": " writing",
+    "3669": " English",
+    "3760": " reading",
+    "5135": " Actually",
+    "5389": " skill",
+    "8609": " arts",
+    "23338": " pronunciation",
+    "50257": "<|endoftext|>",
+    "50258": "<|startoftranscript|>",
+    "50259": "<|en|>",
+    "50359": "<|transcribe|>",
+    "50364": "<|0.00|>",
+    "50414": "<|1.00|>",
+    "50784": "<|8.40|>",
+    "50920": "<|11.12|>",
+    "51020": "<|13.12|>",
+    "51352": "<|19.76|>"
+  },
+  "sequences": [
+    {
+      "tokens": [
+        50258,
+        50259,
+        50359,
+        50364,
+        5135,
+        11,
+        286,
+        519,
+        2539,
+        3669,
+        307,
+        406,
+        300,
+        1152,
+        337,
+        385,
+        50784,
+        50784,
+        570,
+        286,
+        445,
+        841,
+        411,
+        286,
+        478,
+        1392,
+        365,
+        3760,
+        293,
+        3579,
+        733,
+        295,
+        411,
+        544,
+        8609,
+        5389,
+        51352,
+        51352,
+        50257
+      ],
+      "stride": [
+        30,
+        0,
+        5
+      ]
+    },
+    {
+      "tokens": [
+        50258,
+        50259,
+        50359,
+        50364,
+        1079,
+        13,
+        50414,
+        50414,
+        400,
+        286,
+        519,
+        452,
+        23338,
+        307,
+        406,
+        370,
+        665,
+        11,
+        457,
+        309,
+        311,
+        411,
+        412,
+        264,
+        1392,
+        3233,
+        13,
+        50920,
+        50920,
+        1743,
+        11,
+        1338,
+        13,
+        51020,
+        50257
+      ],
+      "stride": [
+        14.6899375,
+        5,
+        0
+      ]
+    }
+  ],
+  "decode_options": {
+    "return_timestamps": true,
+    "time_precision": 0.02,
+    "force_full_sequences": false
+  },
+  "decode_checks": [
+    {
+      "tokens": [
+        50258,
+        50259,
+        50359,
+        50364,
+        5135,
+        11,
+        286,
+        519,
+        2539,
+        3669,
+        307,
+        406,
+        300,
+        1152,
+        337,
+        385,
+        50784,
+        50784,
+        570,
+        286,
+        445,
+        841,
+        411,
+        286,
+        478,
+        1392,
+        365,
+        3760,
+        293,
+        3579,
+        733,
+        295,
+        411,
+        544,
+        8609,
+        5389,
+        51352,
+        51352,
+        50257
+      ],
+      "options": {
+        "skip_special_tokens": false
+      },
+      "text": "<|startoftranscript|><|en|><|transcribe|><|0.00|> Actually, I think learning English is not that hard for me<|8.40|><|8.40|> because I just feel like I'm okay with reading and writing kind of like more arts skill<|19.76|><|19.76|><|endoftext|>"
+    },
+    {
+      "tokens": [
+        50258,
+        50259,
+        50359,
+        50364,
+        1079,
+        13,
+        50414,
+        50414,
+        400,
+        286,
+        519,
+        452,
+        23338,
+        307,
+        406,
+        370,
+        665,
+        11,
+        457,
+        309,
+        311,
+        411,
+        412,
+        264,
+        1392,
+        3233,
+        13,
+        50920,
+        50920,
+        1743,
+        11,
+        1338,
+        13,
+        51020,
+        50257
+      ],
+      "options": {
+        "skip_special_tokens": false
+      },
+      "text": "<|startoftranscript|><|en|><|transcribe|><|0.00|> Yes.<|1.00|><|1.00|> And I think my pronunciation is not so good, but it's like at the okay stage.<|11.12|><|11.12|> Like, yeah.<|13.12|><|endoftext|>"
+    },
+    {
+      "tokens": [
+        50258
+      ],
+      "options": null,
+      "text": "<|startoftranscript|>"
+    },
+    {
+      "tokens": [
+        50259
+      ],
+      "options": null,
+      "text": "<|en|>"
+    },
+    {
+      "tokens": [
+        50359
+      ],
+      "options": null,
+      "text": "<|transcribe|>"
+    },
+    {
+      "tokens": [
+        5135,
+        11,
+        286,
+        519,
+        2539,
+        3669,
+        307,
+        406,
+        300,
+        1152,
+        337,
+        385
+      ],
+      "options": null,
+      "text": " Actually, I think learning English is not that hard for me"
+    },
+    {
+      "tokens": [
+        50257
+      ],
+      "options": null,
+      "text": "<|endoftext|>"
+    },
+    {
+      "tokens": [
+        570,
+        286,
+        445,
+        841,
+        411,
+        412,
+        264,
+        1392,
+        3233,
+        13
+      ],
+      "options": null,
+      "text": " because I just feel like at the okay stage."
+    },
+    {
+      "tokens": [
+        1743,
+        11,
+        1338,
+        13
+      ],
+      "options": null,
+      "text": " Like, yeah."
+    },
+    {
+      "tokens": [
+        570,
+        286,
+        445,
+        841,
+        411,
+        286,
+        478,
+        1392,
+        365,
+        3760,
+        293,
+        3579,
+        733,
+        295,
+        411,
+        544,
+        8609,
+        5389
+      ],
+      "options": null,
+      "text": " because I just feel like I'm okay with reading and writing kind of like more arts skill"
+    },
+    {
+      "tokens": [
+        1079,
+        13
+      ],
+      "options": null,
+      "text": " Yes."
+    },
+    {
+      "tokens": [
+        400,
+        286,
+        519,
+        452,
+        23338,
+        307,
+        406,
+        370,
+        665,
+        11,
+        457,
+        309,
+        311,
+        411,
+        412,
+        264,
+        1392,
+        3233,
+        13
+      ],
+      "options": null,
+      "text": " And I think my pronunciation is not so good, but it's like at the okay stage."
+    }
+  ],
+  "expected_original": [
+    " Actually, I think learning English is not that hard for me because I just feel like at the okay stage. Like, yeah.",
+    {
+      "chunks": [
+        {
+          "timestamp": [
+            0,
+            8.4
+          ],
+          "text": " Actually, I think learning English is not that hard for me"
+        },
+        {
+          "timestamp": [
+            8.4,
+            31.12
+          ],
+          "text": " because I just feel like at the okay stage."
+        },
+        {
+          "timestamp": [
+            31.12,
+            33.12
+          ],
+          "text": " Like, yeah."
+        }
+      ]
+    }
+  ],
+  "expected_corrected": [
+    " Actually, I think learning English is not that hard for me because I just feel like I'm okay with reading and writing kind of like more arts skill Yes. And I think my pronunciation is not so good, but it's like at the okay stage. Like, yeah.",
+    {
+      "chunks": [
+        {
+          "timestamp": [
+            0,
+            8.4
+          ],
+          "text": " Actually, I think learning English is not that hard for me"
+        },
+        {
+          "timestamp": [
+            8.4,
+            19.76
+          ],
+          "text": " because I just feel like I'm okay with reading and writing kind of like more arts skill"
+        },
+        {
+          "timestamp": [
+            20,
+            21
+          ],
+          "text": " Yes."
+        },
+        {
+          "timestamp": [
+            21,
+            31.12
+          ],
+          "text": " And I think my pronunciation is not so good, but it's like at the okay stage."
+        },
+        {
+          "timestamp": [
+            31.12,
+            33.12
+          ],
+          "text": " Like, yeah."
+        }
+      ]
+    }
+  ],
+  "expected_text_mode": [
+    " Actually, I think learning English is not that hard for me because I just feel like at the okay stage. Like, yeah.",
+    {}
+  ],
+  "limitation": "This fixture validates a decoder regression on one recorded token sequence, not general ASR accuracy or accent improvement."
+}
