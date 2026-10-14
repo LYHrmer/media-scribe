@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f5f0" />
+    <meta name="description" content="编解码与时间戳：Base64、URL 编解码，Unix 时间戳与本地日期时间互转。浏览器本地处理。" />
+    <title>编解码与时间戳 · 听写匣工具箱</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="site-header">
+        <a class="brand" href="./" aria-label="返回工具箱首页">
+          <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 10v4M9 6v12M13 3v18M17 7v10M21 10v4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></span>
+          <span>听写匣<span class="brand-edition">工具箱</span></span>
+        </a>
+        <span class="local-badge"><span class="status-dot" aria-hidden="true"></span>本地处理，数据不上传</span>
+      </header>
+
+      <main>
+        <section class="intro" aria-labelledby="page-title">
+          <p class="eyebrow">浏览器本地 <span>·</span> 粘贴即用</p>
+          <h1 id="page-title">编解码与<span>时间戳。</span></h1>
+          <p class="intro-description">Base64、URL 编解码，Unix 时间戳与本地日期时间互转。</p>
+        </section>
+
+        <section class="panel tool-panel">
+          <div class="tool-section">
+            <label class="tool-label" for="b64-input">Base64</label>
+            <textarea id="b64-input" class="tool-textarea tool-textarea-short" spellcheck="false" placeholder="输入原文或 Base64…"></textarea>
+            <div class="tool-row">
+              <button id="b64-encode" class="secondary-button" type="button">编码 →</button>
+              <button id="b64-decode" class="secondary-button" type="button">← 解码</button>
+              <button class="secondary-button copy-button" type="button" data-target="b64-output">复制结果</button>
+            </div>
+            <textarea id="b64-output" class="tool-textarea tool-textarea-short" spellcheck="false" readonly></textarea>
+          </div>
+
+          <div class="tool-section">
+            <label class="tool-label" for="url-input">URL 编码</label>
+            <textarea id="url-input" class="tool-textarea tool-textarea-short" spellcheck="false" placeholder="输入原文或 URL 编码…"></textarea>
+            <div class="tool-row">
+              <button id="url-encode" class="secondary-button" type="button">编码 →</button>
+              <button id="url-decode" class="secondary-button" type="button">← 解码</button>
+              <button class="secondary-button copy-button" type="button" data-target="url-output">复制结果</button>
+            </div>
+            <textarea id="url-output" class="tool-textarea tool-textarea-short" spellcheck="false" readonly></textarea>
+          </div>
+
+          <div class="tool-section">
+            <label class="tool-label" for="ts-input">Unix 时间戳 → 日期时间（秒或毫秒，自动识别）</label>
+            <div class="tool-row">
+              <input id="ts-input" class="tool-input" type="text" inputmode="numeric" placeholder="例如 1760000000 或 1760000000000" />
+              <button id="ts-to-date" class="secondary-button" type="button">转日期时间</button>
+              <button class="secondary-button copy-button" type="button" data-target="ts-output">复制结果</button>
+            </div>
+            <input id="ts-output" class="tool-input" type="text" readonly />
+          </div>
+
+          <div class="tool-section">
+            <label class="tool-label" for="date-input">日期时间 → Unix 时间戳（本地时区）</label>
+            <div class="tool-row">
+              <input id="date-input" class="tool-input" type="text" placeholder="YYYY-MM-DD HH:mm:ss" />
+              <button id="date-to-ts" class="secondary-button" type="button">转时间戳</button>
+              <button class="secondary-button copy-button" type="button" data-target="date-output">复制结果</button>
+            </div>
+            <input id="date-output" class="tool-input" type="text" readonly />
+          </div>
+
+          <div id="tool-error" class="inline-error" role="alert" hidden></div>
+        </section>
+      </main>
+
+      <footer class="site-footer"><span>听写匣工具箱</span><span>本地处理 <span class="footer-dot">·</span> 数据不上传</span></footer>
+    </div>
+    <script type="module" src="/src/tools/codec-time.js"></script>
+  </body>
+</html>

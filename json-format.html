@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f5f0" />
+    <meta name="description" content="JSON 格式化：格式化、压缩、校验并定位错误行列，支持递归按键排序。浏览器本地处理。" />
+    <title>JSON 格式化 · 听写匣工具箱</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="site-header">
+        <a class="brand" href="./" aria-label="返回工具箱首页">
+          <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 10v4M9 6v12M13 3v18M17 7v10M21 10v4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></span>
+          <span>听写匣<span class="brand-edition">工具箱</span></span>
+        </a>
+        <span class="local-badge"><span class="status-dot" aria-hidden="true"></span>本地处理，数据不上传</span>
+      </header>
+
+      <main>
+        <section class="intro" aria-labelledby="page-title">
+          <p class="eyebrow">浏览器本地 <span>·</span> 粘贴即用</p>
+          <h1 id="page-title">JSON <span>格式化。</span></h1>
+          <p class="intro-description">格式化、压缩、校验并定位错误行列，支持递归按键排序。</p>
+        </section>
+
+        <section class="panel tool-panel">
+          <div class="tool-section">
+            <label class="tool-label" for="json-input">JSON 内容</label>
+            <textarea id="json-input" class="tool-textarea" spellcheck="false" placeholder='{"在这里粘贴 JSON": true}'></textarea>
+          </div>
+
+          <div class="tool-row">
+            <button id="format-button" class="primary-button" type="button">格式化</button>
+            <button id="minify-button" class="secondary-button" type="button">压缩</button>
+            <button id="validate-button" class="secondary-button" type="button">仅校验</button>
+            <label class="tool-check"><input id="sort-keys" type="checkbox" />递归按键排序</label>
+          </div>
+          <div id="tool-error" class="inline-error" role="alert" hidden></div>
+          <p id="tool-status" class="tool-status" role="status" hidden></p>
+
+          <div class="tool-section" id="result-section" hidden>
+            <label class="tool-label" for="json-output">结果</label>
+            <textarea id="json-output" class="tool-textarea tool-output" spellcheck="false" readonly></textarea>
+            <div class="tool-row">
+              <button id="copy-button" class="secondary-button" type="button">复制</button>
+              <button id="download-button" class="secondary-button" type="button">下载 .json</button>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer"><span>听写匣工具箱</span><span>本地处理 <span class="footer-dot">·</span> 数据不上传</span></footer>
+    </div>
+    <script type="module" src="/src/tools/json-format.js"></script>
+  </body>
+</html>

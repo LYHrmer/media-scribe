@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f5f0" />
+    <meta name="description" content="字幕工具箱：SRT 与 VTT 互转、时间轴整体平移、两段合并、按时间拆分。浏览器本地处理，不上传文件。" />
+    <title>字幕工具箱 · 听写匣工具箱</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="site-header">
+        <a class="brand" href="./" aria-label="返回工具箱首页">
+          <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 10v4M9 6v12M13 3v18M17 7v10M21 10v4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></span>
+          <span>听写匣<span class="brand-edition">工具箱</span></span>
+        </a>
+        <span class="local-badge"><span class="status-dot" aria-hidden="true"></span>本地处理，数据不上传</span>
+      </header>
+
+      <main>
+        <section class="intro" aria-labelledby="page-title">
+          <p class="eyebrow">浏览器本地 <span>·</span> 粘贴即用</p>
+          <h1 id="page-title">字幕<span>工具箱。</span></h1>
+          <p class="intro-description">SRT 与 VTT 互转、时间轴整体平移、两段合并、按时间拆分。</p>
+        </section>
+
+        <section class="panel tool-panel">
+          <div class="tool-tabs" role="tablist" aria-label="操作方式">
+            <button class="tab-button active" type="button" data-mode="convert" aria-selected="true">格式互转</button>
+            <button class="tab-button" type="button" data-mode="shift" aria-selected="false">时间平移</button>
+            <button class="tab-button" type="button" data-mode="merge" aria-selected="false">合并</button>
+            <button class="tab-button" type="button" data-mode="split" aria-selected="false">拆分</button>
+          </div>
+
+          <div class="tool-section">
+            <label class="tool-label" for="sub-input-a">字幕内容 A（粘贴 SRT 或 VTT，自动识别格式）</label>
+            <textarea id="sub-input-a" class="tool-textarea" spellcheck="false" placeholder="1&#10;00:00:01,000 --> 00:00:03,000&#10;在这里粘贴字幕…"></textarea>
+          </div>
+
+          <div class="tool-section" id="param-shift" hidden>
+            <label class="tool-label" for="shift-ms">平移量（毫秒，可为负数）</label>
+            <input id="shift-ms" class="tool-input" type="number" step="100" value="-1500" />
+          </div>
+
+          <div class="tool-section" id="param-merge" hidden>
+            <label class="tool-label" for="sub-input-b">字幕内容 B（自动平移，接在 A 之后）</label>
+            <textarea id="sub-input-b" class="tool-textarea" spellcheck="false" placeholder="第二段字幕…"></textarea>
+          </div>
+
+          <div class="tool-section" id="param-split" hidden>
+            <label class="tool-label" for="split-at">切分点（秒，例如 90 表示 1 分 30 秒处）</label>
+            <input id="split-at" class="tool-input" type="number" min="0" step="0.5" value="60" />
+          </div>
+
+          <div class="tool-row">
+            <button id="run-button" class="primary-button" type="button">开始处理</button>
+          </div>
+          <div id="tool-error" class="inline-error" role="alert" hidden></div>
+          <ul id="tool-warnings" class="tool-warnings" hidden></ul>
+
+          <div class="tool-section" id="result-section" hidden>
+            <label class="tool-label" for="sub-output">结果<span id="result-meta"></span></label>
+            <textarea id="sub-output" class="tool-textarea tool-output" spellcheck="false" readonly></textarea>
+            <div class="tool-row">
+              <button id="download-button" class="secondary-button" type="button">下载结果</button>
+              <button id="download-button-2" class="secondary-button" type="button" hidden>下载第二段</button>
+              <button id="copy-button" class="secondary-button" type="button">复制</button>
+            </div>
+            <p class="tool-hint">提示：VTT 的 cue 标识符与对齐设置（align / position）在转换中会丢失；拆分按字幕开始时间归属；乱序字幕会按开始时间重排并给出提示。</p>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer"><span>听写匣工具箱</span><span>本地处理 <span class="footer-dot">·</span> 数据不上传</span></footer>
+    </div>
+    <script type="module" src="/src/tools/subtitle.js"></script>
+  </body>
+</html>
