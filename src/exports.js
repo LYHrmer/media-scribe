@@ -61,6 +61,9 @@ export function renderJson(result) {
   const metadata = {};
   if (['audio', 'video_ocr'].includes(result.source)) metadata.source = result.source;
   if (typeof result.rawText === 'string') metadata.rawText = result.rawText;
+  if (result.timing === 'approximate') metadata.timing = 'approximate';
+  if (result.speechCheck?.deferred === true) metadata.speechCheck = { deferred: true };
+  else if (result.speechCheck?.forced === true) metadata.speechCheck = { forced: true };
   if (Array.isArray(result.warnings)) metadata.warnings = result.warnings.filter(value => typeof value === 'string');
   return `${JSON.stringify({ text: requireText(result.text), duration: result.duration, segments, ...metadata }, null, 2)}\n`;
 }
