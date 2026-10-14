@@ -1,6 +1,7 @@
 import { SENSEVOICE_ASSETS, SENSEVOICE_MODEL, loadSenseAsset } from './sensevoice-assets.js';
 import { findAudioRanges } from './audio-segments.js';
 import { normalizeSensePunctuation, senseResultSegments, splitSenseRanges } from './sensevoice-segments.js';
+import { quietAudioGain, applyAudioGain } from './audio-level.js';
 
 const BASE = new URL(`${import.meta.env.BASE_URL}models-sensevoice/`, self.location.origin).href;
 let cached, busy = false;
@@ -58,6 +59,9 @@ self.addEventListener('message', async ({ data: job }) => {
     const decoding = job.decoding || 'timestamps';
     if (!ranges.length) { send('result', id, { text: '', segments: [], duration, decoding, warnings: ['未检测到声音，请检查原音或重新转写。'] }); return; }
     const { recognizer } = await getRecognizer(job.language, decoding, id);
+    // Keep the default PCM intact. A user-requested verbatim retry may also
+    // try a bounded level adjustment; a gain is not proven to help all speech.
+    const audioGain = decoding === 'text' ? quietAudioGain(job.audio) : 1;
     const texts = [], originals = [], segments = [], warnings = [];
     let approximate = false;
     for (let i = 0; i < ranges.length; i++) {
@@ -65,7 +69,7 @@ self.addEventListener('message', async ({ data: job }) => {
       const { start, end } = ranges[i];
       const stream = recognizer.createStream();
       try {
-        stream.acceptWaveform(16000, job.audio.subarray(start, end));
+        stream.acceptWaveform(16000, applyAudioGain(job.audio.subarray(start, end), audioGain));
         recognizer.decode(stream);
         const raw = recognizer.getResult(stream);
         if (raw.text?.trim()) originals.push(raw.text.trim());
@@ -77,10 +81,11 @@ self.addEventListener('message', async ({ data: job }) => {
     }
     const text = texts.join('\n');
     if (decoding === 'text') warnings.push('本次按原话识别，数字可能写为汉字。号码、人名和听不清的内容仍需核对。');
+    if (audioGain > 1) warnings.push('本次重试也适度提高了低音量；可恢复上一版，对照原音选择结果。');
     if (approximate) warnings.push('部分片段缺少有效逐字时间，已保留对应音频段的粗略范围。');
     if (duration >= 15 && text.replace(/[\p{P}\p{Z}\s]/gu, '').length < duration / 2) warnings.push('识别文字偏少，可能存在漏字。可切换其他识别方式重新转写。');
     const rawText = originals.join('\n');
-    send('result', id, { text, segments, duration, decoding, ...(rawText !== text ? { rawText } : {}), ...(approximate ? { timing: 'approximate' } : {}), warnings });
+    send('result', id, { text, segments, duration, decoding, ...(audioGain > 1 ? { audioGain } : {}), ...(rawText !== text ? { rawText } : {}), ...(approximate ? { timing: 'approximate' } : {}), warnings });
   } catch (error) {
     console.error('[听写匣] 中文增强识别错误', error);
     const message = String(error?.message || error);
