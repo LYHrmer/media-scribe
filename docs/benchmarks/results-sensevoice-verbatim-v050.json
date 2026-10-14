@@ -1,0 +1,291 @@
+{
+  "scope": "Actual compiled Vite ASR + VAD + punctuation workers and real WASM; only HTTP, Cache API and worker transport simulated. No browser UI or phone QA claim.",
+  "decoding": "text",
+  "model_sha256": "c71f0ce00bec95b07744e116345e33d8cbbe08cef896382cf907bf4b51a2cd51",
+  "runtime_sha256": "e4dead1d159c531282e635069fa9e028175dee71f3f90908186994655425b3ce",
+  "fingerprints": {
+    "vad.worker-C9h8-FgH.js": "e19bc613db3bdaa1e87f1fa91a6a4722613a83a4204c2b8d1bdb4ecabef04ebe",
+    "punctuation.worker-Ch2hTEJS.js": "178ac8d7ab9e4f7fd13a75d37763eafa1d276ac9c388771dcf7be98642620209",
+    "sensevoice.worker-BG0qXNoG.js": "79c8515b0f80d8a1f6ffda3e7d2083bcc126e0ed9653e26d239c95cac6488a9b",
+    "models-sensevoice/runtime.mjs": "3a7e50f11a449f4b9fd2b9373fbb3f16fd487cce804ae6f51241d72c5f0dbcbe",
+    "models-sensevoice/asr.mjs": "6686bf26631572b161fc2b6532302d8eeda91a774c32f3216eced57ec5769ff2"
+  },
+  "requests": [
+    "models-vad/silero-vad-1e261b03.onnx",
+    "models-sensevoice/sherpa.wasm.manifest.json",
+    "models-sensevoice/sherpa.wasm.part-0.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.manifest.json",
+    "models-sensevoice/sensevoice.int8.onnx.part-0.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-1.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-2.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-3.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-4.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-5.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-6.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-7.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-8.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-9.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-10.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-11.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-12.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-13.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-14.gz.bin",
+    "models-sensevoice/tokens.txt.manifest.json",
+    "models-sensevoice/tokens.txt.part-0.gz.bin",
+    "models-punctuation/manifest.json",
+    "models-punctuation/model.zh-compact.int8.onnx",
+    "models-punctuation/tokens.json"
+  ],
+  "cache_reuse": false,
+  "cases": [
+    {
+      "id": "zh-clean",
+      "pcm_sha256": "32679c5676d4a67bab7d297da1db34f92ec8a2f4899f4a03c6c80b3f4efdabdd",
+      "reference": "开放时间早上9点至下午5点。",
+      "language": "chinese",
+      "result": {
+        "type": "result",
+        "id": 1,
+        "text": "开饭时间，早上九点至下午五点。",
+        "segments": [
+          {
+            "start": 0.72,
+            "end": 4.92,
+            "text": "开饭时间，早上九点至下午五点。"
+          }
+        ],
+        "duration": 5.592,
+        "decoding": "text",
+        "warnings": [
+          "本次按原话识别，数字可能写为汉字。号码、人名和听不清的内容仍需核对。"
+        ],
+        "speechCheck": {
+          "type": "result",
+          "id": 1,
+          "skipAsr": false,
+          "reason": "voice-possible",
+          "duration": 5.592,
+          "checkedFrames": 24,
+          "maxProbability": null,
+          "observedMax": 0.39772480726242065,
+          "allProbabilitiesFinite": true,
+          "longestConsecutiveWeakFrames": 2,
+          "hasStrongPeak": false,
+          "analysisComplete": false
+        },
+        "rawText": "开饭时间早上九点至下午五点"
+      },
+      "score": {
+        "reference_character_count": 13,
+        "hypothesis_character_count": 13,
+        "character_errors": 3,
+        "cer": 0.23076923076923078,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 1,
+          "hypothesis_count": 2,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 1,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "digit_equivalent_cer": 0.07692307692307693
+      },
+      "seconds": 6.006121129,
+      "process_rss_mib": 1590.03125
+    },
+    {
+      "id": "zh-fast",
+      "pcm_sha256": "8ed6de5a6673e93d5bba306db190ab8f5ca786f2b01d85de328a47312ca0ba00",
+      "reference": "蹦出来之后，左手、右手接一个慢动作，右边再直接拉到这上面之后，直接拉到这个轮胎上，上边再接过去之后，然后上边再直接拉到这个位置了之后，右边再直接这个位置接倒过去的之后，再倒一下，然后右边再直接抓住这个上边了之后，直接从这边上边过去了之后，直接抓住这个树杈，然后这个位置直接倒到这个树杈",
+      "language": "chinese",
+      "result": {
+        "type": "result",
+        "id": 2,
+        "text": "蹦出来之后，左手右手切一个慢冲度，右边再直接拉到这上面之后，直接拉到这个轮胎上，上面再截过去之后，然后上面再直接拉到这个位置了之后，右边再直接这个位置，直接倒过去的时候再倒一下，然后右边再直接抓着这个上面的之后，直接从这边上边过去了之后，直接抓住这个树叉，然后结后直接到着这个树。",
+        "segments": [
+          {
+            "start": 0,
+            "end": 11.28,
+            "text": "蹦出来之后，左手右手切一个慢冲度，右边再直接拉到这上面之后，直接拉到这个轮胎上，上面再截过去之后，然后上面再直接拉到这个位置了之后，右边再直接这个位置，直接倒过去的时候再倒一下，然后右边再直接抓着这个上面的之后，直接从这边上边过去了之后，直接抓住这个树叉，然后结后直接到着这个树。"
+          }
+        ],
+        "duration": 11.380375,
+        "decoding": "text",
+        "warnings": [
+          "本次按原话识别，数字可能写为汉字。号码、人名和听不清的内容仍需核对。"
+        ],
+        "speechCheck": {
+          "type": "result",
+          "id": 2,
+          "skipAsr": false,
+          "reason": "voice-possible",
+          "duration": 11.380375,
+          "checkedFrames": 2,
+          "maxProbability": null,
+          "observedMax": 0.2624068558216095,
+          "allProbabilitiesFinite": true,
+          "longestConsecutiveWeakFrames": 2,
+          "hasStrongPeak": false,
+          "analysisComplete": false
+        },
+        "rawText": "蹦出来之后左手右手切一个慢冲度右边再直接拉到这上面之后直接拉到这个轮胎上上面再截过去之后然后上面再直接拉到这个位置了之后右边再直接这个位置直接倒过去的时候再倒一下然后右边再直接抓着这个上面的之后直接从这边上边过去了之后直接抓住这个树叉然后结后直接到着这个树"
+      },
+      "score": {
+        "reference_character_count": 130,
+        "hypothesis_character_count": 128,
+        "character_errors": 20,
+        "cer": 0.15384615384615385,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 11,
+          "hypothesis_count": 12,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 1,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "digit_equivalent_cer": 0.15384615384615385
+      },
+      "seconds": 2.5606434359999994,
+      "process_rss_mib": 1702.78125
+    },
+    {
+      "id": "zh-noisy-digits",
+      "pcm_sha256": "162c06cacf17383517878f77d0b9d2ed91a6085f56859f8164c8da15a8388434",
+      "reference": "拨号，请再说一次，请说出您要拨打的号码。幺三五八幺八八七五七。一三五八二八八八幺八八。纠正纠正。九六九。纠正纠正，不是九六。",
+      "language": "chinese",
+      "result": {
+        "type": "result",
+        "id": 3,
+        "text": "拨号幺三五八幺八八七五五七八幺八八九正纠正九正九正不是九六。",
+        "segments": [
+          {
+            "start": 1.32,
+            "end": 6,
+            "text": "拨号"
+          },
+          {
+            "start": 6,
+            "end": 13.26,
+            "text": "幺三五八幺八八七五五七"
+          },
+          {
+            "start": 13.26,
+            "end": 17.1,
+            "text": "八幺八八"
+          },
+          {
+            "start": 17.1,
+            "end": 20.64,
+            "text": "九正纠正"
+          },
+          {
+            "start": 20.64,
+            "end": 22.38,
+            "text": "九正九正不是九六。"
+          }
+        ],
+        "duration": 22.833,
+        "decoding": "text",
+        "warnings": [
+          "本次按原话识别，数字可能写为汉字。号码、人名和听不清的内容仍需核对。"
+        ],
+        "speechCheck": {
+          "type": "result",
+          "id": 3,
+          "skipAsr": false,
+          "reason": "voice-possible",
+          "duration": 22.833,
+          "checkedFrames": 29,
+          "maxProbability": null,
+          "observedMax": 0.2186681628227234,
+          "allProbabilitiesFinite": true,
+          "longestConsecutiveWeakFrames": 2,
+          "hasStrongPeak": false,
+          "analysisComplete": false
+        },
+        "rawText": "拨号幺三五八幺八八七五五七八幺八八九正纠正九正九正不是九六"
+      },
+      "score": {
+        "reference_character_count": 53,
+        "hypothesis_character_count": 29,
+        "character_errors": 27,
+        "cer": 0.5094339622641509,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 9,
+          "hypothesis_count": 1,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 8,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "digit_equivalent_cer": 0.5094339622641509
+      },
+      "seconds": 5.285268137000001,
+      "process_rss_mib": 1706.40625
+    },
+    {
+      "id": "zh-with-pause",
+      "pcm_sha256": "e0a3e8fea00ca53ec914e92cf2332b8247f678e803c69fce2549120444c6e1f2",
+      "reference": "开放时间早上9点至下午5点。开放时间早上9点至下午5点。",
+      "language": "chinese",
+      "result": {
+        "type": "result",
+        "id": 4,
+        "text": "开放时间，早上九点至下午五点。开放时间，早上九点至下午五点。",
+        "segments": [
+          {
+            "start": 0.72,
+            "end": 9.3,
+            "text": "开放时间，早上九点至下午五点。"
+          },
+          {
+            "start": 9.3,
+            "end": 13.5,
+            "text": "开放时间，早上九点至下午五点。"
+          }
+        ],
+        "duration": 14.184,
+        "decoding": "text",
+        "warnings": [
+          "本次按原话识别，数字可能写为汉字。号码、人名和听不清的内容仍需核对。"
+        ],
+        "speechCheck": {
+          "type": "result",
+          "id": 4,
+          "skipAsr": false,
+          "reason": "voice-possible",
+          "duration": 14.184,
+          "checkedFrames": 24,
+          "maxProbability": null,
+          "observedMax": 0.39772480726242065,
+          "allProbabilitiesFinite": true,
+          "longestConsecutiveWeakFrames": 2,
+          "hasStrongPeak": false,
+          "analysisComplete": false
+        },
+        "rawText": "开放时间早上九点至下午五点开放时间早上九点至下午五点"
+      },
+      "score": {
+        "reference_character_count": 26,
+        "hypothesis_character_count": 26,
+        "character_errors": 4,
+        "cer": 0.15384615384615385,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 2,
+          "hypothesis_count": 4,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 2,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "digit_equivalent_cer": 0
+      },
+      "seconds": 2.808830248,
+      "process_rss_mib": 1705.74609375
+    }
+  ]
+}
