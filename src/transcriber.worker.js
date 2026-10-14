@@ -172,10 +172,9 @@ self.addEventListener('message', async event => {
     const model = job.model || 'Xenova/whisper-tiny';
     const transcriber = await getTranscriber(model, id);
     send('status', id, { message: '正在本机识别声音……可以继续使用其他页面，请保持本页打开。' });
-    const interviewRetry = decoding === 'text' && job.language === 'english';
     const options = {
-      chunk_length_s: interviewRetry ? 20 : 30,
-      stride_length_s: interviewRetry ? 3 : 5,
+      chunk_length_s: 30,
+      stride_length_s: 5,
       task: 'transcribe',
       return_timestamps: decoding !== 'text',
       // Transformers.js does not implement Whisper language detection here;
