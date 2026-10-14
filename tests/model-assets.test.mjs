@@ -34,7 +34,7 @@ function fixture({ bytes = Uint8Array.from([0x08, 0x09, 0x12, 0x04, 0, 255, 10, 
     const url = input instanceof Request ? input.url : String(input);
     calls.push({ url, init, input });
     if (!replies.has(url)) throw new Error(`Unexpected fetch: ${url}`);
-    return replies.get(url)();
+    return replies.get(url)(url, init);
   };
   const adapter = installModelAssetFetch(BASE, { fetchImpl, install: false });
   return { adapter, manifest, replies, calls, bytes, chunks, modelUrl: modelUrl.href };
@@ -247,12 +247,153 @@ test('HTTP errors, network failures, malformed JSON and HTML manifests fail safe
   await assert.rejects(response.arrayBuffer(), /MODEL_ASSET_FAILED/);
 });
 
-test('signal is propagated and installation can restore global fetch', async () => {
+function trackAbortListeners(signal) {
+  const listeners = new Set();
+  const add = signal.addEventListener.bind(signal);
+  const remove = signal.removeEventListener.bind(signal);
+  signal.addEventListener = (type, listener, options) => {
+    if (type === 'abort') listeners.add(listener);
+    return add(type, listener, options);
+  };
+  signal.removeEventListener = (type, listener, options) => {
+    if (type === 'abort') listeners.delete(listener);
+    return remove(type, listener, options);
+  };
+  return listeners;
+}
+
+function holdFirstPart(f) {
+  let announce;
+  const started = new Promise(resolve => { announce = resolve; });
+  let aborted = 0;
+  const partUrl = new URL(f.manifest.parts[0].file, new URL('./', MODEL_URL)).href;
+  f.replies.set(partUrl, (_url, { signal }) => new Promise((_resolve, reject) => {
+    announce(signal);
+    const stop = () => { aborted++; reject(signal.reason); };
+    if (signal.aborted) stop();
+    else signal.addEventListener('abort', stop, { once: true });
+  }));
+  return { started, get aborted() { return aborted; } };
+}
+
+test('cancelling the response aborts a pending part fetch and stops later downloads', async () => {
+  for (const withCallerSignal of [false, true]) {
+    const f = fixture();
+    const pending = holdFirstPart(f);
+    const caller = new AbortController();
+    const listeners = trackAbortListeners(caller.signal);
+    const response = await f.adapter.fetch(MODEL_URL, withCallerSignal ? { signal: caller.signal } : undefined);
+    const reader = response.body.getReader();
+    const read = reader.read();
+    const partSignal = await pending.started;
+    await reader.cancel('stopped by user');
+    assert.equal(partSignal.aborted, true);
+    assert.equal(partSignal.reason, 'stopped by user');
+    assert.equal(pending.aborted, 1);
+    assert.deepEqual(await read, { done: true, value: undefined });
+    assert.equal(f.calls.length, 2, 'only the manifest and first part were requested');
+    assert.equal(caller.signal.aborted, false, 'cancelling this response must not cancel other caller operations');
+    assert.equal(listeners.size, 0);
+  }
+});
+
+test('init and Request abort signals interrupt in-flight model downloads', async () => {
+  for (const requestSignal of [false, true]) {
+    const f = fixture();
+    const pending = holdFirstPart(f);
+    const caller = new AbortController();
+    const response = requestSignal
+      ? await f.adapter.fetch(new Request(MODEL_URL, { signal: caller.signal }))
+      : await f.adapter.fetch(MODEL_URL, { signal: caller.signal });
+    const partSignal = await pending.started;
+    const read = response.arrayBuffer();
+    const rejected = assert.rejects(read, /MODEL_ASSET_FAILED/);
+    const reason = new Error('caller stopped downloading');
+    caller.abort(reason);
+    await rejected;
+    assert.equal(partSignal.aborted, true);
+    assert.equal(partSignal.reason, reason);
+    assert.equal(pending.aborted, 1);
+    assert.equal(f.calls.length, 2);
+  }
+});
+
+test('already-aborted requests do not download a manifest or register a listener', async () => {
+  const f = fixture();
+  const caller = new AbortController();
+  caller.abort();
+  const listeners = trackAbortListeners(caller.signal);
+  await assert.rejects(f.adapter.fetch(MODEL_URL, { signal: caller.signal }), /MODEL_ASSET_FAILED/);
+  assert.equal(f.calls.length, 0);
+  assert.equal(listeners.size, 0);
+});
+
+test('failed manifests and part integrity checks remove caller abort listeners', async () => {
+  for (const failure of ['manifest', 'part']) {
+    const f = fixture();
+    const caller = new AbortController();
+    const listeners = trackAbortListeners(caller.signal);
+    if (failure === 'manifest') f.replies.set(`${MODEL_URL}.manifest.json`, () => new Response('invalid JSON'));
+    else f.replies.set(new URL(f.manifest.parts[0].file, new URL('./', MODEL_URL)).href,
+      () => new Response(Uint8Array.from([1, 2, 3])));
+    await assert.rejects(async () => {
+      const response = await f.adapter.fetch(MODEL_URL, { signal: caller.signal });
+      await response.arrayBuffer();
+    }, /MODEL_ASSET_FAILED/);
+    assert.equal(listeners.size, 0);
+    assert.equal(f.calls[0].init.signal.aborted, true);
+    assert.equal(caller.signal.aborted, false);
+  }
+});
+
+test('allocation and response construction failures abort setup and detach caller listeners', async () => {
+  for (const failure of ['allocation', 'response']) {
+    const f = fixture();
+    const caller = new AbortController();
+    const listeners = trackAbortListeners(caller.signal);
+    const original = { Uint8Array: globalThis.Uint8Array, Response: globalThis.Response };
+    const setupError = new RangeError(`simulated ${failure} failure`);
+    // Keep the manifest response native; only the assembled model's setup fails.
+    const manifestResponse = new Response(JSON.stringify(f.manifest));
+    f.replies.set(`${MODEL_URL}.manifest.json`, () => manifestResponse);
+    let injected = 0;
+    if (failure === 'allocation') {
+      globalThis.Uint8Array = new Proxy(original.Uint8Array, {
+        construct(target, args, newTarget) {
+          if (args[0] === f.bytes.length) { injected++; throw setupError; }
+          return Reflect.construct(target, args, newTarget);
+        },
+      });
+    } else {
+      globalThis.Response = new Proxy(original.Response, {
+        construct(target, args, newTarget) {
+          if (args[0] instanceof ReadableStream) { injected++; throw setupError; }
+          return Reflect.construct(target, args, newTarget);
+        },
+      });
+    }
+    try {
+      await assert.rejects(f.adapter.fetch(MODEL_URL, { signal: caller.signal }), error =>
+        error.message.startsWith('MODEL_ASSET_FAILED:') && error.cause === setupError);
+      assert.equal(injected, 1);
+      assert.equal(listeners.size, 0);
+      assert.equal(f.calls[0].init.signal.aborted, true);
+      assert.equal(caller.signal.aborted, false);
+      assert.equal(f.calls.length, 1, 'failed setup cannot start a model part download');
+    } finally { Object.assign(globalThis, original); }
+  }
+});
+
+test('successful downloads remove caller abort listeners and installation can restore global fetch', async () => {
   const f = fixture();
   const controller = new AbortController();
+  const listeners = trackAbortListeners(controller.signal);
   const response = await f.adapter.fetch(MODEL_URL, { signal: controller.signal });
   await response.arrayBuffer();
-  assert(f.calls.every(call => call.init.signal === controller.signal));
+  assert(f.calls.every(call => call.init.signal === f.calls[0].init.signal));
+  assert.equal(listeners.size, 0);
+  controller.abort();
+  assert.equal(f.calls[0].init.signal.aborted, false, 'completed downloads detach from caller cancellation');
   const previous = globalThis.fetch;
   const installed = installModelAssetFetch(BASE, { fetchImpl: previous.bind(globalThis) });
   assert.equal(globalThis.fetch, installed.fetch);

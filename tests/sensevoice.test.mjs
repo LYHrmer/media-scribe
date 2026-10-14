@@ -112,6 +112,44 @@ test('inconsistent compressed model is rejected and cannot poison the next attem
   } finally { for (const [k,v] of Object.entries(old)) { if (v === undefined) delete globalThis[k]; else globalThis[k] = v; } }
 });
 
+test('a valid gzip with short expanded bytes clears cached parts and manifest before retry', async () => {
+  const { loadSenseAsset } = await import('../src/sensevoice-assets.js');
+  const { gzipSync } = await import('node:zlib');
+  const { createHash } = await import('node:crypto');
+  const old = { location: globalThis.location, caches: globalThis.caches, fetch: globalThis.fetch };
+  const asset = SENSEVOICE_ASSETS.tokens;
+  const base = 'https://test.invalid/models/';
+  const manifestUrl = `${base}${asset.name}.manifest.json`;
+  const partUrl = `${base}${asset.name}.part-0.gz.bin`;
+  const makeManifest = gzip => ({ version: 1, bytes: asset.bytes, sha256: asset.sha256,
+    parts: [{ file: `${asset.name}.part-0.gz.bin`, bytes: asset.bytes, compressedBytes: gzip.length,
+      sha256: createHash('sha256').update(gzip).digest('hex') }] });
+  const shortGzip = gzipSync(new Uint8Array(asset.bytes - 1));
+  const cache = new Map([
+    [manifestUrl, new Response(JSON.stringify(makeManifest(shortGzip)))],
+    [partUrl, new Response(shortGzip)],
+  ]);
+  const requests = [];
+  globalThis.location = { origin: 'https://test.invalid', href: 'https://test.invalid/' };
+  globalThis.caches = { open: async () => ({ match: async k => cache.get(k)?.clone(),
+    put: async (k, r) => cache.set(k, r.clone()), delete: async k => cache.delete(k) }) };
+  // The replacement is synthetic too: it has a correct expanded length, but
+  // must still fail the pinned real-asset hash instead of bypassing integrity.
+  const fullGzip = gzipSync(new Uint8Array(asset.bytes));
+  globalThis.fetch = async url => {
+    requests.push(url);
+    return new Response(url === manifestUrl ? JSON.stringify(makeManifest(fullGzip)) : fullGzip);
+  };
+  try {
+    await assert.rejects(loadSenseAsset(base, asset), /解压不完整/);
+    assert.deepEqual(requests, [], 'first attempt reproduces a verified but inconsistent cache');
+    assert.equal(cache.size, 0, 'both the stale manifest and compressed part must be discarded');
+    await assert.rejects(loadSenseAsset(base, asset), /整体校验失败/);
+    assert.deepEqual(requests, [manifestUrl, partUrl], 'retry obtains new bytes and advances past decompression');
+    assert.equal(cache.size, 0, 'whole-model integrity remains mandatory');
+  } finally { for (const [k, v] of Object.entries(old)) { if (v === undefined) delete globalThis[k]; else globalThis[k] = v; } }
+});
+
 test('repeated Chinese full stops are cleaned without changing words, decimals or ellipses', () => {
   const result = { text: '9.5点……好。。', tokens: ['9.5','点','……','好','。','。'], timestamps: [0.1,0.2,0.3,0.4,0.6,0.8] };
   const cleaned = normalizeSensePunctuation(result);
