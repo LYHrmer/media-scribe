@@ -4,7 +4,7 @@
   "dataset": "https://doi.org/10.5683/SP3/5WMRUO",
   "data_license": "MELI-derived transcript outputs in this file: CC BY-NC-SA 4.0; not the application MIT license. References and media are not included.",
   "scope": "Real production models/WASM with simulated HTTP, Cache and Worker transport; not browser/phone end-to-end QA.",
-  "experiments_note": "Initial four interviews were development cases. F01A/M00B were frozen holdouts for the previously fixed gain rule. No reference text passed into model. Gain and shorter windows ship only in explicit retry.",
+  "experiments_note": "Initial four interviews were development cases. F01A/M00B were frozen holdouts for the previously fixed gain rule. No reference text passed into model. Only bounded gain ships in explicit SenseVoice retry. Shorter Whisper windows were rejected after one English case regressed.",
   "interrupted_run": "en-baseline completed F00A only; process exited 137 with concurrent inference. cgroup reported one OOM kill. M00A then completed in an isolated process; do not score interruption as text error.",
   "runs": [
     {
@@ -2033,7 +2033,8 @@
             "warnings": []
           }
         }
-      ]
+      ],
+      "adopted": false
     },
     {
       "id": "en-new-retry",
@@ -2186,7 +2187,9 @@
           "audioGain": null,
           "deferred": null
         }
-      ]
+      ],
+      "adopted": false,
+      "decision": "Rejected candidate, not final product; F00A worsened5/52 versus4/52."
     },
     {
       "id": "zh-gain",
@@ -2360,7 +2363,8 @@
             "rawText": "我觉得川普可能对，会在川普可能会展现在有些词汇上嗯，他可能变为了普通话发音。但是他的可能就比如说一个词汇本身普通话是前鼻韵，然后四川话是后鼻韵。那么他把这个前鼻音变成后他把那后鼻音去变成前鼻音，但是他的音调并没有改变。那你会感觉到明显明显感但是比如说本身这个是一声，但是你还是用四川话的四声去读它。\n那么那么这个词汇就是你会明显的感觉出来这个它还是还是一种四川话的发音，并不是普通话的发音。对。"
           }
         }
-      ]
+      ],
+      "adopted": false
     },
     {
       "id": "zh-candidate",
@@ -2535,7 +2539,8 @@
             "rawText": "我觉得川普可能对会在川普可能会展现在有些词汇上嗯，他可能变为了普通话发音。但是他的可能就比如说一个词汇本身普通话是前鼻韵，然后四川话是后鼻韵。那么他把这个前鼻音变成后他把那后鼻音去变成前鼻音，但是他的音调并没有改变。那你会感觉到明显明显感，但是比如说本身这个是一声，但是你还是用四川话的四声去读它。\n那么那么这个词汇就是你会明显的感觉出来这个它还是还是一种四川话的发音，并不是普通话的发音。对。"
           }
         }
-      ]
+      ],
+      "adopted": false
     },
     {
       "id": "zh-quiet-context",
@@ -2709,7 +2714,8 @@
             "rawText": "我觉得川普可能对会在川普可能会展现在有些词汇上嗯，他可能变为了普通话发音。但是他的可能就比如说一个词汇本身普通话是前鼻韵，然后四川话是后鼻韵。那么他把这个前鼻音变成后他把那后鼻音去变成前鼻音，但是他的音调并没有改变。那你会感觉到明显明显感，但是比如说本身这个是一声，但是你还是用四川话的四声去读它。\n那么那么这个词汇就是你会明显的感觉出来这个它还是还是一种四川话的发音，并不是普通话的发音。对。"
           }
         }
-      ]
+      ],
+      "adopted": false
     }
   ],
   "final_default_verification": {
@@ -2724,5 +2730,9 @@
     "cases": 14,
     "transcripts_and_scores_equal_to_baseline": true,
     "note": "Every default transcript and complete score object compared for equality, not only aggregate CER."
+  },
+  "release_decision": {
+    "sensevoice_gain": "Explicit verbatim retry only; default unchanged.",
+    "english_shorter_windows": "Rejected, including en-new-retry. F00A regressed from4/52 to5/52 word errors; M00A improved30/103 to28/103. Final English default and retry both retain30s/5s."
   }
 }
