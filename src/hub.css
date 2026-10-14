@@ -1,0 +1,17 @@
+/* Hub landing page (index.html) — pure static page, styles only. */
+.tool-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; }
+.tool-card { display: flex; flex-direction: column; gap: 10px; padding: 24px; background: #fff; border: 1px solid var(--border); border-radius: 18px; text-decoration: none; color: var(--ink); transition: border-color .18s, box-shadow .18s, transform .18s; }
+.tool-card:hover { border-color: #c7d5c7; box-shadow: 0 8px 24px #21372612; transform: translateY(-2px); }
+.tool-card-flagship { grid-column: 1 / -1; flex-direction: row; align-items: center; gap: 20px; background: #f2f8f3; border-color: #c8ded4; }
+.tool-icon { width: 44px; height: 44px; display: grid; place-items: center; flex-shrink: 0; font-size: 22px; background: #eaf0e7; border-radius: 12px; }
+.tool-card-flagship .tool-icon { width: 56px; height: 56px; font-size: 28px; background: #fff; border: 1px solid #d4e5d0; }
+.tool-card h2 { font-size: 15px; }
+.tool-card-flagship h2 { font-size: 18px; }
+.tool-card p { margin: 6px 0 0; font-size: 11px; line-height: 1.7; color: #8c9793; }
+.tool-card-flagship p { font-size: 12px; }
+.tool-open { margin-top: auto; padding-top: 8px; font-size: 11px; font-weight: 550; color: var(--teal); }
+.tool-card-flagship .tool-open { margin: 0 0 0 auto; padding: 0; white-space: nowrap; }
+@media (max-width: 760px) {
+  .tool-card-flagship { flex-direction: column; align-items: flex-start; }
+  .tool-card-flagship .tool-open { margin: 8px 0 0; }
+}
