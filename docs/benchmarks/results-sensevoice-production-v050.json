@@ -1,0 +1,679 @@
+{
+  "scope": "Actual compiled Vite ASR + VAD + punctuation workers and real WASM; only HTTP, Cache API and worker transport simulated. No browser UI or phone QA claim.",
+  "decoding": "timestamps",
+  "model_sha256": "c71f0ce00bec95b07744e116345e33d8cbbe08cef896382cf907bf4b51a2cd51",
+  "runtime_sha256": "e4dead1d159c531282e635069fa9e028175dee71f3f90908186994655425b3ce",
+  "fingerprints": {
+    "vad.worker-C9h8-FgH.js": "e19bc613db3bdaa1e87f1fa91a6a4722613a83a4204c2b8d1bdb4ecabef04ebe",
+    "punctuation.worker-Ch2hTEJS.js": "178ac8d7ab9e4f7fd13a75d37763eafa1d276ac9c388771dcf7be98642620209",
+    "sensevoice.worker-DTvd48of.js": "b228492d497384e0f81468c180842d6a59d3da32571b1b7e3bc90228044aef32",
+    "models-sensevoice/runtime.mjs": "3a7e50f11a449f4b9fd2b9373fbb3f16fd487cce804ae6f51241d72c5f0dbcbe",
+    "models-sensevoice/asr.mjs": "6686bf26631572b161fc2b6532302d8eeda91a774c32f3216eced57ec5769ff2"
+  },
+  "requests": [
+    "models-vad/silero-vad-1e261b03.onnx",
+    "models-sensevoice/sherpa.wasm.manifest.json",
+    "models-sensevoice/sherpa.wasm.part-0.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.manifest.json",
+    "models-sensevoice/sensevoice.int8.onnx.part-0.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-1.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-2.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-3.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-4.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-5.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-6.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-7.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-8.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-9.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-10.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-11.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-12.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-13.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-14.gz.bin",
+    "models-sensevoice/tokens.txt.manifest.json",
+    "models-sensevoice/tokens.txt.part-0.gz.bin",
+    "models-punctuation/manifest.json",
+    "models-punctuation/model.zh-compact.int8.onnx",
+    "models-punctuation/tokens.json"
+  ],
+  "cache_reuse": true,
+  "cases": [
+    {
+      "id": "zh-clean",
+      "pcm_sha256": "32679c5676d4a67bab7d297da1db34f92ec8a2f4899f4a03c6c80b3f4efdabdd",
+      "reference": "开放时间早上9点至下午5点。",
+      "language": "chinese",
+      "result": {
+        "type": "result",
+        "id": 1,
+        "text": "开放时间早上9点至下午5点。",
+        "segments": [
+          {
+            "start": 0.72,
+            "end": 5.592,
+            "text": "开放时间早上9点至下午5点。"
+          }
+        ],
+        "duration": 5.592,
+        "decoding": "timestamps",
+        "warnings": [],
+        "speechCheck": {
+          "type": "result",
+          "id": 1,
+          "skipAsr": false,
+          "reason": "voice-possible",
+          "duration": 5.592,
+          "checkedFrames": 24,
+          "maxProbability": null,
+          "observedMax": 0.39772480726242065,
+          "allProbabilitiesFinite": true,
+          "longestConsecutiveWeakFrames": 2,
+          "hasStrongPeak": false,
+          "analysisComplete": false
+        },
+        "rawText": "开放时间早上9点至下午5点。"
+      },
+      "score": {
+        "reference_character_count": 13,
+        "hypothesis_character_count": 13,
+        "character_errors": 0,
+        "cer": 0,
+        "exact_lexical_match": true,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 1,
+          "hypothesis_count": 1,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 0,
+          "boundary_exact_when_lexical_exact": true
+        },
+        "digit_equivalent_cer": 0
+      },
+      "seconds": 5.382509835,
+      "process_rss_mib": 1619.68359375
+    },
+    {
+      "id": "en-jfk",
+      "pcm_sha256": "16ba6e5258b459b41344a5542cf71429dfe446acf32c6a9dbdce02258c1f77e7",
+      "reference": "And so, my fellow Americans, ask not what your country can do for you, ask what you can do for your country.",
+      "language": "english",
+      "result": {
+        "type": "result",
+        "id": 2,
+        "text": "And so my fellow Americans ask not what your country can do for you, ask what you can do for your country.",
+        "segments": [
+          {
+            "start": 0.18,
+            "end": 3.24,
+            "text": "And so my fellow Americans"
+          },
+          {
+            "start": 3.24,
+            "end": 5.22,
+            "text": "ask not"
+          },
+          {
+            "start": 5.22,
+            "end": 11,
+            "text": "what your country can do for you, ask what you can do for your country."
+          }
+        ],
+        "duration": 11,
+        "decoding": "timestamps",
+        "warnings": [],
+        "speechCheck": {
+          "type": "result",
+          "id": 2,
+          "skipAsr": false,
+          "reason": "voice-possible",
+          "duration": 11,
+          "checkedFrames": 3,
+          "maxProbability": null,
+          "observedMax": 0.37850552797317505,
+          "allProbabilitiesFinite": true,
+          "longestConsecutiveWeakFrames": 2,
+          "hasStrongPeak": false,
+          "analysisComplete": false
+        }
+      },
+      "score": {
+        "reference_character_count": 83,
+        "hypothesis_character_count": 83,
+        "character_errors": 0,
+        "cer": 0,
+        "exact_lexical_match": true,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 4,
+          "hypothesis_count": 2,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 2,
+          "boundary_exact_when_lexical_exact": false
+        },
+        "word_errors": 0,
+        "reference_word_count": 22,
+        "wer": 0
+      },
+      "seconds": 6.228220490000001,
+      "process_rss_mib": 2039.60546875
+    },
+    {
+      "id": "zh-fast",
+      "pcm_sha256": "8ed6de5a6673e93d5bba306db190ab8f5ca786f2b01d85de328a47312ca0ba00",
+      "reference": "蹦出来之后，左手、右手接一个慢动作，右边再直接拉到这上面之后，直接拉到这个轮胎上，上边再接过去之后，然后上边再直接拉到这个位置了之后，右边再直接这个位置接倒过去的之后，再倒一下，然后右边再直接抓住这个上边了之后，直接从这边上边过去了之后，直接抓住这个树杈，然后这个位置直接倒到这个树杈",
+      "language": "chinese",
+      "result": {
+        "type": "result",
+        "id": 3,
+        "text": "蹦出来之后，左手右手切一个慢冲度，右边再直接拉到这上面之后，直接拉到这个轮胎上，上面再截过去之后，然后上面再直接拉到这个位置了，时后，右边再直接这个位置，直接倒过去的时后，再倒一下。然后右边再直接抓住这个上面的之后，直接从这边上边过去了之后，直接抓住这个树叉，然后结后直接到着这个柱。",
+        "segments": [
+          {
+            "start": 0,
+            "end": 5.28,
+            "text": "蹦出来之后，左手右手切一个慢冲度，右边再直接拉到这上面之后，直接拉到这个轮胎上，上面再截过去之后，然后上面再直接拉到这个位置了，时后，"
+          },
+          {
+            "start": 5.28,
+            "end": 7.2,
+            "text": "右边再直接这个位置，直接倒过去的时后，再倒一下。"
+          },
+          {
+            "start": 7.2,
+            "end": 11.380375,
+            "text": "然后右边再直接抓住这个上面的之后，直接从这边上边过去了之后，直接抓住这个树叉，然后结后直接到着这个柱。"
+          }
+        ],
+        "duration": 11.380375,
+        "decoding": "timestamps",
+        "warnings": [],
+        "speechCheck": {
+          "type": "result",
+          "id": 3,
+          "skipAsr": false,
+          "reason": "voice-possible",
+          "duration": 11.380375,
+          "checkedFrames": 2,
+          "maxProbability": null,
+          "observedMax": 0.2624068558216095,
+          "allProbabilitiesFinite": true,
+          "longestConsecutiveWeakFrames": 2,
+          "hasStrongPeak": false,
+          "analysisComplete": false
+        },
+        "rawText": "蹦出来之后，左手右手切一个慢冲度，右边再直接拉到这上面之后，直接拉到这个轮胎上，上面再截过去之后然后上面再直接拉到这个位置了时后，右边再直接这个位置直接倒过去的时后，再倒一下。然后右边再直接抓住这个上面的之后，直接从这边上边过去了之后，直接抓住这个树叉然后结后直接到着这个柱。"
+      },
+      "score": {
+        "reference_character_count": 130,
+        "hypothesis_character_count": 128,
+        "character_errors": 20,
+        "cer": 0.15384615384615385,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 11,
+          "hypothesis_count": 14,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 3,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "digit_equivalent_cer": 0.15384615384615385
+      },
+      "seconds": 5.912184784999999,
+      "process_rss_mib": 2212.734375
+    },
+    {
+      "id": "zh-noisy-digits",
+      "pcm_sha256": "162c06cacf17383517878f77d0b9d2ed91a6085f56859f8164c8da15a8388434",
+      "reference": "拨号，请再说一次，请说出您要拨打的号码。幺三五八幺八八七五七。一三五八二八八八幺八八。纠正纠正。九六九。纠正纠正，不是九六。",
+      "language": "chinese",
+      "result": {
+        "type": "result",
+        "id": 4,
+        "text": "拨号1358188755781889正9090纠正不是96。",
+        "segments": [
+          {
+            "start": 1.32,
+            "end": 6,
+            "text": "拨号"
+          },
+          {
+            "start": 6,
+            "end": 13.26,
+            "text": "13581887557"
+          },
+          {
+            "start": 13.26,
+            "end": 17.1,
+            "text": "8188"
+          },
+          {
+            "start": 17.1,
+            "end": 20.64,
+            "text": "9正90"
+          },
+          {
+            "start": 20.64,
+            "end": 22.833,
+            "text": "90纠正不是96。"
+          }
+        ],
+        "duration": 22.833,
+        "decoding": "timestamps",
+        "warnings": [],
+        "speechCheck": {
+          "type": "result",
+          "id": 4,
+          "skipAsr": false,
+          "reason": "voice-possible",
+          "duration": 22.833,
+          "checkedFrames": 29,
+          "maxProbability": null,
+          "observedMax": 0.2186681628227234,
+          "allProbabilitiesFinite": true,
+          "longestConsecutiveWeakFrames": 2,
+          "hasStrongPeak": false,
+          "analysisComplete": false
+        },
+        "rawText": "拨号1358188755781889正9090纠正不是96。"
+      },
+      "score": {
+        "reference_character_count": 53,
+        "hypothesis_character_count": 29,
+        "character_errors": 46,
+        "cer": 0.8679245283018868,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 9,
+          "hypothesis_count": 1,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 8,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "digit_equivalent_cer": 0.5283018867924528
+      },
+      "seconds": 4.621086795999999,
+      "process_rss_mib": 1997.17578125
+    },
+    {
+      "id": "en-noisy-dialogue",
+      "pcm_sha256": "6fbaf85e93aea0be14b8934df691e518e441b0cc7e76012e22a45b2d98cd369f",
+      "reference": "Okay, Charles. It looks like we have a problem with the radio. What happened? Yeah, someone spilled water on their machine. I uh, yeah. Charles, can you hear us? Mamma mia.",
+      "language": "english",
+      "result": {
+        "type": "result",
+        "id": 5,
+        "text": "Okay, Charles, it looks like we have a problem with the Harer Yeah, someone spill on their machine like yeah, Charles green heroes I.",
+        "segments": [
+          {
+            "start": 1.08,
+            "end": 4.8,
+            "text": "Okay, Charles, it looks like we have a problem with the"
+          },
+          {
+            "start": 4.8,
+            "end": 10.26,
+            "text": "Harer Yeah, someone spill on their machine"
+          },
+          {
+            "start": 10.26,
+            "end": 13.02,
+            "text": "like yeah,"
+          },
+          {
+            "start": 13.02,
+            "end": 17.7,
+            "text": "Charles green heroes"
+          },
+          {
+            "start": 17.7,
+            "end": 19.02,
+            "text": "I."
+          }
+        ],
+        "duration": 19.02,
+        "decoding": "timestamps",
+        "warnings": [],
+        "speechCheck": {
+          "type": "result",
+          "id": 5,
+          "skipAsr": false,
+          "reason": "voice-possible",
+          "duration": 19.02,
+          "checkedFrames": 28,
+          "maxProbability": null,
+          "observedMax": 0.07501769065856934,
+          "allProbabilitiesFinite": true,
+          "longestConsecutiveWeakFrames": 2,
+          "hasStrongPeak": false,
+          "analysisComplete": false
+        }
+      },
+      "score": {
+        "reference_character_count": 131,
+        "hypothesis_character_count": 105,
+        "character_errors": 40,
+        "cer": 0.3053435114503817,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 11,
+          "hypothesis_count": 5,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 6,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "word_errors": 13,
+        "reference_word_count": 31,
+        "wer": 0.41935483870967744
+      },
+      "seconds": 7.4128063609999995,
+      "process_rss_mib": 2384.33203125
+    },
+    {
+      "id": "zh-low-volume",
+      "pcm_sha256": "07a3deff6d10f2590d0b652f04ce89d36c74a16acfcdd3b2799996a1ae53701c",
+      "reference": "开放时间早上9点至下午5点。",
+      "language": "chinese",
+      "result": {
+        "type": "result",
+        "id": 6,
+        "text": "开放时间早上9点至下午5点。",
+        "segments": [
+          {
+            "start": 0.72,
+            "end": 5.592,
+            "text": "开放时间早上9点至下午5点。"
+          }
+        ],
+        "duration": 5.592,
+        "decoding": "timestamps",
+        "warnings": [],
+        "speechCheck": {
+          "type": "result",
+          "id": 6,
+          "skipAsr": false,
+          "reason": "voice-possible",
+          "duration": 5.592,
+          "checkedFrames": 24,
+          "maxProbability": null,
+          "observedMax": 0.08722805976867676,
+          "allProbabilitiesFinite": true,
+          "longestConsecutiveWeakFrames": 2,
+          "hasStrongPeak": false,
+          "analysisComplete": false
+        },
+        "rawText": "开放时间早上9点至下午5点。"
+      },
+      "score": {
+        "reference_character_count": 13,
+        "hypothesis_character_count": 13,
+        "character_errors": 0,
+        "cer": 0,
+        "exact_lexical_match": true,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 1,
+          "hypothesis_count": 1,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 0,
+          "boundary_exact_when_lexical_exact": true
+        },
+        "digit_equivalent_cer": 0
+      },
+      "seconds": 4.172285548,
+      "process_rss_mib": 2455.79296875
+    },
+    {
+      "id": "zh-instrumental",
+      "pcm_sha256": "a8e620c102abd4e9239d3f355e7463eeb25e44e5e7873affe27e0134843cb06b",
+      "reference": "开放时间早上9点至下午5点。",
+      "language": "chinese",
+      "result": {
+        "type": "result",
+        "id": 7,
+        "text": "开放时间早上9点至下午5点。",
+        "segments": [
+          {
+            "start": 0.72,
+            "end": 5.592,
+            "text": "开放时间早上9点至下午5点。"
+          }
+        ],
+        "duration": 5.592,
+        "decoding": "timestamps",
+        "warnings": [],
+        "speechCheck": {
+          "type": "result",
+          "id": 7,
+          "skipAsr": false,
+          "reason": "voice-possible",
+          "duration": 5.592,
+          "checkedFrames": 2,
+          "maxProbability": null,
+          "observedMax": 0.1322144865989685,
+          "allProbabilitiesFinite": true,
+          "longestConsecutiveWeakFrames": 2,
+          "hasStrongPeak": false,
+          "analysisComplete": false
+        },
+        "rawText": "开放时间早上9点至下午5点。"
+      },
+      "score": {
+        "reference_character_count": 13,
+        "hypothesis_character_count": 13,
+        "character_errors": 0,
+        "cer": 0,
+        "exact_lexical_match": true,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 1,
+          "hypothesis_count": 1,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 0,
+          "boundary_exact_when_lexical_exact": true
+        },
+        "digit_equivalent_cer": 0
+      },
+      "seconds": 0.9990861940000032,
+      "process_rss_mib": 2228.9921875
+    },
+    {
+      "id": "silence",
+      "pcm_sha256": "ac2878215ad33205d1732578c89f25ededaad1b676911c540825bcf4baa42d9b",
+      "reference": "",
+      "language": "chinese",
+      "result": {
+        "text": "",
+        "segments": [],
+        "duration": 5,
+        "speechCheck": {
+          "type": "result",
+          "id": 8,
+          "skipAsr": true,
+          "analysisComplete": true,
+          "reason": "low-voice-candidate",
+          "duration": 5,
+          "checkedFrames": 157,
+          "maxProbability": 0.008910715579986572,
+          "allProbabilitiesFinite": true,
+          "framesAtOrAboveThreshold": 0,
+          "longestConsecutiveWeakFrames": 0,
+          "hasStrongPeak": false
+        }
+      },
+      "score": {
+        "reference_character_count": 0,
+        "hypothesis_character_count": 0,
+        "character_errors": 0,
+        "cer": null,
+        "exact_lexical_match": true,
+        "false_positive_for_empty_reference": false,
+        "punctuation": {
+          "reference_count": 0,
+          "hypothesis_count": 0,
+          "has_sentence_punctuation": false,
+          "sequence_errors": 0,
+          "boundary_exact_when_lexical_exact": true
+        }
+      },
+      "seconds": 0.11261067100000219,
+      "process_rss_mib": 2229.2421875
+    },
+    {
+      "id": "noise",
+      "pcm_sha256": "60ce8607268552a37e3d1e2022d7629db4d6d63b4d07cb0c9b5396558e56930d",
+      "reference": "",
+      "language": "chinese",
+      "result": {
+        "text": "",
+        "segments": [],
+        "duration": 5,
+        "speechCheck": {
+          "type": "result",
+          "id": 9,
+          "skipAsr": true,
+          "analysisComplete": true,
+          "reason": "low-voice-candidate",
+          "duration": 5,
+          "checkedFrames": 157,
+          "maxProbability": 0.04040178656578064,
+          "allProbabilitiesFinite": true,
+          "framesAtOrAboveThreshold": 0,
+          "longestConsecutiveWeakFrames": 0,
+          "hasStrongPeak": false
+        }
+      },
+      "score": {
+        "reference_character_count": 0,
+        "hypothesis_character_count": 0,
+        "character_errors": 0,
+        "cer": null,
+        "exact_lexical_match": true,
+        "false_positive_for_empty_reference": false,
+        "punctuation": {
+          "reference_count": 0,
+          "hypothesis_count": 0,
+          "has_sentence_punctuation": false,
+          "sequence_errors": 0,
+          "boundary_exact_when_lexical_exact": true
+        }
+      },
+      "seconds": 0.10673836400000437,
+      "process_rss_mib": 2229.2421875
+    },
+    {
+      "id": "zh-with-pause",
+      "pcm_sha256": "e0a3e8fea00ca53ec914e92cf2332b8247f678e803c69fce2549120444c6e1f2",
+      "reference": "开放时间早上9点至下午5点。开放时间早上9点至下午5点。",
+      "language": "chinese",
+      "result": {
+        "type": "result",
+        "id": 10,
+        "text": "开放时间早上9点至下午5点。开放时间，早上9点至下午5点。",
+        "segments": [
+          {
+            "start": 0.72,
+            "end": 9.3,
+            "text": "开放时间早上9点至下午5点。"
+          },
+          {
+            "start": 9.3,
+            "end": 14.184,
+            "text": "开放时间，早上9点至下午5点。"
+          }
+        ],
+        "duration": 14.184,
+        "decoding": "timestamps",
+        "warnings": [],
+        "speechCheck": {
+          "type": "result",
+          "id": 10,
+          "skipAsr": false,
+          "reason": "voice-possible",
+          "duration": 14.184,
+          "checkedFrames": 24,
+          "maxProbability": null,
+          "observedMax": 0.39772480726242065,
+          "allProbabilitiesFinite": true,
+          "longestConsecutiveWeakFrames": 2,
+          "hasStrongPeak": false,
+          "analysisComplete": false
+        },
+        "rawText": "开放时间早上9点至下午5点。开放时间早上9点至下午5点。"
+      },
+      "score": {
+        "reference_character_count": 26,
+        "hypothesis_character_count": 26,
+        "character_errors": 0,
+        "cer": 0,
+        "exact_lexical_match": true,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 2,
+          "hypothesis_count": 3,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 1,
+          "boundary_exact_when_lexical_exact": false
+        },
+        "digit_equivalent_cer": 0
+      },
+      "seconds": 2.693198937000001,
+      "process_rss_mib": 2229.3671875
+    },
+    {
+      "id": "zh-clean",
+      "pcm_sha256": "32679c5676d4a67bab7d297da1db34f92ec8a2f4899f4a03c6c80b3f4efdabdd",
+      "reference": "开放时间早上9点至下午5点。",
+      "language": "chinese",
+      "result": {
+        "type": "result",
+        "id": 11,
+        "text": "开放时间早上9点至下午5点。",
+        "segments": [
+          {
+            "start": 0.72,
+            "end": 5.592,
+            "text": "开放时间早上9点至下午5点。"
+          }
+        ],
+        "duration": 5.592,
+        "decoding": "timestamps",
+        "warnings": [],
+        "speechCheck": {
+          "type": "result",
+          "id": 11,
+          "skipAsr": false,
+          "reason": "voice-possible",
+          "duration": 5.592,
+          "checkedFrames": 24,
+          "maxProbability": null,
+          "observedMax": 0.39772480726242065,
+          "allProbabilitiesFinite": true,
+          "longestConsecutiveWeakFrames": 2,
+          "hasStrongPeak": false,
+          "analysisComplete": false
+        },
+        "rawText": "开放时间早上9点至下午5点。"
+      },
+      "score": {
+        "reference_character_count": 13,
+        "hypothesis_character_count": 13,
+        "character_errors": 0,
+        "cer": 0,
+        "exact_lexical_match": true,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 1,
+          "hypothesis_count": 1,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 0,
+          "boundary_exact_when_lexical_exact": true
+        },
+        "digit_equivalent_cer": 0
+      },
+      "seconds": 4.200921194999995,
+      "process_rss_mib": 3093.56640625
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "scope": "Actual compiled Vite ASR + VAD + punctuation workers and real WASM; only HTTP, Cache API and worker transport simulated. No browser UI or phone QA claim.",
+  "decoding": "timestamps",
+  "model_sha256": "c71f0ce00bec95b07744e116345e33d8cbbe08cef896382cf907bf4b51a2cd51",
+  "runtime_sha256": "e4dead1d159c531282e635069fa9e028175dee71f3f90908186994655425b3ce",
+  "fingerprints": {
+    "vad.worker-C9h8-FgH.js": "e19bc613db3bdaa1e87f1fa91a6a4722613a83a4204c2b8d1bdb4ecabef04ebe",
+    "punctuation.worker-Ch2hTEJS.js": "178ac8d7ab9e4f7fd13a75d37763eafa1d276ac9c388771dcf7be98642620209",
+    "sensevoice.worker-DTvd48of.js": "b228492d497384e0f81468c180842d6a59d3da32571b1b7e3bc90228044aef32",
+    "models-sensevoice/runtime.mjs": "3a7e50f11a449f4b9fd2b9373fbb3f16fd487cce804ae6f51241d72c5f0dbcbe",
+    "models-sensevoice/asr.mjs": "6686bf26631572b161fc2b6532302d8eeda91a774c32f3216eced57ec5769ff2"
+  },
+  "requests": [
+    "models-vad/silero-vad-1e261b03.onnx",
+    "models-sensevoice/sherpa.wasm.manifest.json",
+    "models-sensevoice/sherpa.wasm.part-0.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.manifest.json",
+    "models-sensevoice/sensevoice.int8.onnx.part-0.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-1.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-2.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-3.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-4.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-5.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-6.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-7.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-8.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-9.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-10.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-11.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-12.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-13.gz.bin",
+    "models-sensevoice/sensevoice.int8.onnx.part-14.gz.bin",
+    "models-sensevoice/tokens.txt.manifest.json",
+    "models-sensevoice/tokens.txt.part-0.gz.bin",
+    "models-punctuation/manifest.json",
+    "models-punctuation/model.zh-compact.int8.onnx",
+    "models-punctuation/tokens.json"
+  ],
+  "cache_reuse": false,
+  "cases": [
+    {
+      "id": "zh-long-derived",
+      "pcm_sha256": "677d83527670c07c066ef3e821879fbdd07c271b8769d44ebecfd2180ed64a7e",
+      "reference": "开放时间早上9点至下午5点。开放时间早上9点至下午5点。开放时间早上9点至下午5点。开放时间早上9点至下午5点。开放时间早上9点至下午5点。开放时间早上9点至下午5点。开放时间早上9点至下午5点。开放时间早上9点至下午5点。",
+      "language": "chinese",
+      "result": {
+        "type": "result",
+        "id": 1,
+        "text": "开放时间早上9点至下午5点。开放时间，早上9点至下午5点。开放时间，早上9点至下午5点。开放时间，早上9点至下午5点。\n开放时间早上9点至下午5点。开放时间，早上9点至下午5点。开放时间，早上9点至下午5点。开放时间，早上9点至下午5点。",
+        "segments": [
+          {
+            "start": 0.72,
+            "end": 8.28,
+            "text": "开放时间早上9点至下午5点。"
+          },
+          {
+            "start": 8.28,
+            "end": 15.9,
+            "text": "开放时间，早上9点至下午5点。"
+          },
+          {
+            "start": 15.9,
+            "end": 23.52,
+            "text": "开放时间，早上9点至下午5点。"
+          },
+          {
+            "start": 23.52,
+            "end": 29.88,
+            "text": "开放时间，早上9点至下午5点。"
+          },
+          {
+            "start": 31.060000000000002,
+            "end": 38.68,
+            "text": "开放时间早上9点至下午5点。"
+          },
+          {
+            "start": 38.68,
+            "end": 46.3,
+            "text": "开放时间，早上9点至下午5点。"
+          },
+          {
+            "start": 46.3,
+            "end": 53.86,
+            "text": "开放时间，早上9点至下午5点。"
+          },
+          {
+            "start": 53.86,
+            "end": 58.480000000000004,
+            "text": "开放时间，早上9点至下午5点。"
+          }
+        ],
+        "duration": 60.736,
+        "decoding": "timestamps",
+        "rawText": "开放时间早上9点至下午5点开放时间早上9点至下午5点开放时间早上9点至下午5点开放时间早上9点至下午5点。\n开放时间早上9点至下午5点。开放时间早上9点至下午5点。开放时间早上9点至下午5点。开放时间早上9点至下午5点。。",
+        "warnings": [],
+        "speechCheck": {
+          "type": "result",
+          "id": 1,
+          "skipAsr": false,
+          "reason": "voice-possible",
+          "duration": 60.736,
+          "checkedFrames": 24,
+          "maxProbability": null,
+          "observedMax": 0.39772480726242065,
+          "allProbabilitiesFinite": true,
+          "longestConsecutiveWeakFrames": 2,
+          "hasStrongPeak": false,
+          "analysisComplete": false
+        }
+      },
+      "score": {
+        "reference_character_count": 104,
+        "hypothesis_character_count": 104,
+        "character_errors": 0,
+        "cer": 0,
+        "exact_lexical_match": true,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 8,
+          "hypothesis_count": 14,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 6,
+          "boundary_exact_when_lexical_exact": false
+        },
+        "digit_equivalent_cer": 0
+      },
+      "seconds": 17.603175676,
+      "process_rss_mib": 1698.4921875
+    }
+  ]
+}

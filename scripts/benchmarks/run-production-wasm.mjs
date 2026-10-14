@@ -16,6 +16,8 @@ const sourceRoot=path.join(root,'src');
 const packageInfo=JSON.parse(await fs.readFile(path.join(root,'package.json'),'utf8'));
 const manifest=JSON.parse(await fs.readFile(manifestPath,'utf8'));
 const model=process.env.BENCHMARK_MODEL||'Xenova/whisper-small';
+const decoding=process.env.BENCHMARK_DECODING||'timestamps';
+if(!['timestamps','text'].includes(decoding))throw Error('BENCHMARK_DECODING must be timestamps or text');
 const digest=bytes=>createHash('sha256').update(bytes).digest('hex');
 const siteOrigin='https://test.local';const modelBase=siteOrigin+'/models-v2/';const fetched=[];const fetchedModelAssets={};const cache=new Map();
 const memoryCache={match:async key=>cache.get(String(key.url||key))?.clone(),put:async(key,response)=>cache.set(String(key.url||key),response.clone())};
@@ -79,6 +81,7 @@ const workerPath=path.join(sourceRoot,'transcriber.worker.js');
 const worker=await loadSourceModule(workerPath);await worker.link(linkSourceImport);await worker.evaluate();
 const sourceFiles={...sourceHashCache};
 const results={schema_version:1,app_version:packageInfo.version,transformers_version:packageInfo.dependencies?.['@huggingface/transformers'],created_at:new Date().toISOString(),model,engine:'Current production source worker and built Transformers.js browser bundle + actual ONNX WebAssembly; one reused pipeline',runtime:{wasm_sha256:digest(await fs.readFile(root+'/public/vendor/ort/ort-wasm-simd-threaded.wasm')),browser_bundle_sha256:digest(await fs.readFile(libraryPath)),source_sha256:sourceFiles,num_threads:1,host:os.platform()+' '+os.arch(),node:process.version},experiment_note:process.env.BENCHMARK_EXPERIMENT_NOTE||null,transport:'Virtual same-origin model GET + SHA-256 checked production part loader; memory Cache API; only WASM helper URL remapped to file: import.',limitations:['Not an actual Huawei/Chrome run; browser decoder, UI and hardware timing not verified.','Reference text is only consumed by scorer after inference, never by worker.','Small non-independent set is a diagnostic regression suite, not a general accuracy estimate.','Vendor reference punctuation may have multiple equally valid alternatives.'],cases:[]};
+results.decoding=decoding;
 await fs.writeFile(outputPath,JSON.stringify(results,null,2));
 for(const testCase of manifest.cases){
  const bytes=await fs.readFile(path.resolve(path.dirname(manifestPath),testCase.pcm_path));
@@ -86,7 +89,7 @@ for(const testCase of manifest.cases){
  const audio=new Float32Array(bytes.buffer,bytes.byteOffset,bytes.byteLength/4);lastEvents=[];
  const resultPromise=new Promise((resolve,reject)=>{resolveResult=resolve;rejectResult=reject;});const started=performance.now(),before=fetched.length;
  console.log('START',testCase.id,testCase.duration_seconds);
- let output,error;try{await listener({data:{type:'transcribe',id:testCase.id,audio,model,language:testCase.language}});output=await resultPromise;}catch(e){error=String(e.message||e);}
+ let output,error;try{await listener({data:{type:'transcribe',id:testCase.id,audio,model,language:testCase.language,decoding}});output=await resultPromise;}catch(e){error=String(e.message||e);}
  results.model_assets={...fetchedModelAssets};results.runtime.source_sha256={...sourceHashCache};
  const {pcm_path,...publicCase}=testCase;
  const item={...publicCase,seconds_elapsed:(performance.now()-started)/1000,additional_asset_gets:fetched.length-before,...(error?{error}:{output,score:scoreTranscript(testCase.reference,output.text,testCase.language)})};results.cases.push(item);await fs.writeFile(outputPath,JSON.stringify(results,null,2));console.log('DONE',testCase.id,JSON.stringify({text:output?.text,error,score:item.score,seconds:item.seconds_elapsed}));

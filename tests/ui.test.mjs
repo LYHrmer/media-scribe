@@ -53,6 +53,7 @@ class Element {
   appendChild(child) { this.append(child); return child; }
   replaceChildren(...children) { this.children = []; this.append(...children); }
   remove() { if (this.parent) this.parent.children.splice(this.parent.children.indexOf(this), 1); }
+  querySelector(selector) { return { remove: () => { this.removedSelector = selector; } }; }
   setAttribute(name, value) { this.attributes.set(name, value); }
   removeAttribute(name) { this.attributes.delete(name); }
   focus() { this.focused = true; }
@@ -92,9 +93,9 @@ function harness(decode = async () => decoded(), vision = {}) {
     constructor() { this.messages = []; this.terminated = false; workers.push(this); }
     postMessage(message) { this.messages.push(message); }
     terminate() { this.terminated = true; }
-    result(text = '识别文字', warnings = []) {
+    result(text = '识别文字', warnings = [], metadata = {}) {
       this.onmessage?.({ data: { type: 'result', id: this.messages.at(-1).id,
-        text, duration: 1, segments: [{ start: 0, end: 1, text }], warnings } });
+        text, duration: 1, segments: [{ start: 0, end: 1, text }], warnings, ...metadata } });
     }
     error(message = '模拟识别失败') {
       this.onmessage?.({ data: { type: 'error', id: this.messages.at(-1).id, message } });
@@ -114,6 +115,7 @@ function harness(decode = async () => decoded(), vision = {}) {
     Worker: WorkerDouble, URL: BrowserURL, Blob, Float32Array, AbortController,
     isVideoFile,
     punctuateResult: vision.punctuate || (async result => result),
+    evaluateSpeechPresence: vision.speechCheck || (async () => ({ reject: false })),
     readVideoFrames: vision.readFrames || (async () => { throw new Error('模拟浏览器不能读取画面'); }),
     createVideoOcrClient: vision.createClient || (() => ({ initialize: async () => {}, recognize: async () => ({ texts: [] }), dispose() {} })),
     fuseVideoCaptions: vision.fuse || (() => ({ reliable: false, segments: [], candidates: [], warnings: [] })),
@@ -123,11 +125,11 @@ function harness(decode = async () => decoded(), vision = {}) {
   vm.runInContext(exportSource.replace(/^export /gm, ''), context, { filename: 'exports.js' });
   vm.runInContext(mainSource.replace(/^import .*;\n/gm, '')
     .replaceAll('import.meta.url', JSON.stringify('https://test.invalid/src/main.js'))
-    .replaceAll('import.meta.env.VITE_COMPACT_BUILD', JSON.stringify('0'))
+    .replaceAll('import.meta.env.VITE_COMPACT_BUILD', JSON.stringify(vision.compact ? '1' : '0'))
     .replaceAll('import.meta.env.BASE_URL', JSON.stringify('/')), context, { filename: 'main.js' });
   const ui = Object.fromEntries(elements);
   ui.language.value = 'chinese';
-  ui.model.value = 'Xenova/whisper-small';
+  if (!vision.compact) ui.model.value = 'Xenova/whisper-small';
   ui['recognition-source'].value = 'auto';
   ui['export-format'].value = 'txt';
   const states = () => ui['file-queue'].children.map(row => row.children[2].textContent);
@@ -149,6 +151,226 @@ test('generic and visible single-file pickers avoid restrictive native filters',
   assert.ok(html.indexOf('id="single-file-input"') < html.indexOf('id="picker-help"'), 'native single-file chooser must be visible before collapsed help');
   assert.match(inputs['audio-input'], /accept="audio\/\*"/);
   assert.match(inputs['video-input'], /accept="video\/\*"/);
+});
+
+test('a low-voice candidate avoids ASR and offers a force retry without losing the file', async () => {
+  let checks = 0;
+  const h = harness(undefined, { speechCheck: async () => {
+    checks++;
+    return { reject: true, maxProbability: 0.02 };
+  } });
+  await h.add([file('可能是轻声.wav')]);
+  await h.ui['start-button'].click();
+  assert.equal(checks, 1);
+  assert.equal(h.workers.length, 0, 'no ASR worker/model is started for the deferred candidate');
+  assert.equal(h.ui.transcript.value, '');
+  assert.match(h.ui['result-meta'].textContent, /人声待核对.*暂停生成文字/);
+  assert.equal(h.ui['rerun-button'].textContent, '仍然尝试识别');
+  assert.match(h.ui['result-warning'].textContent, /不能排除歌声、轻声/);
+  const forced = h.ui['rerun-button'].click();
+  await flush();
+  assert.equal(checks, 1, 'explicit override bypasses the gate');
+  assert.equal(h.workers[0].messages.at(-1).decoding, 'timestamps');
+  h.workers[0].result('确实有轻声。');
+  await forced;
+  assert.equal(h.ui.transcript.value, '确实有轻声。');
+  await h.ui['restore-button'].click();
+  assert.equal(h.ui['rerun-button'].textContent, '仍然尝试识别', 'restore includes the deferred decision');
+  h.controlsRestored();
+});
+
+test('the file override survives successful decoding retries and restoring the deferred result', async () => {
+  let checks = 0;
+  const h = harness(undefined, { speechCheck: async () => { checks++; return { reject: true }; } });
+  await h.add([file('持续允许.wav')]);
+  await h.ui['start-button'].click();
+  const forced = h.ui['rerun-button'].click();
+  await flush();
+  h.workers[0].result('确认是人声。');
+  await forced;
+  assert.equal(checks, 1);
+  const alternative = h.ui['rerun-button'].click();
+  await flush();
+  assert.equal(h.workers[0].messages.at(-1).decoding, 'text');
+  h.workers[0].result('另一版人声文字。', ['字幕时间为粗略范围。'], { timing: 'approximate' });
+  await alternative;
+  assert.equal(checks, 1, 'the successful file override also applies to a different decoding strategy');
+  assert.match(h.ui['rerun-help'].textContent, /已允许直接识别原音/);
+  const restored = harness(undefined, { speechCheck: async () => { checks++; return { reject: true }; } });
+  await restored.add([file('恢复允许.wav')]);
+  await restored.ui['start-button'].click();
+  const firstForced = restored.ui['rerun-button'].click();
+  await flush();
+  restored.workers[0].result('已识别的原音。');
+  await firstForced;
+  await restored.ui['restore-button'].click();
+  assert.equal(restored.ui.transcript.value, '');
+  assert.match(restored.ui['rerun-help'].textContent, /已允许直接识别原音/);
+  const afterRestore = restored.ui['rerun-button'].click();
+  await flush();
+  assert.equal(checks, 2, 'restoring old text does not revoke the preference for this file');
+  restored.workers[0].result('恢复后仍直接识别。');
+  await afterRestore;
+  restored.controlsRestored();
+});
+
+test('failed forced recognition can use the main retry button while another file retains its gate', async () => {
+  let checks = 0;
+  const h = harness(undefined, { speechCheck: async () => { checks++; return { reject: true }; } });
+  await h.add([file('允许重试.wav')]);
+  await h.ui['start-button'].click();
+  const forced = h.ui['rerun-button'].click();
+  await flush();
+  h.workers[0].error('模型暂未加载');
+  await forced;
+  assert.deepEqual(h.states(), ['未完成']);
+  assert.match(h.ui['rerun-help'].textContent, /后续重试会跳过人声检查/);
+  const retry = h.ui['start-button'].click();
+  await flush();
+  assert.equal(checks, 1, 'the main failed-file retry respects the explicit file override');
+  assert.equal(h.workers[0].messages.length, 2);
+  h.workers[0].result('重试完成。');
+  await retry;
+  await h.add([file('未允许的另一个.wav')]);
+  await h.ui['start-button'].click();
+  assert.equal(checks, 2, 'an unrelated file still undergoes the speech check');
+  assert.equal(h.workers[0].messages.length, 2, 'a deferred second file does not reach ASR');
+  assert.deepEqual(h.states(), ['已完成', '已完成']);
+  assert.equal(h.ui['rerun-button'].textContent, '仍然尝试识别');
+  assert.doesNotMatch(h.ui['rerun-help'].textContent, /已允许直接识别原音/);
+  h.controlsRestored();
+});
+
+test('stopping a forced attempt keeps its preference, while removing and adding the file resets it', async () => {
+  let checks = 0;
+  const h = harness(undefined, { speechCheck: async () => { checks++; return { reject: true }; } });
+  const sourceFile = file('停止后直接识别.wav');
+  await h.add([sourceFile]);
+  await h.ui['start-button'].click();
+  const forced = h.ui['rerun-button'].click();
+  await flush();
+  await h.ui['stop-button'].click();
+  await forced;
+  assert.deepEqual(h.states(), ['已停止']);
+  const restart = h.ui['start-button'].click();
+  await flush();
+  assert.equal(checks, 1);
+  assert.equal(h.workers.length, 2);
+  h.workers[1].result('停止后继续原音。');
+  await restart;
+  await h.ui['clear-files'].click();
+  await h.add([sourceFile]);
+  await h.ui['start-button'].click();
+  assert.equal(checks, 2, 'adding a new entry for the removed file resets the override');
+  assert.equal(h.workers[1].messages.length, 1);
+  assert.equal(h.ui['rerun-button'].textContent, '仍然尝试识别');
+  h.controlsRestored();
+});
+
+test('a deferred Tiny retry shows the cost of its automatic model upgrade', async () => {
+  let checks = 0;
+  const h = harness(undefined, { speechCheck: async () => { checks++; return { reject: true }; } });
+  h.ui.model.value = 'Xenova/whisper-tiny';
+  await h.add([file('快速模式轻声.wav')]);
+  await h.ui['start-button'].click();
+  assert.match(h.ui['rerun-help'].textContent, /跳过.*人声|跳过这项检查/);
+  assert.match(h.ui['rerun-help'].textContent, /改用高精度.*190 MB/);
+  const forced = h.ui['rerun-button'].click();
+  await flush();
+  assert.equal(checks, 1);
+  assert.equal(h.workers[0].messages.at(-1).model, 'Xenova/whisper-small');
+  assert.equal(h.workers[0].messages.at(-1).decoding, 'timestamps');
+  h.workers[0].result('原音识别。');
+  await forced;
+});
+
+test('VAD failure continues ordinary ASR and stopping VAD ignores its stale decision', async () => {
+  const h = harness(undefined, { speechCheck: async () => { throw new Error('model unavailable'); } });
+  await h.add([file('继续识别.wav')]);
+  const run = h.ui['start-button'].click();
+  await flush();
+  h.workers[0].result('原音结果。');
+  await run;
+  assert.match(h.ui['result-warning'].textContent, /人声检查未完成/);
+  assert.equal(h.ui.transcript.value, '原音结果。');
+  const late = deferred();
+  let signal;
+  const stopped = harness(undefined, { speechCheck: (_audio, options) => { signal = options.signal; return late.promise; } });
+  await stopped.add([file('停止检测.wav')]);
+  const pending = stopped.ui['start-button'].click();
+  await flush();
+  await stopped.ui['stop-button'].click();
+  assert.equal(signal.aborted, true);
+  late.resolve({ reject: true });
+  await pending;
+  assert.equal(stopped.workers.length, 0);
+  assert.equal(stopped.ui['rerun-actions'].hidden, true);
+  stopped.controlsRestored();
+});
+
+test('a returned VAD warning remains visible and exported when recognition continues', async () => {
+  const warning = '人声检查未完成，将继续转写。';
+  const h = harness(undefined, { speechCheck: async () => ({ reject: false, warning }) });
+  await h.add([file('检查故障但可转写.wav')]);
+  const run = h.ui['start-button'].click();
+  await flush();
+  h.workers[0].result('继续识别的原音。');
+  await run;
+  assert.equal(h.ui.transcript.value, '继续识别的原音。');
+  assert.equal(h.ui['result-warning'].hidden, false);
+  assert.match(h.ui['result-warning'].textContent, /人声检查未完成/);
+  h.ui['export-format'].value = 'json';
+  await h.ui['export-button'].click();
+  const json = JSON.parse(await h.downloads.at(-1).blob.text());
+  assert.ok(json.warnings.includes(warning));
+  assert.equal(Object.hasOwn(json, 'speechCheck'), false, 'a VAD failure cannot claim a low-voice rejection or user override');
+});
+
+test('unchanged Small retries alternate real decoding strategies and retain approximate-time metadata', async () => {
+  const h = harness();
+  await h.add([file('不同方式.wav')]);
+  const initial = h.ui['start-button'].click();
+  await flush();
+  assert.equal(h.workers[0].messages.at(-1).decoding, 'timestamps');
+  h.workers[0].result('第一版。');
+  await initial;
+  assert.match(h.ui['rerun-help'].textContent, /另一种文字识别方式/);
+  const retry = h.ui['rerun-button'].click();
+  await flush();
+  assert.equal(h.workers[0].messages.at(-1).decoding, 'text');
+  h.workers[0].result('另一版。', ['时间为粗略范围。'], { timing: 'approximate' });
+  await retry;
+  h.ui['export-format'].value = 'json';
+  await h.ui['export-button'].click();
+  assert.equal(JSON.parse(await h.downloads.at(-1).blob.text()).timing, 'approximate');
+  assert.match(h.ui['rerun-help'].textContent, /恢复带时间轴/);
+  const third = h.ui['rerun-button'].click();
+  await flush();
+  assert.equal(h.workers[0].messages.at(-1).decoding, 'timestamps');
+  h.workers[0].result('时间轴版。');
+  await third;
+  await h.ui['restore-button'].click();
+  assert.equal(h.ui.transcript.value, '另一版。');
+  assert.match(h.ui['rerun-help'].textContent, /恢复带时间轴/);
+});
+
+test('changing language updates the retry explanation and uses ordinary timestamp decoding', async () => {
+  const h = harness();
+  await h.add([file('切换语言.wav')]);
+  const initial = h.ui['start-button'].click();
+  await flush();
+  h.workers[0].result('中文结果。');
+  await initial;
+  assert.match(h.ui['rerun-help'].textContent, /另一种文字识别方式/);
+  h.ui.language.value = 'english';
+  await h.ui.language.emit('change');
+  assert.doesNotMatch(h.ui['rerun-help'].textContent, /另一种文字识别方式/);
+  const changed = h.ui['rerun-button'].click();
+  await flush();
+  assert.equal(h.workers[0].messages.at(-1).language, 'english');
+  assert.equal(h.workers[0].messages.at(-1).decoding, 'timestamps');
+  h.workers[0].result('English result.');
+  await changed;
 });
 
 test('picker dispatch remains synchronous in a click and routes separate media modes', async () => {
@@ -527,10 +749,10 @@ test('decoder errors and canceled decoder completion cannot replace an existing 
   h.controlsRestored();
 });
 
-test('the two precision choices default to Small; an unchanged Tiny rerun upgrades and Small reruns stay Small', async () => {
+test('Chinese defaults to SenseVoice; existing Tiny and Small rerun choices remain available', async () => {
   const modelOptions = html.match(/<select id="model">([\s\S]*?)<\/select>/)[1];
-  assert.deepEqual([...modelOptions.matchAll(/value="([^"]+)"/g)].map(match => match[1]), ['Xenova/whisper-tiny', 'Xenova/whisper-small']);
-  assert.match(modelOptions, /value="Xenova\/whisper-small" selected>高精度 · 下载较大/);
+  assert.deepEqual([...modelOptions.matchAll(/value="([^"]+)"/g)].map(match => match[1]), ['Xenova/whisper-tiny', 'FunAudioLLM/SenseVoiceSmall', 'Xenova/whisper-small']);
+  assert.match(modelOptions, /value="FunAudioLLM\/SenseVoiceSmall" selected>中文增强/);
   for (const model of ['Xenova/whisper-tiny', 'Xenova/whisper-small']) {
     const h = harness();
     assert.equal(h.ui.model.value, 'Xenova/whisper-small');
@@ -755,4 +977,46 @@ test('stopping during punctuation preserves a manually edited previous result', 
   assert.equal(h.ui.transcript.value, '保留我校对的文字。');
   assert.equal(h.ui['restore-button'].hidden, true);
   h.controlsRestored();
+});
+
+test('SenseVoice retries recreate the worker with real verbatim inference and restore the original draft', async () => {
+  const h = harness(); h.ui.model.value = 'FunAudioLLM/SenseVoiceSmall';
+  await h.add([file('中文快语速.wav')]);
+  const first = h.ui['start-button'].click(); await flush();
+  assert.equal(h.workers[0].messages.at(-1).model, 'FunAudioLLM/SenseVoiceSmall');
+  assert.equal(h.workers[0].messages.at(-1).decoding, 'timestamps');
+  h.workers[0].result('第一版'); await first;
+  h.ui.transcript.value = '保留我的修改'; await h.ui.transcript.emit('input');
+  assert.match(h.ui['rerun-help'].textContent, /按原话识别/);
+  const rerun = h.ui['rerun-button'].click(); await flush();
+  assert.equal(h.workers[0].terminated, true, 'old WASM heap is released before loading the new recognizer');
+  assert.equal(h.workers[1].messages.at(-1).decoding, 'text');
+  h.workers[1].result('原话版本'); await rerun;
+  await h.ui['restore-button'].click();
+  assert.equal(h.ui.transcript.value, '保留我的修改');
+  h.ui.language.value = 'english'; await h.ui.language.emit('change');
+  assert.equal(h.ui.model.value, 'Xenova/whisper-small', 'English keeps the existing validated Whisper model');
+  const english = h.ui['rerun-button'].click(); await flush();
+  assert.equal(h.workers[1].terminated, true);
+  assert.equal(h.workers[2].messages.at(-1).language, 'english');
+  h.workers[2].result('English words.'); await english;
+  h.controlsRestored();
+});
+
+test('compact build retains the enhanced model and fast fallback without requesting absent Small assets', async () => {
+  const h = harness(undefined, { compact: true });
+  assert.equal(h.ui.model.value, 'FunAudioLLM/SenseVoiceSmall');
+  assert.equal(h.ui.model.removedSelector, 'option[value="Xenova/whisper-small"]');
+  assert.equal(h.ui['full-version-link'].hidden, false);
+  h.ui.model.value = 'Xenova/whisper-tiny';
+  await h.add([file('compact.wav')]);
+  const run = h.ui['start-button'].click(); await flush(); h.workers[0].result('第一版'); await run;
+  assert.match(h.ui['rerun-help'].textContent, /中文增强.*152/);
+  const again = h.ui['rerun-button'].click(); await flush();
+  assert.equal(h.workers[0].terminated, true);
+  assert.equal(h.workers[1].messages.at(-1).model, 'FunAudioLLM/SenseVoiceSmall');
+  h.workers[1].result('中文增强'); await again;
+  assert.match(h.ui['rerun-help'].textContent, /完整版/);
+  h.ui.language.value = 'english'; await h.ui.language.emit('change');
+  assert.equal(h.ui.model.value, 'FunAudioLLM/SenseVoiceSmall');
 });

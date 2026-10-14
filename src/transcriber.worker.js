@@ -7,6 +7,8 @@ const MODEL_BASE_URL = new URL(`${import.meta.env.BASE_URL}models-v2/`, self.loc
 installModelAssetFetch(MODEL_BASE_URL);
 const ALLOWED_MODELS = new Set(['Xenova/whisper-tiny', 'Xenova/whisper-small']);
 const ALLOWED_LANGUAGES = new Set(['chinese', 'english']);
+const ALLOWED_DECODINGS = new Set(['timestamps', 'text']);
+const APPROXIMATE_TIMING_WARNING = '本次采用另一种正文解码尝试；字幕时间仅为音频段的粗略范围，需要对照原音核对。';
 const SAMPLE_RATE = 16000;
 const MAX_SAMPLES = SAMPLE_RATE * 30 * 60;
 // Keep only one model resident: loading multiple models can exhaust the memory
@@ -144,13 +146,18 @@ self.addEventListener('message', async event => {
     }
     if (!ALLOWED_MODELS.has(job.model || 'Xenova/whisper-tiny')) throw new Error('MODEL_INVALID');
     if (job.language && !ALLOWED_LANGUAGES.has(job.language)) throw new Error('LANGUAGE_INVALID');
+    const decoding = job.decoding === undefined ? 'timestamps' : job.decoding;
+    if (!ALLOWED_DECODINGS.has(decoding)) throw new Error('DECODING_INVALID');
     if (typeof WebAssembly === 'undefined') throw new Error('WebAssembly not supported');
     const duration = job.audio.length / SAMPLE_RATE;
     const ranges = findAudioRanges(job.audio, SAMPLE_RATE);
     if (!ranges.length) {
       send('result', id, {
         text: '', segments: [], duration,
-        warnings: ['没有检测到可识别的声音，音频可能无声或音量过低。请检查原音，也可以重新转写。'],
+        decoding,
+        ...(decoding === 'text' ? { timing: 'approximate' } : {}),
+        warnings: ['没有检测到可识别的声音，音频可能无声或音量过低。请检查原音，也可以重新转写。',
+          ...(decoding === 'text' ? [APPROXIMATE_TIMING_WARNING] : [])],
       });
       return;
     }
@@ -161,7 +168,7 @@ self.addEventListener('message', async event => {
       chunk_length_s: 30,
       stride_length_s: 5,
       task: 'transcribe',
-      return_timestamps: true,
+      return_timestamps: decoding !== 'text',
       // Transformers.js does not implement Whisper language detection here;
       // absent language falls back to English. This app defaults to Chinese.
       language: job.language || 'chinese',
@@ -175,8 +182,17 @@ self.addEventListener('message', async event => {
       const text = String(output.text || '').trim();
       if (text) texts.push(text);
       const offset = range.start / SAMPLE_RATE;
-      for (const segment of normalizeSegments(output, audio.length / SAMPLE_RATE)) {
-        segments.push({ ...segment, start: segment.start + offset, end: segment.end + offset });
+      if (decoding === 'text') {
+        // Text-only generation is a distinct retry, not a timestamp aligner.
+        // Ignore any stale/unexpected chunks and preserve this original range.
+        const end = range.end / SAMPLE_RATE;
+        if (text && Math.round(end * 1000) > Math.round(offset * 1000)) {
+          segments.push({ start: offset, end, text });
+        }
+      } else {
+        for (const segment of normalizeSegments(output, audio.length / SAMPLE_RATE)) {
+          segments.push({ ...segment, start: segment.start + offset, end: segment.end + offset });
+        }
       }
     }
     const text = texts.join('\n');
@@ -185,13 +201,16 @@ self.addEventListener('message', async event => {
       text,
       segments,
       duration,
-      warnings: outputWarnings(text, activeSoundDuration),
+      decoding,
+      ...(decoding === 'text' ? { timing: 'approximate' } : {}),
+      warnings: [...outputWarnings(text, activeSoundDuration), ...(decoding === 'text' ? [APPROXIMATE_TIMING_WARNING] : [])],
     });
   } catch (error) {
     console.error('[听写匣] 本地识别错误：', error);
     let message;
     if (error?.message === 'INPUT_INVALID') message = '没有可识别的音频，或音频超过 30 分钟。请重新选择较短的文件。';
     else if (error?.message === 'MODEL_INVALID' || error?.message === 'LANGUAGE_INVALID') message = '模型或语言选项无效。请刷新页面后重试。';
+    else if (error?.message === 'DECODING_INVALID') message = '正文解码方式无效。请刷新页面后重试。';
     else message = actionableError(error);
     send('error', id, { message });
   } finally {

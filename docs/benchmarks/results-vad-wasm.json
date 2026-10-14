@@ -1,0 +1,587 @@
+{
+  "schema_version": 1,
+  "scope": "Actual ONNXRuntime Web1.22 WASM full-frame diagnostic plus actual built Vite-worker streaming verification where attached; HTTP/Cache API simulated; no browser-decoder/UI/mobile claim",
+  "model_sha256": "1a153a22f4509e292a94e67d6f9b85e8deb25b4988682b7e174c65279d8788e3",
+  "ort_version": "1.22.0-dev.20250409-89f8206ba4",
+  "wasm_sha256": "f061472c6e77d6d50d079aacdc0ff9b63fee287ddd2cbf46cf62438d3891de2b",
+  "official_wrapper": {
+    "sample_rate": 16000,
+    "frame_samples": 512,
+    "context_samples": 64,
+    "state_shape": [
+      2,
+      1,
+      128
+    ],
+    "state_reset": "per file",
+    "tail_zero_pad": true
+  },
+  "policy": {
+    "minimum_seconds": 2,
+    "weak_probability": 0.05,
+    "consecutive_weak_frames_required_to_preserve": 2,
+    "strong_probability_single_frame_preserves": 0.5,
+    "frame_seconds": 0.032,
+    "invalid_or_force_speech": "preserve",
+    "no_partial_cutting": true,
+    "candidate_semantics": "temporarily unclear voice, preserve original file and permit forced ASR retry"
+  },
+  "full_frame_cases": [
+    {
+      "id": "zh-clean",
+      "pcm_sha256": "32679c5676d4a67bab7d297da1db34f92ec8a2f4899f4a03c6c80b3f4efdabdd",
+      "duration_seconds": 5.592,
+      "max_probability": 0.9999954700469971,
+      "speech_intervals_at_standard_0_5": [
+        {
+          "start": 0.738,
+          "end": 5.182
+        }
+      ],
+      "speech_fraction_at_standard_0_5": 0.7947067238912735,
+      "known_has_voice_after_inference": true,
+      "temporal_consistency": {
+        "id": "zh-clean",
+        "max_probability": 0.9999954700469971,
+        "frames_at_least_0_05": 141,
+        "longest_consecutive_frames_at_least_0_05": 140,
+        "longest_weak_seconds": 4.48,
+        "has_strong_peak_0_5": true,
+        "temporal_candidate": false
+      }
+    },
+    {
+      "id": "en-jfk",
+      "pcm_sha256": "16ba6e5258b459b41344a5542cf71429dfe446acf32c6a9dbdce02258c1f77e7",
+      "duration_seconds": 11,
+      "max_probability": 0.9999696016311646,
+      "speech_intervals_at_standard_0_5": [
+        {
+          "start": 0.322,
+          "end": 2.27
+        },
+        {
+          "start": 3.266,
+          "end": 4.446
+        },
+        {
+          "start": 5.378,
+          "end": 7.678
+        },
+        {
+          "start": 8.162,
+          "end": 10.622
+        }
+      ],
+      "speech_fraction_at_standard_0_5": 0.7170909090909089,
+      "known_has_voice_after_inference": true,
+      "temporal_consistency": {
+        "id": "en-jfk",
+        "max_probability": 0.9999696016311646,
+        "frames_at_least_0_05": 276,
+        "longest_consecutive_frames_at_least_0_05": 89,
+        "longest_weak_seconds": 2.848,
+        "has_strong_peak_0_5": true,
+        "temporal_candidate": false
+      }
+    },
+    {
+      "id": "zh-fast",
+      "pcm_sha256": "8ed6de5a6673e93d5bba306db190ab8f5ca786f2b01d85de328a47312ca0ba00",
+      "duration_seconds": 11.380375,
+      "max_probability": 0.999911904335022,
+      "speech_intervals_at_standard_0_5": [
+        {
+          "start": 0.162,
+          "end": 11.380375
+        }
+      ],
+      "speech_fraction_at_standard_0_5": 0.9857649682018387,
+      "known_has_voice_after_inference": true,
+      "temporal_consistency": {
+        "id": "zh-fast",
+        "max_probability": 0.999911904335022,
+        "frames_at_least_0_05": 356,
+        "longest_consecutive_frames_at_least_0_05": 356,
+        "longest_weak_seconds": 11.392,
+        "has_strong_peak_0_5": true,
+        "temporal_candidate": false
+      }
+    },
+    {
+      "id": "zh-noisy-digits",
+      "pcm_sha256": "162c06cacf17383517878f77d0b9d2ed91a6085f56859f8164c8da15a8388434",
+      "duration_seconds": 22.833,
+      "max_probability": 0.9999660849571228,
+      "speech_intervals_at_standard_0_5": [
+        {
+          "start": 1.378,
+          "end": 1.95
+        },
+        {
+          "start": 2.754,
+          "end": 5.822
+        },
+        {
+          "start": 6.082,
+          "end": 8.606
+        },
+        {
+          "start": 10.786,
+          "end": 15.102
+        },
+        {
+          "start": 17.09,
+          "end": 17.886
+        },
+        {
+          "start": 19.65,
+          "end": 22.526
+        }
+      ],
+      "speech_fraction_at_standard_0_5": 0.6198046686812947,
+      "known_has_voice_after_inference": true,
+      "temporal_consistency": {
+        "id": "zh-noisy-digits",
+        "max_probability": 0.9999660849571228,
+        "frames_at_least_0_05": 542,
+        "longest_consecutive_frames_at_least_0_05": 186,
+        "longest_weak_seconds": 5.952,
+        "has_strong_peak_0_5": true,
+        "temporal_candidate": false
+      }
+    },
+    {
+      "id": "en-noisy-dialogue",
+      "pcm_sha256": "6fbaf85e93aea0be14b8934df691e518e441b0cc7e76012e22a45b2d98cd369f",
+      "duration_seconds": 19.02,
+      "max_probability": 0.9999328851699829,
+      "speech_intervals_at_standard_0_5": [
+        {
+          "start": 1.314,
+          "end": 3.646
+        },
+        {
+          "start": 4.642,
+          "end": 5.214
+        },
+        {
+          "start": 5.858,
+          "end": 8.99
+        },
+        {
+          "start": 10.178,
+          "end": 12.062
+        },
+        {
+          "start": 13.25,
+          "end": 14.494
+        },
+        {
+          "start": 17.922,
+          "end": 18.59
+        }
+      ],
+      "speech_fraction_at_standard_0_5": 0.5169295478443742,
+      "known_has_voice_after_inference": true,
+      "temporal_consistency": {
+        "id": "en-noisy-dialogue",
+        "max_probability": 0.9999328851699829,
+        "frames_at_least_0_05": 435,
+        "longest_consecutive_frames_at_least_0_05": 107,
+        "longest_weak_seconds": 3.424,
+        "has_strong_peak_0_5": true,
+        "temporal_candidate": false
+      }
+    },
+    {
+      "id": "user-lyrics",
+      "pcm_sha256": "8933b1e813ec67abeb6de3067625a2dfec13672fd7706181cd571d143617794b",
+      "duration_seconds": 21.696,
+      "max_probability": 0.3014598488807678,
+      "speech_intervals_at_standard_0_5": [],
+      "speech_fraction_at_standard_0_5": 0.0,
+      "known_has_voice_after_inference": true,
+      "temporal_consistency": {
+        "id": "user-lyrics",
+        "max_probability": 0.3014598488807678,
+        "frames_at_least_0_05": 41,
+        "longest_consecutive_frames_at_least_0_05": 14,
+        "longest_weak_seconds": 0.448,
+        "has_strong_peak_0_5": false,
+        "temporal_candidate": false
+      }
+    },
+    {
+      "id": "zh-low-volume",
+      "pcm_sha256": "07a3deff6d10f2590d0b652f04ce89d36c74a16acfcdd3b2799996a1ae53701c",
+      "duration_seconds": 5.592,
+      "max_probability": 0.9999868869781494,
+      "speech_intervals_at_standard_0_5": [
+        {
+          "start": 0.77,
+          "end": 3.262
+        },
+        {
+          "start": 3.394,
+          "end": 5.182
+        }
+      ],
+      "speech_fraction_at_standard_0_5": 0.7653791130185981,
+      "known_has_voice_after_inference": true,
+      "temporal_consistency": {
+        "id": "zh-low-volume",
+        "max_probability": 0.9999868869781494,
+        "frames_at_least_0_05": 141,
+        "longest_consecutive_frames_at_least_0_05": 141,
+        "longest_weak_seconds": 4.5120000000000005,
+        "has_strong_peak_0_5": true,
+        "temporal_candidate": false
+      }
+    },
+    {
+      "id": "zh-instrumental",
+      "pcm_sha256": "a8e620c102abd4e9239d3f355e7463eeb25e44e5e7873affe27e0134843cb06b",
+      "duration_seconds": 5.592,
+      "max_probability": 0.9999940991401672,
+      "speech_intervals_at_standard_0_5": [
+        {
+          "start": 0.706,
+          "end": 5.214
+        }
+      ],
+      "speech_fraction_at_standard_0_5": 0.8061516452074394,
+      "known_has_voice_after_inference": true,
+      "temporal_consistency": {
+        "id": "zh-instrumental",
+        "max_probability": 0.9999940991401672,
+        "frames_at_least_0_05": 145,
+        "longest_consecutive_frames_at_least_0_05": 122,
+        "longest_weak_seconds": 3.904,
+        "has_strong_peak_0_5": true,
+        "temporal_candidate": false
+      }
+    },
+    {
+      "id": "silence",
+      "pcm_sha256": "ac2878215ad33205d1732578c89f25ededaad1b676911c540825bcf4baa42d9b",
+      "duration_seconds": 5,
+      "max_probability": 0.008910715579986572,
+      "speech_intervals_at_standard_0_5": [],
+      "speech_fraction_at_standard_0_5": 0.0,
+      "known_has_voice_after_inference": false,
+      "temporal_consistency": {
+        "id": "silence",
+        "max_probability": 0.008910715579986572,
+        "frames_at_least_0_05": 0,
+        "longest_consecutive_frames_at_least_0_05": 0,
+        "longest_weak_seconds": 0.0,
+        "has_strong_peak_0_5": false,
+        "temporal_candidate": true
+      }
+    },
+    {
+      "id": "noise",
+      "pcm_sha256": "60ce8607268552a37e3d1e2022d7629db4d6d63b4d07cb0c9b5396558e56930d",
+      "duration_seconds": 5,
+      "max_probability": 0.04040178656578064,
+      "speech_intervals_at_standard_0_5": [],
+      "speech_fraction_at_standard_0_5": 0.0,
+      "known_has_voice_after_inference": false,
+      "temporal_consistency": {
+        "id": "noise",
+        "max_probability": 0.04040178656578064,
+        "frames_at_least_0_05": 0,
+        "longest_consecutive_frames_at_least_0_05": 0,
+        "longest_weak_seconds": 0.0,
+        "has_strong_peak_0_5": false,
+        "temporal_candidate": true
+      }
+    },
+    {
+      "id": "zh-with-pause",
+      "pcm_sha256": "e0a3e8fea00ca53ec914e92cf2332b8247f678e803c69fce2549120444c6e1f2",
+      "duration_seconds": 14.184,
+      "max_probability": 0.9999969005584717,
+      "speech_intervals_at_standard_0_5": [
+        {
+          "start": 0.738,
+          "end": 5.182
+        },
+        {
+          "start": 9.346,
+          "end": 13.79
+        }
+      ],
+      "speech_fraction_at_standard_0_5": 0.6266215454032713,
+      "known_has_voice_after_inference": true,
+      "temporal_consistency": {
+        "id": "zh-with-pause",
+        "max_probability": 0.9999969005584717,
+        "frames_at_least_0_05": 281,
+        "longest_consecutive_frames_at_least_0_05": 140,
+        "longest_weak_seconds": 4.48,
+        "has_strong_peak_0_5": true,
+        "temporal_candidate": false
+      }
+    }
+  ],
+  "summary": {
+    "voice_cases": 9,
+    "voice_false_candidates": 0,
+    "negative_cases_including_derived_long_noise": 3,
+    "negative_candidates": 3,
+    "not_generalizable": true
+  },
+  "native_web_parity": {
+    "cases": 11,
+    "max_absolute_frame_probability_difference": 3.337860107421875e-06,
+    "all_gate_decisions_identical": true,
+    "model_sha256": "1a153a22f4509e292a94e67d6f9b85e8deb25b4988682b7e174c65279d8788e3",
+    "wasm_runtime": "1.22.0-dev.20250409-89f8206ba4"
+  },
+  "short_boundary_cases": [
+    {
+      "id": "clean-voiced-slice-1",
+      "duration_seconds": 6.25e-05,
+      "max_probability": 0.00695762038230896,
+      "conservative_reject_speech_only": false
+    },
+    {
+      "id": "clean-voiced-slice-16",
+      "duration_seconds": 0.001,
+      "max_probability": 0.008198648691177368,
+      "conservative_reject_speech_only": false
+    },
+    {
+      "id": "clean-voiced-slice-128",
+      "duration_seconds": 0.008,
+      "max_probability": 0.06225007772445679,
+      "conservative_reject_speech_only": false
+    },
+    {
+      "id": "clean-voiced-slice-511",
+      "duration_seconds": 0.0319375,
+      "max_probability": 0.7437201142311096,
+      "conservative_reject_speech_only": false
+    },
+    {
+      "id": "clean-voiced-slice-512",
+      "duration_seconds": 0.032,
+      "max_probability": 0.5761467218399048,
+      "conservative_reject_speech_only": false
+    },
+    {
+      "id": "clean-voiced-slice-513",
+      "duration_seconds": 0.0320625,
+      "max_probability": 0.5761467218399048,
+      "conservative_reject_speech_only": false
+    },
+    {
+      "id": "clean-voiced-slice-1600",
+      "duration_seconds": 0.1,
+      "max_probability": 0.7731448411941528,
+      "conservative_reject_speech_only": false
+    },
+    {
+      "id": "clean-voiced-slice-7999",
+      "duration_seconds": 0.4999375,
+      "max_probability": 0.999859094619751,
+      "conservative_reject_speech_only": false
+    },
+    {
+      "id": "clean-voiced-slice-8000",
+      "duration_seconds": 0.5,
+      "max_probability": 0.999859094619751,
+      "conservative_reject_speech_only": false
+    },
+    {
+      "id": "clean-voiced-slice-16000",
+      "duration_seconds": 1,
+      "max_probability": 0.9999479055404663,
+      "conservative_reject_speech_only": false
+    }
+  ],
+  "earlier_single_weak_frame_rule_failure": {
+    "id": "noise-repeat-13-derived-65s",
+    "duration_seconds": 65,
+    "derived_from": "noise",
+    "recipe": "exact 5 second seed20261013 uniform[-.03,.03] noise repeated13times",
+    "frame_count": 2032,
+    "maximum_probability": 0.05031868815422058,
+    "frames_at_least_0_05": 1,
+    "violations": [
+      {
+        "frame": 165,
+        "start_seconds": 5.28,
+        "probability": 0.05031868815422058
+      }
+    ],
+    "period_peaks": [
+      {
+        "repeat": 1,
+        "peak_start_seconds": 0.28800000000000003,
+        "maximum_probability": 0.04040178656578064
+      },
+      {
+        "repeat": 2,
+        "peak_start_seconds": 5.28,
+        "maximum_probability": 0.05031868815422058
+      },
+      {
+        "repeat": 3,
+        "peak_start_seconds": 12.128,
+        "maximum_probability": 0.010576605796813965
+      },
+      {
+        "repeat": 4,
+        "peak_start_seconds": 16.096,
+        "maximum_probability": 0.01205909252166748
+      },
+      {
+        "repeat": 5,
+        "peak_start_seconds": 24.0,
+        "maximum_probability": 0.006283283233642578
+      },
+      {
+        "repeat": 6,
+        "peak_start_seconds": 25.28,
+        "maximum_probability": 0.010497868061065674
+      },
+      {
+        "repeat": 7,
+        "peak_start_seconds": 34.016,
+        "maximum_probability": 0.005080044269561768
+      },
+      {
+        "repeat": 8,
+        "peak_start_seconds": 39.168,
+        "maximum_probability": 0.0055644214153289795
+      },
+      {
+        "repeat": 9,
+        "peak_start_seconds": 44.0,
+        "maximum_probability": 0.004409074783325195
+      },
+      {
+        "repeat": 10,
+        "peak_start_seconds": 45.28,
+        "maximum_probability": 0.007651180028915405
+      },
+      {
+        "repeat": 11,
+        "peak_start_seconds": 54.016,
+        "maximum_probability": 0.005360424518585205
+      },
+      {
+        "repeat": 12,
+        "peak_start_seconds": 59.168,
+        "maximum_probability": 0.006502866744995117
+      },
+      {
+        "repeat": 13,
+        "peak_start_seconds": 64.0,
+        "maximum_probability": 0.006647646427154541
+      }
+    ],
+    "negative_guard_failed_to_filter": true
+  },
+  "actual_built_worker_streaming": {
+    "schema_version": 1,
+    "worker": "vad.worker-C9h8-FgH.js",
+    "worker_sha256": "e19bc613db3bdaa1e87f1fa91a6a4722613a83a4204c2b8d1bdb4ecabef04ebe",
+    "wasm_sha256": "f061472c6e77d6d50d079aacdc0ff9b63fee287ddd2cbf46cf62438d3891de2b",
+    "model_sha256": "1a153a22f4509e292a94e67d6f9b85e8deb25b4988682b7e174c65279d8788e3",
+    "source_sha256": {
+      "vad-engine.js": "efa6d4d704dc09b5baacb1a74368b0dc94c8c7e395865302f098abceb5f31518",
+      "vad-assets.js": "0935194edd90afb7274816f752d1341f60dba69c3e584d9bfdd385db1db5bf09",
+      "vad.worker.js": "3fed1b8da4c8596cd5a530ddb55460a29427e14f5d5bfb2a7789bf8fdb8c37be",
+      "vad-client.js": "0d3378e9a754bccfc6fdc02d27de409790960c3bd51b15fe7c4ac32727fae7c2"
+    },
+    "scope": "Actual Vite Worker + actual ONNX WebORT WASM; same-origin GET and Cache API simulated; no UI/decoder/mobile claim",
+    "chunk_samples": 512000,
+    "cases": [
+      {
+        "id": "noise",
+        "pcm_sha256": "60ce8607268552a37e3d1e2022d7629db4d6d63b4d07cb0c9b5396558e56930d",
+        "chunks": 1,
+        "decision": {
+          "type": "result",
+          "id": 1,
+          "skipAsr": true,
+          "analysisComplete": true,
+          "reason": "low-voice-candidate",
+          "duration": 5,
+          "checkedFrames": 157,
+          "maxProbability": 0.04040178656578064,
+          "allProbabilitiesFinite": true,
+          "framesAtOrAboveThreshold": 0,
+          "longestConsecutiveWeakFrames": 0,
+          "hasStrongPeak": false
+        }
+      },
+      {
+        "id": "user-lyrics",
+        "pcm_sha256": "8933b1e813ec67abeb6de3067625a2dfec13672fd7706181cd571d143617794b",
+        "chunks": 1,
+        "decision": {
+          "type": "result",
+          "id": 2,
+          "skipAsr": false,
+          "reason": "voice-possible",
+          "duration": 21.696,
+          "checkedFrames": 7,
+          "maxProbability": null,
+          "observedMax": 0.3014598488807678,
+          "allProbabilitiesFinite": true,
+          "longestConsecutiveWeakFrames": 2,
+          "hasStrongPeak": false,
+          "analysisComplete": false
+        }
+      },
+      {
+        "id": "silence-33s-plus-clean-derived",
+        "recipe": "33 seconds zero PCM + original clean sentence; not an independent recording",
+        "duration_seconds": 38.592,
+        "chunks": 2,
+        "decision": {
+          "type": "result",
+          "id": 3,
+          "skipAsr": false,
+          "reason": "voice-possible",
+          "duration": 38.592,
+          "checkedFrames": 1034,
+          "maxProbability": null,
+          "observedMax": 0.1429024636745453,
+          "allProbabilitiesFinite": true,
+          "longestConsecutiveWeakFrames": 2,
+          "hasStrongPeak": false,
+          "analysisComplete": false
+        }
+      },
+      {
+        "id": "noise-repeat-13-derived-65s",
+        "recipe": "13 exact repetitions of original 5s seeded uniform noise; not an independent negative recording",
+        "duration_seconds": 65,
+        "chunks": 3,
+        "decision": {
+          "type": "result",
+          "id": 4,
+          "skipAsr": true,
+          "analysisComplete": true,
+          "reason": "low-voice-candidate",
+          "duration": 65,
+          "checkedFrames": 2032,
+          "maxProbability": 0.05031868815422058,
+          "allProbabilitiesFinite": true,
+          "framesAtOrAboveThreshold": 1,
+          "longestConsecutiveWeakFrames": 1,
+          "hasStrongPeak": false
+        }
+      }
+    ],
+    "cache_reuse": true,
+    "model_gets": 1,
+    "elapsed_seconds": 3.001829388
+  }
+}

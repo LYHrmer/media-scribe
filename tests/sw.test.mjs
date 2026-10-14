@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 
 const source = await readFile(new URL('../public/sw.js', import.meta.url), 'utf8');
-const CACHE_NAME = 'tingxie-static-v0.4.0';
+const CACHE_NAME = 'tingxie-static-v0.5.0';
 const ORIGIN = 'https://example.test';
 
 // Execute the shipped event handlers. Cache storage and network are isolated;

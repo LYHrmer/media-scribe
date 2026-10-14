@@ -47,8 +47,19 @@ python scripts/benchmarks/prepare-cases.py --media-root "$MEDIA_DIR" --output "$
 
 模型默认 `Xenova/whisper-small`；可用 `BENCHMARK_MODEL` 指定当前 Worker 已支持并已准备资产的模型。`BENCHMARK_MODEL_ASSET_ROOT` 可用于另一个本地静态模型目录，仍必须经过生产分片校验。`BENCHMARK_EXPERIMENT_NOTE` 用于记录明确的试验改动，不能替代源文件哈希。
 
+`BENCHMARK_DECODING=text` 可验证生产 Worker 的仅正文重试；默认 `timestamps`。仅正文的时间段是原始声音范围，不是逐句声学对齐。这个脚本单独测语音 Worker，尚不自动串联画面、人声检查或标点；这些层的独立验证及边界见各自报告，不将声学 CER 改写成流水线准确率。
+
 ## 历史基线
 
 `docs/ACCURACY_BENCHMARK.md` 的 11 用例是 2026-10-13 完成的版本 0.3.2、提交 `afcff5a10372ed3d54ff14f84ed963d6a4c75563` 实测，包含当时用户私有视频音轨。报告没有声称当前版本重新跑出了同样结果；新的运行应输出新的 JSON 并核对 source / bundle / WASM 哈希。
 
 `docs/MODEL_COMPARISON.md` 同时保留 Tiny、Base 和 Small q8 的实际 WASM 对照。实验模型的允许名单 / dtype 变化写在结果里，不冒充生产已发布功能。小规模诊断套件不提供可泛化的整体准确率，也没有声称已覆盖均衡男女声音、课堂、会议、多种口音与真实手机环境。
+
+## v0.5.0：实际 SenseVoice、VAD 与标点 Worker
+
+```sh
+node --experimental-vm-modules scripts/benchmarks/run-sensevoice-production.mjs dist /absolute/path/cases.local.json /absolute/path/results.json
+BENCHMARK_DECODING=text CASES=zh-clean,zh-fast,zh-noisy-digits,zh-with-pause SKIP_CACHE_CHECK=1 node --experimental-vm-modules scripts/benchmarks/run-sensevoice-production.mjs dist /absolute/path/cases.local.json /absolute/path/retry.json
+```
+
+脚本执行实际 Vite 构建产物和 WASM，不使用原生推理替代。HTTP、Cache API、Worker 消息传输在 Node VM 中模拟；这不是手机浏览器 UI 测试。记录实际输出、CER/WER、文件哈希和缓存复用。参考答案只参与推理后评分。`process_rss_mib` 包含同进程多个模拟 Worker、测试缓存及下载缓冲，不是浏览器标签页或手机内存测量。

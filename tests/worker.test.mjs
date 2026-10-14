@@ -109,6 +109,8 @@ test('worker emits a real protocol result with local PCM and requested Chinese t
   const result = h.results('result', 'zh')[0];
   assert.equal(result.text, '你好，世界。');
   assert.equal(result.duration, 1);
+  assert.equal(result.decoding, 'timestamps');
+  assert.equal(Object.hasOwn(result, 'timing'), false);
   assert.equal(result.warnings.length, 0);
   assert.equal(result.segments.length, 1);
   assert.equal(result.segments[0].start, 0);
@@ -132,6 +134,101 @@ test('worker emits a real protocol result with local PCM and requested Chinese t
   assert.equal(h.env.backends.onnx.wasm.proxy, false);
   assert.equal(h.env.backends.onnx.wasm.wasmPaths.mjs, 'https://example.test/test/vendor/ort/ort-wasm-simd-threaded.mjs');
   assert.equal(h.env.backends.onnx.wasm.wasmPaths.wasm, 'https://example.test/test/vendor/ort/ort-wasm-simd-threaded.wasm');
+});
+
+test('text decoding is a separate generation attempt with one approximate range cue', async () => {
+  const h = harness({ infer: async () => ({
+    text: ' 另一版转写文字。 ',
+    chunks: [{ text: '不应沿用的时间戳文字', timestamp: [0.3, 0.8] }],
+  }) });
+  await h.send(job('text-only', { audio: signal(2.5), decoding: 'text', language: 'english' }));
+  const result = h.results('result', 'text-only')[0];
+  assert.equal(h.results('error').length, 0);
+  assert.equal(result.text, '另一版转写文字。');
+  assert.equal(result.duration, 2.5);
+  assert.equal(result.decoding, 'text');
+  assert.equal(result.timing, 'approximate');
+  assert.deepEqual(Array.from(result.segments, segment => ({ ...segment })), [
+    { start: 0, end: 2.5, text: '另一版转写文字。' },
+  ]);
+  assert.equal(result.warnings.length, 1);
+  assert.match(result.warnings[0], /另一种正文解码尝试/);
+  assert.match(result.warnings[0], /字幕时间.*粗略范围/);
+  const options = h.calls.find(call => call.audio).options;
+  assert.equal(options.return_timestamps, false);
+  assert.equal(options.chunk_length_s, 30);
+  assert.equal(options.stride_length_s, 5);
+  assert.equal(options.task, 'transcribe');
+  assert.equal(options.language, 'english');
+  assert.equal(h.fetches, 0);
+});
+
+test('explicit timestamps decoding preserves model chunks without approximate metadata', async () => {
+  const h = harness({ infer: async () => ({
+    text: '原方式文字。',
+    chunks: [{ text: '原方式文字。', timestamp: [0.3, 0.8] }],
+  }) });
+  await h.send(job('explicit-timestamps', { decoding: 'timestamps' }));
+  const result = h.results('result', 'explicit-timestamps')[0];
+  assert.equal(result.decoding, 'timestamps');
+  assert.equal(Object.hasOwn(result, 'timing'), false);
+  assert.equal(result.warnings.length, 0);
+  assert.equal(result.segments[0].start, 0.3);
+  assert.equal(result.segments[0].end, 0.8);
+  assert.equal(h.calls.find(call => call.audio).options.return_timestamps, true);
+});
+
+test('invalid decoding is rejected before model loading, including for near-silent audio', async () => {
+  const h = harness();
+  const invalid = [null, false, true, 0, 1, NaN, '', 'timestamp', 'TEXT', {}, ['text'], new String('text')];
+  for (let i = 0; i < invalid.length; i++) {
+    const id = `invalid-decoding-${i}`;
+    await h.send(job(id, { decoding: invalid[i], ...(i % 2 ? { audio: new Float32Array(16000) } : {}) }));
+    assert.equal(h.results('result', id).length, 0);
+    assert.equal(h.results('error', id).length, 1);
+    assert.match(h.results('error', id)[0].message, /正文解码方式无效/);
+  }
+  assert.equal(h.imports, 0);
+  assert.equal(h.calls.length, 0);
+  assert.equal(h.fetches, 0);
+  await h.send(job('valid-after-decoding-errors', { decoding: 'text' }));
+  assert.equal(h.results('result', 'valid-after-decoding-errors')[0].timing, 'approximate');
+});
+
+test('changing decoding reuses the same model and does not leak prior inference options', async () => {
+  const h = harness({ infer: async (_audio, options) => options.return_timestamps
+    ? { text: '带时间戳的文字。', chunks: [{ text: '带时间戳的文字。', timestamp: [0.2, 0.7] }] }
+    : { text: '另一版正文。', chunks: [] } });
+  for (const [id, decoding] of [['default'], ['text-retry', 'text'], ['timestamps-again', 'timestamps']]) {
+    await h.send(job(id, { model: 'Xenova/whisper-small', ...(decoding ? { decoding } : {}) }));
+  }
+  assert.equal(h.imports, 1);
+  assert.equal(h.calls.filter(call => call.task).length, 1);
+  assert.equal(h.calls.filter(call => call.dispose).length, 0);
+  assert.equal(h.calls.find(call => call.task).options.dtype, 'q4f16');
+  assert.deepEqual(h.calls.filter(call => call.audio).map(call => call.options.return_timestamps), [true, false, true]);
+  assert.equal(h.results('result', 'default')[0].segments[0].start, 0.2);
+  assert.equal(h.results('result', 'text-retry')[0].segments[0].start, 0);
+  assert.equal(h.results('result', 'text-retry')[0].segments[0].text, '另一版正文。');
+  assert.equal(h.results('result', 'text-retry')[0].timing, 'approximate');
+  assert.equal(h.results('result', 'timestamps-again')[0].segments[0].start, 0.2);
+  assert.equal(Object.hasOwn(h.results('result', 'timestamps-again')[0], 'timing'), false);
+});
+
+test('empty text-only output never turns stale chunks into invented text or subtitle cues', async () => {
+  const h = harness({ infer: async () => ({
+    text: ' ', chunks: [{ text: '意外返回的片段', timestamp: [0, 1] }],
+  }) });
+  await h.send(job('empty-text', { decoding: 'text' }));
+  const result = h.results('result', 'empty-text')[0];
+  assert.equal(result.text, '');
+  assert.equal(result.segments.length, 0);
+  assert.equal(result.duration, 1);
+  assert.equal(result.decoding, 'text');
+  assert.equal(result.timing, 'approximate');
+  assert.equal(result.warnings.length, 1);
+  assert.match(result.warnings[0], /字幕时间.*粗略范围/);
+  assert.equal(h.calls.filter(call => call.audio).length, 1);
 });
 
 test('invalid PCM, options and foreign model IDs fail before downloading anything', async () => {
@@ -423,6 +520,59 @@ test('near-silence ranges reuse one pipeline and restore absolute timestamps and
   assert.equal(result.segments[0].end, 2.5);
   assert.equal(result.segments[1].start, 5);
   assert.equal(result.segments[1].end, 5.5);
+});
+
+test('text decoding uses absolute coarse bounds for every sounding range and keeps full file duration', async () => {
+  const audio = new Float32Array(8 * 16000);
+  audio.fill(0.001, 2 * 16000, 3 * 16000);
+  audio.fill(0.001, 5 * 16000, 6 * 16000);
+  let inferenceCount = 0;
+  const h = harness({ infer: async () => {
+    const text = `第${++inferenceCount}段正文`;
+    return { text, chunks: [{ text: '忽略的片段', timestamp: [0.3, 0.8] }] };
+  } });
+  await h.send(job('split-text', { audio, decoding: 'text' }));
+  const result = h.results('result', 'split-text')[0];
+  assert.equal(result.text, '第1段正文\n第2段正文');
+  assert.equal(result.duration, 8);
+  assert.equal(result.timing, 'approximate');
+  assert.deepEqual(Array.from(result.segments, segment => ({ ...segment })), [
+    { start: 1.7, end: 3.3, text: '第1段正文' },
+    { start: 4.7, end: 6.3, text: '第2段正文' },
+  ]);
+  assert.equal(result.warnings.length, 1);
+  assert.equal(h.calls.filter(call => call.task).length, 1);
+  const inference = h.calls.filter(call => call.audio);
+  assert.equal(inference.length, 2);
+  for (const call of inference) {
+    assert.equal(call.audio.buffer, audio.buffer);
+    assert.equal(call.audio.length, 1.6 * 16000);
+    assert.equal(call.options.return_timestamps, false);
+    assert.equal(call.options.chunk_length_s, 30);
+    assert.equal(call.options.stride_length_s, 5);
+  }
+  const { renderSrt, renderVtt } = await import('../src/exports.js');
+  assert.doesNotThrow(() => renderSrt(result.segments));
+  assert.doesNotThrow(() => renderVtt(result.segments));
+});
+
+test('near-silent text mode stays empty without model loading and a sounding retry succeeds', async () => {
+  const h = harness();
+  await h.send(job('quiet-text', { decoding: 'text', audio: new Float32Array(2 * 16000).fill(1e-5) }));
+  const result = h.results('result', 'quiet-text')[0];
+  assert.equal(result.text, '');
+  assert.equal(result.segments.length, 0);
+  assert.equal(result.duration, 2);
+  assert.equal(result.decoding, 'text');
+  assert.equal(result.timing, 'approximate');
+  assert.equal(result.warnings.length, 2);
+  assert.match(result.warnings[0], /没有检测到可识别的声音/);
+  assert.match(result.warnings[1], /字幕时间.*粗略范围/);
+  assert.equal(h.imports, 0);
+  assert.equal(h.calls.length, 0);
+  await h.send(job('sounding-text-retry', { decoding: 'text' }));
+  assert.equal(h.results('result', 'sounding-text-retry')[0].segments[0].end, 1);
+  assert.equal(h.calls.filter(call => call.task).length, 1);
 });
 
 test('very quiet audio above either near-silence threshold is still transcribed', async () => {

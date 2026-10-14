@@ -1,0 +1,380 @@
+{
+  "schemaVersion": 1,
+  "status": "experimental_review_only_not_deployed",
+  "referenceAnswerUsedForInference": false,
+  "automaticTextReplacement": false,
+  "sourceObservationCount": 58,
+  "sourceUniqueTimestamps": 19,
+  "mlmRevision": "62e436eea35e6cb02d9464b26636c90c7624ae1e",
+  "models": [
+    {
+      "name": "albert-tiny-int8-qdq",
+      "bytes": 4345470,
+      "sha256": "c499070944899c33234fdc4f58116cae8c6e7c028aa2fca69e456f7d5f839049",
+      "source": "https://huggingface.co/voidful/albert_chinese_tiny"
+    },
+    {
+      "name": "albert-tiny-fp32-onnx",
+      "bytes": 16273104,
+      "sha256": "02d2da62ec40015d7a91f43cdd31cb46cad7ef8284ed2f40f7309c12f0b9f025",
+      "source": "https://huggingface.co/voidful/albert_chinese_tiny"
+    },
+    {
+      "name": "PP-OCRv4-server-rec",
+      "bytes": 90530732,
+      "sha256": "6a2676219be9907c7fc9cf61ebaa843bf2898777def567925b78886fcd90c07a",
+      "source": "https://github.com/RapidAI/RapidOCR/blob/main/python/rapidocr/default_models.yaml"
+    },
+    {
+      "name": "PP-OCRv5-mobile-rec",
+      "bytes": 16631306,
+      "sha256": "5825fc7ebf84ae7a412be049820b4d86d77620f204a041697b0494669b1742c5",
+      "source": "https://github.com/RapidAI/RapidOCR/blob/main/python/rapidocr/default_models.yaml"
+    }
+  ],
+  "tokenizer": {
+    "vocabSize": 21128,
+    "vocabBytes": 109540,
+    "splitRule": "LF only, not Unicode splitlines",
+    "officialExampleProbability": 0.4031263589859009,
+    "missingWeightKeys": []
+  },
+  "process": {
+    "timeGroupMergeGapSeconds": 0.15,
+    "includeRejectedEdgeWithinSeconds": 1,
+    "anchorSelection": [
+      "reliable",
+      "distinct_timestamp_support",
+      "confidence"
+    ],
+    "fusionSampleIntervalSeconds": 0.25,
+    "minimumInsertionGapRatio": 1.6,
+    "maxNearestSlotDistanceRatio": 0.65,
+    "highVisualConfidenceLock": 0.9,
+    "contextWeight": 0.35,
+    "maxCoordinatePasses": 2,
+    "candidates": "Only glyphs present in same geometric slot in the selected source subset",
+    "score": "ln(visual_score) + 0.35 * masked_lm_log_probability"
+  },
+  "enhancedReviewDraft": "漫天红伞无人生还。\n我的遗憾是不能洁白的带你离开。",
+  "sourceAblations": [
+    {
+      "mode": "mobile-original",
+      "observations": 19,
+      "laterObservations": 13,
+      "laterTimestamps": 13,
+      "fusionText": "我的遗是不能洁白的带你离开。",
+      "observedAnchor": "我的遗是不能洁白的带你离开",
+      "visualSeed": "我的遗健是不能洁白的带你离开",
+      "reviewDraft": "我的退修是不能洁白的带你离开。",
+      "includesServer": false,
+      "includesGreen": false
+    },
+    {
+      "mode": "mobile-all",
+      "observations": 32,
+      "laterObservations": 26,
+      "laterTimestamps": 13,
+      "fusionText": "我的遗是不能洁白的带你离开。",
+      "observedAnchor": "我的遗是不能洁白的带你离开",
+      "visualSeed": "我的遗是不能洁白的带你离开",
+      "reviewDraft": "我的遗是不能洁白的带你离开。",
+      "includesServer": false,
+      "includesGreen": true
+    },
+    {
+      "mode": "all-original",
+      "observations": 32,
+      "laterObservations": 26,
+      "laterTimestamps": 13,
+      "fusionText": "我的遗是不能洁白的带你离开。",
+      "observedAnchor": "我的遗是不能洁白的带你离开",
+      "visualSeed": "我的遗博是不能洁白的带你离开",
+      "reviewDraft": "我的的博是不能洁白的带你离开。",
+      "includesServer": true,
+      "includesGreen": false
+    },
+    {
+      "mode": "all-enhanced",
+      "observations": 58,
+      "laterObservations": 52,
+      "laterTimestamps": 13,
+      "fusionText": "我的退是不能洁白的带你离开。",
+      "observedAnchor": "我的遗是不能洁白的带你离开",
+      "visualSeed": "我的遗博是不能洁白的带你离开",
+      "reviewDraft": "我的遗憾是不能洁白的带你离开。",
+      "includesServer": true,
+      "includesGreen": true
+    }
+  ],
+  "keyGlyphEvidence": [
+    {
+      "character": "遗",
+      "index": 2,
+      "insertion": false,
+      "maxVisualConfidence": 0.9218429923057556,
+      "distinctTimestamps": 3,
+      "evidence": [
+        {
+          "time": 12.875,
+          "model": "mobile",
+          "variant": "original",
+          "glyphIndex": 2,
+          "x": 0.20717131474103587,
+          "modelScore": 0.579767107963562
+        },
+        {
+          "time": 12.875,
+          "model": "mobile",
+          "variant": "green",
+          "glyphIndex": 2,
+          "x": 0.20717131474103587,
+          "modelScore": 0.7073035836219788
+        },
+        {
+          "time": 12.875,
+          "model": "server",
+          "variant": "green",
+          "glyphIndex": 2,
+          "x": 0.20717131474103587,
+          "modelScore": 0.16962221264839172
+        },
+        {
+          "time": 13.125,
+          "model": "mobile",
+          "variant": "original",
+          "glyphIndex": 2,
+          "x": 0.18181818181818182,
+          "modelScore": 0.6520001292228699
+        },
+        {
+          "time": 13.125,
+          "model": "mobile",
+          "variant": "green",
+          "glyphIndex": 2,
+          "x": 0.18181818181818182,
+          "modelScore": 0.6998844146728516
+        },
+        {
+          "time": 14.125,
+          "model": "server",
+          "variant": "original",
+          "glyphIndex": 2,
+          "x": 0.1888412017167382,
+          "modelScore": 0.6930292248725891
+        },
+        {
+          "time": 14.125,
+          "model": "server",
+          "variant": "green",
+          "glyphIndex": 2,
+          "x": 0.1888412017167382,
+          "modelScore": 0.9218429923057556
+        }
+      ],
+      "topContextCandidates": []
+    },
+    {
+      "character": "憾",
+      "index": 3,
+      "insertion": true,
+      "maxVisualConfidence": 0.35395944118499756,
+      "distinctTimestamps": 1,
+      "evidence": [
+        {
+          "time": 13.125,
+          "model": "server",
+          "variant": "green",
+          "glyphIndex": 3,
+          "x": 0.2809917355371901,
+          "modelScore": 0.35395944118499756
+        }
+      ],
+      "topContextCandidates": [
+        {
+          "character": "憾",
+          "visual": 0.35395944118499756,
+          "contextLogP": -0.5803642272949219,
+          "score": -1.2417004248892995
+        },
+        {
+          "character": "博",
+          "visual": 0.9058575630187988,
+          "contextLogP": -10.414605140686035,
+          "score": -3.743984999749915
+        },
+        {
+          "character": "遇",
+          "visual": 0.31203997135162354,
+          "contextLogP": -8.495499610900879,
+          "score": -4.138048849887285
+        }
+      ]
+    }
+  ],
+  "ordinaryControls": [
+    {
+      "label": "ordinary_weather",
+      "input": "今天天汽很好",
+      "suggestion": "今天天气很好",
+      "expected": "今天天气很好",
+      "suggestionMatchesExpected": true
+    },
+    {
+      "label": "ordinary_water",
+      "input": "请喝一杯永",
+      "suggestion": "请喝一杯水",
+      "expected": "请喝一杯水",
+      "suggestionMatchesExpected": true
+    },
+    {
+      "label": "ordinary_regret",
+      "input": "我对此深感遗撼",
+      "suggestion": "我对此深感遗憾",
+      "expected": "我对此深感遗憾",
+      "suggestionMatchesExpected": true
+    }
+  ],
+  "properNameCounterexample": {
+    "input": "她叫张欣今天来开会",
+    "suggested": "她叫张新今天来开会",
+    "expected": "她叫张欣今天来开会",
+    "ranking": [
+      {
+        "character": "新",
+        "visual": 0.43,
+        "contextLogP": -6.164308547973633,
+        "score": -3.0014780620853
+      },
+      {
+        "character": "欣",
+        "visual": 0.45,
+        "contextLogP": -6.795645236968994,
+        "score": -3.1769835291569195
+      }
+    ],
+    "committedText": "她叫张欣今天来开会",
+    "automaticEditBlocked": true
+  },
+  "candidateRemovalAblation": [
+    {
+      "test": "remove_winning_visual_candidate",
+      "index": 3,
+      "removed": "憾",
+      "remainingCandidates": [
+        "酒",
+        "通",
+        "返",
+        "刻",
+        "妞",
+        "姻",
+        "健",
+        "修",
+        "饰",
+        "诚",
+        "城",
+        "遇",
+        "奶",
+        "退",
+        "博",
+        "们",
+        "创",
+        "询",
+        "倒",
+        "购",
+        "师",
+        "帅",
+        "训",
+        "撼"
+      ],
+      "newSelection": "博",
+      "removedCharacterRecreated": false
+    }
+  ],
+  "wasm": {
+    "version": "1.22.0-dev.20250409-89f8206ba4",
+    "scope": "Actual ONNX Runtime Web WASM in Node; no browser UI/mobile device validation",
+    "comparisonAgainstTorch": [
+      {
+        "precision": "fp32",
+        "bytes": 16273104,
+        "initializationMs": 237.72224400000002,
+        "meanInferenceMs": 6.896104888888885,
+        "maxCandidateLogitError": 1.7404556274414062e-05,
+        "contextRankMatches": 9,
+        "combinedRankMatches": 9,
+        "cases": 9
+      },
+      {
+        "precision": "int8",
+        "bytes": 4345470,
+        "initializationMs": 33.872545,
+        "meanInferenceMs": 10.301287999999987,
+        "maxCandidateLogitError": 0.3347587585449219,
+        "contextRankMatches": 9,
+        "combinedRankMatches": 8,
+        "cases": 9
+      }
+    ],
+    "fullPipelineAgainstNativeInt8": [
+      {
+        "mode": "all-enhanced",
+        "calls": 4,
+        "maxCandidateLogitErrorAgainstNativeInt8": 2.86102294921875e-05,
+        "allCombinedRanksMatch": true
+      },
+      {
+        "mode": "mobile-original",
+        "calls": 6,
+        "maxCandidateLogitErrorAgainstNativeInt8": 4.1961669921875e-05,
+        "allCombinedRanksMatch": true
+      }
+    ]
+  },
+  "quantization": {
+    "method": "per-row symmetric weight-only int8 QDQ",
+    "downloadSavingsOnly": true,
+    "runtimeRAMSavingsClaimed": false,
+    "computeAccelerationClaimed": false,
+    "nearTieFailure": "Missing-candidate synthetic case retained 汽 in FP32 but selected 泣 in int8. No unseen 气 was generated."
+  },
+  "v5Probe": {
+    "officialHashMatches": true,
+    "vocabularySize": 18385,
+    "vocabularySource": "embedded ONNX character metadata + CTC blank prefix + space suffix",
+    "sampleTimeSeconds": 13.125,
+    "variants": [
+      {
+        "variant": "original",
+        "text": "我的遗加是不能告日，的带你离开",
+        "meanScore": 0.7894372920195262,
+        "milliseconds": 35.956318002718035
+      },
+      {
+        "variant": "green",
+        "text": "我的过加是不能告日，的带你离开",
+        "meanScore": 0.7638877848784129,
+        "milliseconds": 19.170040999597404
+      },
+      {
+        "variant": "original_stretch1.5",
+        "text": "我的过加是不能当日的带你离开",
+        "meanScore": 0.810885061110769,
+        "milliseconds": 18.684672999370378
+      },
+      {
+        "variant": "green_stretch1.5",
+        "text": "我的过是不能当日，的带你离开",
+        "meanScore": 0.8116400316357613,
+        "milliseconds": 21.93448499747319
+      }
+    ],
+    "targetGlyphInAnyDecodedTop5": false,
+    "targetGlyph": "憾",
+    "conclusion": "No gain in this four-variant probe; not advanced to deployment or a wider sweep"
+  },
+  "sources": [
+    "https://huggingface.co/voidful/albert_chinese_tiny",
+    "https://github.com/RapidAI/RapidOCR/blob/main/python/rapidocr/default_models.yaml"
+  ]
+}

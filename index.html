@@ -62,13 +62,15 @@
             <div id="inline-error" class="inline-error" role="alert" hidden></div>
 
             <details class="advanced-settings">
-              <summary><span>更多设置</span><span id="settings-summary" class="settings-summary">中文 · 高精度</span><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+              <summary><span>更多设置</span><span id="settings-summary" class="settings-summary">中文 · 中文增强</span><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
               <div class="settings-fields">
                 <label for="recognition-source" class="source-setting">识别方式<select id="recognition-source"><option value="auto" selected>自动 · 视频优先读取画面字幕</option><option value="audio">仅识别声音</option><option value="video">仅识别画面字幕</option></select></label>
                 <label for="language">识别语言<select id="language"><option value="chinese" selected>中文</option><option value="english">英语</option></select></label>
-                <label for="model">识别精度<select id="model"><option value="Xenova/whisper-tiny">快速 · 耗时较短</option><option value="Xenova/whisper-small" selected>高精度 · 下载较大</option></select></label>
+                <label for="model">识别精度<select id="model"><option value="Xenova/whisper-tiny">快速 · 耗时较短</option><option value="FunAudioLLM/SenseVoiceSmall" selected>中文增强 · 推荐</option>
+                  <option value="Xenova/whisper-small">通用高精度 · 中英文</option></select></label>
               </div>
-              <p id="model-help" class="settings-help">默认按中文、高精度识别，可切换为英语或快速模式。首次下载：快速约 40 MB，高精度约 190 MB。高精度需要更多时间与内存；切换精度会下载另一份模型。部分视频编码可能不受浏览器支持，可先转换为 MP3 或 WAV。</p>
+              <p id="model-help" class="settings-help">默认使用中文增强。首次下载约 152 MiB（含运行库），之后优先用缓存；切换英语时使用通用高精度。快速约 40 MiB，通用高精度约 191 MiB。只下载选用的模型，不按次数收费。手机内存不足时可剪短音频或试快速模式。</p>
+              <p id="full-version-link" class="settings-help" hidden><a href="https://lyhrmer.github.io/media-scribe/" target="_blank" rel="noopener">打开完整版，使用通用高精度</a></p>
               <p class="settings-help">歌声、伴奏或现场回声较强时可能漏字，需要人工校对。</p>
               <p class="settings-help">视频会先在本机读取画面文字，对照多帧后生成字幕；没有可靠字幕时自动识别声音。画面文字可能包含标题或招牌，请核对是否与内容相符。也可切换「仅识别声音」比较结果。</p>
             </details>

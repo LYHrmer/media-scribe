@@ -5,7 +5,10 @@ import { isVideoFile, readVideoFrames } from './video-frames.js';
 import { createVideoOcrClient } from './video-ocr.js';
 import { fuseVideoCaptions } from './video-captions.js';
 import { punctuateResult } from './punctuation.js';
+import { evaluateSpeechPresence } from './vad-client.js';
 
+const SENSEVOICE_MODEL = 'FunAudioLLM/SenseVoiceSmall';
+const COMPACT = import.meta.env.VITE_COMPACT_BUILD === '1';
 const $ = id => document.getElementById(id);
 const ui = Object.fromEntries([
   'file-input', 'drop-zone', 'file-queue', 'clear-files', 'inline-error',
@@ -21,10 +24,11 @@ const ui = Object.fromEntries([
   'recognition-source', 'visual-candidates', 'visual-candidate-list',
 ].map(id => [id, $(id)]));
 
-if (import.meta.env.VITE_COMPACT_BUILD === '1') {
-  ui.model.querySelector('option[value="Xenova/whisper-tiny"]')?.remove();
-  ui.model.value = 'Xenova/whisper-small';
-  $('model-help').textContent = '默认按中文、高精度识别，可切换为英语。语音模型首次下载约 190 MB，需要一定时间与内存；画面识别使用另一份较小的模型。部分视频编码可能不受浏览器支持，可先转换为 MP3 或 WAV。';
+if (COMPACT) {
+  ui.model.querySelector('option[value="Xenova/whisper-small"]')?.remove();
+  ui.model.value = SENSEVOICE_MODEL;
+  $('model-help').textContent = '默认使用中文增强，首次下载约 152 MiB（含运行库），快速模式约 40 MiB，之后优先用缓存。若内存不足，可剪短音频或选择快速。英文建议使用完整版中的通用高精度。';
+  $('full-version-link').hidden = false;
 }
 
 const fileInputs = ['file-input', 'audio-input', 'video-input', 'single-file-input'];
@@ -64,6 +68,7 @@ async function copyBrowserLink() {
 const queue = [];
 let selectedId = null;
 let worker = null;
+let workerKind = null;
 let activeJob = null;
 let busy = false;
 let runToken = 0;
@@ -83,11 +88,18 @@ const fileIcon = '<svg viewBox="0 0 18 18" fill="none" aria-hidden="true"><path 
 function selectedEntry() { return queue.find(entry => entry.id === selectedId); }
 function canRun(entry) { return entry.status === 'pending' || entry.status === 'canceled'; }
 function modelLabel(model) {
+  if (model === SENSEVOICE_MODEL) return '中文增强';
   const name = model?.split('/').at(-1).replace(/^whisper-/, '');
   return { tiny: '快速', base: '标准', small: '高精度' }[name] || model || '未记录';
 }
 function languageLabel(language) { return { chinese: '中文', english: '英语' }[language] || '未记录'; }
-function resultRevision(entry) { return { result: entry.result, draft: entry.draft, model: entry.model, language: entry.language, modelSelectionRevision: entry.modelSelectionRevision, visualCandidates: entry.visualCandidates, sourceMode: entry.sourceMode }; }
+function resultRevision(entry) { return { result: entry.result, draft: entry.draft, model: entry.model, language: entry.language, modelSelectionRevision: entry.modelSelectionRevision, visualCandidates: entry.visualCandidates, sourceMode: entry.sourceMode, decoding: entry.decoding }; }
+function nextDecoding(entry) {
+  const sameSettings = entry?.result?.source === 'audio' && entry.model === ui.model.value
+    && entry.language === ui.language.value && entry.sourceMode === ui['recognition-source'].value
+    && modelSelectionRevision === entry.modelSelectionRevision;
+  return sameSettings && ['Xenova/whisper-small', SENSEVOICE_MODEL].includes(entry.model) && entry.decoding !== 'text' && !entry.result.speechCheck?.deferred ? 'text' : 'timestamps';
+}
 function shouldUpgradeOnRerun(entry) {
   return Boolean(entry?.result && entry.result.source !== 'video_ocr' && entry.model === 'Xenova/whisper-tiny'
     && ui.model.value === entry.model && modelSelectionRevision === entry.modelSelectionRevision);
@@ -191,14 +203,18 @@ function renderOutput() {
   ui['export-button'].disabled = !hasResult;
   ui['export-format'].disabled = !hasResult;
   ui['character-count'].textContent = `${hasResult ? [...entry.draft].length.toLocaleString('zh-CN') : 0} 个字符`;
-  ui['result-meta'].textContent = hasResult ? `${timeLabel(entry.result.duration)} · ${entry.result.source === 'video_ocr' ? '画面字幕 · 待核对' : `${modelLabel(entry.model)} · ${languageLabel(entry.language)}`}` : '可编辑 · 可导出';
+  ui['result-meta'].textContent = hasResult ? `${timeLabel(entry.result.duration)} · ${entry.result.source === 'video_ocr' ? '画面字幕 · 待核对' : entry.result.speechCheck?.deferred ? '人声待核对 · 暂停生成文字' : `${modelLabel(entry.model)} · ${languageLabel(entry.language)}`}` : '可编辑 · 可导出';
   ui['rerun-actions'].hidden = !hasResult;
   ui['rerun-button'].disabled = busy || !hasResult;
+  ui['rerun-button'].textContent = entry?.result?.speechCheck?.deferred ? '仍然尝试识别' : '不满意，重新转写';
   ui['restore-button'].hidden = !entry?.previousRevision;
   ui['restore-button'].disabled = busy || !entry?.previousRevision;
   ui.transcript.disabled = Boolean(rerunning);
-  const rerunHelp = '可在更多设置中切换画面 / 声音和精度，再重新转写；相同设置通常结果相同。';
-  ui['rerun-help'].textContent = rerunning ? '正在重新转写，原结果已保留。停止或失败后，仍可使用原结果。' : hasResult && entry.error ? `重新转写未完成：${entry.error} 原结果已保留，可再试一次。` : shouldUpgradeOnRerun(entry) ? `未切换精度时，重转将改用高精度，下载约 190 MB 且更慢。${rerunHelp}` : rerunHelp;
+  const forceSpeechHelp = entry?.forceSpeech ? '已允许直接识别原音，后续重试会跳过人声检查。' : '';
+  const upgradeHelp = shouldUpgradeOnRerun(entry) ? (COMPACT ? '未切换精度时，重转将改用中文增强，下载约 152 MiB。' : '未切换精度时，重转将改用高精度，下载约 190 MB 且更慢。') : '';
+  const rerunHelp = `可切换画面 / 声音和精度后重试，并恢复上一版比较。相同设置通常结果相同。${forceSpeechHelp}`;
+  const deferredHelp = `${forceSpeechHelp || '人声检测也可能漏掉歌声或轻声。点击「仍然尝试识别」会跳过这项检查，直接识别原音。'}${upgradeHelp}`;
+  ui['rerun-help'].textContent = rerunning ? '正在重新转写，原结果已保留。停止或失败后，仍可使用原结果。' : hasResult && entry.error ? `重新转写未完成：${entry.error} 原结果已保留，可再试一次。${forceSpeechHelp}` : entry?.result?.speechCheck?.deferred ? deferredHelp : upgradeHelp ? `${upgradeHelp}${rerunHelp}` : hasResult && entry.model === SENSEVOICE_MODEL ? `${nextDecoding(entry) === 'text' ? '重转将按原话识别，保留汉字数字，再补标点。' : '重转将恢复数字格式整理。'}${COMPACT ? '也可打开完整版，选择「通用高精度」比较另一套模型。' : '也可选择「通用高精度」比较另一套模型。'}原稿可恢复。${forceSpeechHelp}` : hasResult && nextDecoding(entry) === 'text' ? `重转将尝试另一种文字识别方式，字幕时间只保留粗略范围，结果仍需核对。${rerunHelp}` : hasResult && entry.decoding === 'text' ? `重转将恢复带时间轴的识别方式。${rerunHelp}` : rerunHelp;
   const warnings = Array.isArray(entry?.result?.warnings) ? entry.result.warnings.filter(message => typeof message === 'string' && message.trim()) : [];
   ui['result-warning'].hidden = !warnings.length;
   ui['result-warning'].textContent = warnings.join(' ');
@@ -267,7 +283,7 @@ function addFiles(files) {
       continue;
     }
     if (queue.some(entry => entry.file.name === file.name && entry.file.size === file.size && entry.file.lastModified === file.lastModified)) continue;
-    const entry = { id: `file-${++nextId}`, file, status: 'pending', result: null, draft: '', error: '', revision: 0, previousRevision: null };
+    const entry = { id: `file-${++nextId}`, file, status: 'pending', result: null, draft: '', error: '', revision: 0, previousRevision: null, forceSpeech: false };
     queue.push(entry);
     if (!selectedId) selectedId = entry.id;
   }
@@ -279,9 +295,14 @@ function addFiles(files) {
 
 function cancelError() { const error = new Error('CANCELED'); error.name = 'AbortError'; return error; }
 
-function ensureWorker() {
-  if (worker) return worker;
-  const instance = new Worker(new URL('./transcriber.worker.js', import.meta.url), { type: 'module' });
+function ensureWorker(settings) {
+  const kind = settings.model === SENSEVOICE_MODEL ? `sensevoice:${settings.language}:${settings.decoding}` : 'whisper';
+  if (worker && workerKind === kind) return worker;
+  worker?.terminate();
+  const instance = settings.model === SENSEVOICE_MODEL
+    ? new Worker(new URL('./sensevoice.worker.js', import.meta.url), { type: 'module' })
+    : new Worker(new URL('./transcriber.worker.js', import.meta.url), { type: 'module' });
+  workerKind = kind;
   worker = instance;
   instance.onmessage = event => {
     const data = event.data;
@@ -301,7 +322,7 @@ function ensureWorker() {
     } else if (data.type === 'result' || data.type === 'error') {
       const job = activeJob;
       activeJob = null;
-      if (data.type === 'result') job.resolve({ text: data.text || '', segments: data.segments || [], duration: data.duration, warnings: Array.isArray(data.warnings) ? data.warnings : [] });
+      if (data.type === 'result') job.resolve({ text: data.text || '', segments: data.segments || [], duration: data.duration, ...(typeof data.rawText === 'string' ? { rawText: data.rawText } : {}), ...(data.timing === 'approximate' ? { timing: 'approximate' } : {}), warnings: Array.isArray(data.warnings) ? data.warnings : [] });
       else job.reject(new Error(data.message || '这份文件未能完成识别，请重试。'));
     }
   };
@@ -322,10 +343,10 @@ function ensureWorker() {
 function transcribe(audio, entry, token, settings) {
   return new Promise((resolve, reject) => {
     try {
-      const instance = ensureWorker();
+      const instance = ensureWorker(settings);
       const id = `${entry.id}-run-${token}`;
       activeJob = { id, resolve, reject };
-      instance.postMessage({ type: 'transcribe', id, audio, model: settings.model, language: settings.language }, [audio.buffer]);
+      instance.postMessage({ type: 'transcribe', id, audio, model: settings.model, language: settings.language, decoding: settings.decoding }, [audio.buffer]);
     } catch (error) { activeJob = null; reject(error); }
   });
 }
@@ -341,8 +362,12 @@ async function startQueue() {
 async function rerunSelected() {
   const entry = selectedEntry();
   if (busy || !entry?.result) return;
-  if (shouldUpgradeOnRerun(entry)) ui.model.value = 'Xenova/whisper-small';
-  await runEntries([entry]);
+  // This explicit file preference survives failed/stopped attempts and restoring
+  // earlier text. It is deliberately not part of a result revision.
+  if (entry.result.speechCheck?.deferred) entry.forceSpeech = true;
+  const decoding = nextDecoding(entry);
+  if (shouldUpgradeOnRerun(entry)) ui.model.value = COMPACT ? SENSEVOICE_MODEL : 'Xenova/whisper-small';
+  await runEntries([entry], { decoding });
 }
 
 function restorePrevious() {
@@ -432,18 +457,43 @@ async function recognizeEntry(entry, token, settings, signal) {
     if (token === runToken) { progress.message = message; renderProgress(); }
   } });
   if (signal.aborted || token !== runToken) throw cancelError();
+  let speechCheck;
+  if (!settings.forceSpeech) {
+    progress = { stage: '正在检查人声', message: '先检查是否有明确人声，减少纯噪声产生错误文字。', percent: null };
+    renderProgress();
+    try {
+      const check = await evaluateSpeechPresence(decoded.samples, { signal, onProgress: data => {
+        if (token !== runToken) return;
+        progress.percent = data.totalFrames > 0 ? 100 * data.completedFrames / data.totalFrames : null;
+        renderProgress();
+      } });
+      if (signal.aborted || token !== runToken) throw cancelError();
+      if (typeof check.warning === 'string' && check.warning.trim()) warnings.push(check.warning.trim());
+      if (check.reject) {
+        return { source: 'audio', text: '', segments: [], duration: decoded.duration,
+          speechCheck: { deferred: true, maxProbability: check.maxProbability },
+          warnings: [...warnings, '暂未检测到明确人声，已暂停生成文字。这不能排除歌声、轻声或其他人声；请核对原音，或点击「仍然尝试识别」。'] };
+      }
+    } catch (error) {
+      if (signal.aborted || error.name === 'AbortError' || token !== runToken) throw cancelError();
+      warnings.push('人声检查未完成，已直接识别原音。纯噪声也可能产生错误文字，请核对结果。');
+    }
+  } else {
+    speechCheck = { forced: true };
+  }
+  if (signal.aborted || token !== runToken) throw cancelError();
   entry.status = 'running';
   progress = { stage: '正在准备识别模型', message: '模型准备好后，会自动开始本地识别。', percent: null };
   render();
   const result = await transcribe(decoded.samples, entry, token, settings);
-  return { ...result, source: 'audio', warnings: [...warnings, ...(result.warnings || [])] };
+  return { ...result, source: 'audio', ...(speechCheck ? { speechCheck } : {}), warnings: [...warnings, ...(result.warnings || [])] };
 }
 
-async function runEntries(pending) {
+async function runEntries(pending, retry = {}) {
   const token = ++runToken;
   const controller = new AbortController();
   activeAbort = controller;
-  const settings = { model: ui.model.value, language: ['chinese', 'english'].includes(ui.language.value) ? ui.language.value : 'chinese', selectionRevision: modelSelectionRevision, sourceMode: ['audio', 'video'].includes(ui['recognition-source'].value) ? ui['recognition-source'].value : 'auto' };
+  const settings = { model: ui.model.value, language: ['chinese', 'english'].includes(ui.language.value) ? ui.language.value : 'chinese', selectionRevision: modelSelectionRevision, sourceMode: ['audio', 'video'].includes(ui['recognition-source'].value) ? ui['recognition-source'].value : 'auto', decoding: retry.decoding || 'timestamps' };
   busy = true;
   showError('');
   for (const entry of pending) {
@@ -456,7 +506,7 @@ async function runEntries(pending) {
     progress = { stage: '正在读取声音', message: '正在浏览器中读取和整理音频，文件不会上传。', percent: null };
     render();
     try {
-      let result = await recognizeEntry(entry, token, settings, controller.signal);
+      let result = await recognizeEntry(entry, token, { ...settings, forceSpeech: entry.forceSpeech === true }, controller.signal);
       if (token !== runToken) return;
       if (result.text?.trim()) {
         progress = { stage: '正在整理标点', percent: null, message: '根据识别文字补充标点，保留原始字词。' };
@@ -473,6 +523,7 @@ async function runEntries(pending) {
       entry.language = settings.language;
       entry.modelSelectionRevision = settings.selectionRevision;
       entry.sourceMode = settings.sourceMode;
+      entry.decoding = settings.decoding;
       entry.revision++;
       entry.status = 'done';
     } catch (error) {
@@ -560,7 +611,12 @@ ui['start-button'].addEventListener('click', startQueue);
 ui['rerun-button'].addEventListener('click', rerunSelected);
 ui['restore-button'].addEventListener('click', restorePrevious);
 ui['stop-button'].addEventListener('click', stopQueue);
-ui.language.addEventListener('change', renderControls);
+ui.language.addEventListener('change', () => {
+  if (!COMPACT && ui.language.value === 'english' && ui.model.value === SENSEVOICE_MODEL) {
+    ui.model.value = 'Xenova/whisper-small'; modelSelectionRevision++;
+  }
+  renderControls(); renderOutput();
+});
 ui['recognition-source'].addEventListener('change', () => { renderControls(); renderOutput(); });
 ui.model.addEventListener('change', () => { modelSelectionRevision++; renderControls(); renderOutput(); });
 ui['text-tab'].addEventListener('click', () => setTab('text'));

@@ -1,0 +1,969 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-10-13T16:03:59.631083+00:00",
+  "purpose": "Bounded native diagnostic follow-up, not a deployed accuracy guarantee",
+  "model": {
+    "name": "Official Sherpa Qwen3-ASR-0.6B INT8 artifact",
+    "weights_and_tokenizer_bytes": 987015347,
+    "provenance": {
+      "repository": "k2-fsa/sherpa-onnx",
+      "artifact": "sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25",
+      "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25.tar.bz2",
+      "files": {
+        "conv_frontend.onnx": {
+          "bytes": 44148281,
+          "sha256": "d22dc4423e0940e49884e903d2ea2f7e5567c14fc1aed97e4e26d6b8f208ef9e"
+        },
+        "encoder.int8.onnx": {
+          "bytes": 182491662,
+          "sha256": "60748d3e6744a57c9c91e1b17424a6c2990567e8adceb0783940c03ed98fa9d9"
+        },
+        "decoder.int8.onnx": {
+          "bytes": 755914231,
+          "sha256": "4f6885be5959ae26af3089d38ee7972c5fafbeeb1cf8d5e76eab6d8b61ca5771"
+        },
+        "tokenizer/vocab.json": {
+          "bytes": 2776833,
+          "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+        },
+        "tokenizer/merges.txt": {
+          "bytes": 1671853,
+          "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+        },
+        "tokenizer/tokenizer_config.json": {
+          "bytes": 12487,
+          "sha256": "4942d005604266809309cabc9f4e9cb89ce855d59b14681fdc0e1cc62ea26c4c"
+        }
+      }
+    },
+    "settings": {
+      "num_threads": 2,
+      "feature_dim": 128,
+      "hotwords": "",
+      "max_total_len": 512,
+      "max_new_tokens": 128,
+      "temperature": 1e-06,
+      "top_p": 0.8,
+      "seed": 42,
+      "provider": "cpu"
+    }
+  },
+  "runtime": {
+    "version": "1.13.8",
+    "git_sha1": "11afbd00",
+    "git_date": "Thu Sep 10 13:52:45 2026",
+    "onnxruntime_version": "1.28.2"
+  },
+  "distribution_c_api_sha256": "e50ae8bca4db52b7be04f56f8ac1502b940ca124a26fac0d48d8cef7fc9823d4",
+  "executed_runtime_binary_sha256": {
+    "_sherpa_onnx.cpython-312-x86_64-linux-gnu.so": "eb9c3545b310ecd97ba0a2ff53fe39f8d8fb9efaea2dea0ca333ae9050bf2cd2",
+    "libonnxruntime.so": "4b3607aebd1784b26b6f9b20e4bd974c7ab8287043e4d095cb7d2cb40b5e566e"
+  },
+  "load_seconds": 3.8326770790008595,
+  "memory_after_load": {
+    "rss_kib": 1186408,
+    "peak_rss_kib": 1337912
+  },
+  "inference_reference_isolation": {
+    "reference_was_not_read_by_inference_process": true,
+    "hotwords": "",
+    "language_hints_only": [
+      "Chinese",
+      "English"
+    ],
+    "media_uploaded": false,
+    "references_only_used_by_separate_post_inference_scorer": true
+  },
+  "source_hashes": {
+    "run-native-qwen-six-plus-speed.py": "fc4dd60dd6d76cda44d160172feca01e4ea588a9eca8a727e9a7fb5d462f8791",
+    "run-qwen-fast-split.py": "c635c6669f23382d626a776f99fd1ffb622c4b88047c1ffb81a472ef44325e4b",
+    "score-qwen-six-plus-speed.mjs": "44c3ba5ded4f6af4a971f75755e28012b47c6c3e0b124834da79f2fa80b1704c",
+    "score-transcripts.mjs": "3354f77301683386381df60cf898a69d59a51d266bad11eb7718dbf791f3f731",
+    "align-qwen-errors.py": "d34d964098f53518bef47411dd944b1e4f43fa2236405efd2d6c94f0893a89ee"
+  },
+  "scoring": "Unchanged NFKC-lowercase Unicode character Levenshtein after removing punctuation/separators/whitespace; digit-equivalent metric additionally maps 幺→一 and Arabic digits to corresponding Chinese digits. English WER is also retained.",
+  "cases": [
+    {
+      "id": "zh-clean",
+      "language": "chinese",
+      "audio_seconds": 5.592,
+      "source": {
+        "url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-sense-voice-zh-en-ja-ko-yue-int8-2024-07-17.tar.bz2",
+        "member": "test_wavs/zh.wav",
+        "original_sha256": "b77f1794fe374a0ba1ee1dc458bfaf9349496cbbfc32780c50ba3c5a7ad8e373",
+        "rights": "Public vendor test asset; audio not redistributed in repository."
+      },
+      "reference_source": {
+        "url": "https://k2-fsa.github.io/sherpa/onnx/sense-voice/python-api.html",
+        "type": "vendor-documentation-example-not-independent-human-gold"
+      },
+      "recipe": null,
+      "pcm_sha256": "32679c5676d4a67bab7d297da1db34f92ec8a2f4899f4a03c6c80b3f4efdabdd",
+      "reference": "开放时间早上9点至下午5点。",
+      "actual_output": "开放时间：早上九点至下午五点。",
+      "score": {
+        "reference_character_count": 13,
+        "hypothesis_character_count": 13,
+        "character_errors": 2,
+        "cer": 0.15384615384615385,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 1,
+          "hypothesis_count": 2,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 1,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "digit_equivalent_cer": 0
+      },
+      "decode_seconds": 1.5394842759997118,
+      "memory_after_decode": {
+        "rss_kib": 1501036,
+        "peak_rss_kib": 1500668
+      }
+    },
+    {
+      "id": "zh-fast",
+      "language": "chinese",
+      "audio_seconds": 11.380375,
+      "source": {
+        "url": "https://huggingface.co/csukuangfj2/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25/resolve/main/test_wavs/fast1.wav",
+        "original_sha256": "b43bbd0bd982c3cc88081f64389bf29fe9e9a01287d44f0b15887bc49c2b352a",
+        "rights": "Public vendor test asset; license for sample audio is not separately stated; not redistributed."
+      },
+      "reference_source": {
+        "url": "https://huggingface.co/csukuangfj2/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25/blob/main/test_wavs/transcript.txt",
+        "type": "vendor-provided-reference-not-independent-human-gold"
+      },
+      "recipe": null,
+      "pcm_sha256": "8ed6de5a6673e93d5bba306db190ab8f5ca786f2b01d85de328a47312ca0ba00",
+      "reference": "蹦出来之后，左手、右手接一个慢动作，右边再直接拉到这上面之后，直接拉到这个轮胎上，上边再接过去之后，然后上边再直接拉到这个位置了之后，右边再直接这个位置接倒过去的之后，再倒一下，然后右边再直接抓住这个上边了之后，直接从这边上边过去了之后，直接抓住这个树杈，然后这个位置直接倒到这个树杈",
+      "actual_output": "放出来之后，左手右手接一个慢动作，右边再直接拉到线上面之后，直接拉到这个轮胎上面，再接过去之后，然后上面再直接拉到这个位置之后，右边再直接这个位置接，到我去了之后，再倒一下，然后右边再直接抓住这个上面的时候，直接从这边上面过去之后，直接抓住这个树杈，然后这个位置直接抓住这个树杈。",
+      "score": {
+        "reference_character_count": 130,
+        "hypothesis_character_count": 127,
+        "character_errors": 17,
+        "cer": 0.13076923076923078,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 11,
+          "hypothesis_count": 13,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 2,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "digit_equivalent_cer": 0.13076923076923078
+      },
+      "decode_seconds": 7.118375920996186,
+      "memory_after_decode": {
+        "rss_kib": 1897932,
+        "peak_rss_kib": 1897724
+      }
+    },
+    {
+      "id": "zh-noisy-digits",
+      "language": "chinese",
+      "audio_seconds": 22.833,
+      "source": {
+        "url": "https://huggingface.co/csukuangfj2/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25/resolve/main/test_wavs/noise2.wav",
+        "original_sha256": "33f85268f7fbad6b3152b9ab051edab1a85082fde66bccff61d7f5ef7b437e58",
+        "rights": "Public vendor test asset; license for sample audio is not separately stated; not redistributed."
+      },
+      "reference_source": {
+        "url": "https://huggingface.co/csukuangfj2/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25/blob/main/test_wavs/transcript.txt",
+        "type": "vendor-provided-reference-not-independent-human-gold"
+      },
+      "recipe": null,
+      "pcm_sha256": "162c06cacf17383517878f77d0b9d2ed91a6085f56859f8164c8da15a8388434",
+      "reference": "拨号，请再说一次，请说出您要拨打的号码。幺三五八幺八八七五七。一三五八二八八八幺八八。纠正纠正。九六九。纠正纠正，不是九六。",
+      "actual_output": "拨号，请再说一次，请说出你要拨打的号码：幺三五八幺八八七五五七。一三五八二八八八幺八八。八幺八八。七百里有建设项目，限速一百公里。纠正，纠正，九六九，纠正，纠正，不是九六。",
+      "score": {
+        "reference_character_count": 53,
+        "hypothesis_character_count": 72,
+        "character_errors": 20,
+        "cer": 0.37735849056603776,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 9,
+          "hypothesis_count": 14,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 6,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "digit_equivalent_cer": 0.37735849056603776
+      },
+      "decode_seconds": 7.389120574000117,
+      "memory_after_decode": {
+        "rss_kib": 2440644,
+        "peak_rss_kib": 2440444
+      }
+    },
+    {
+      "id": "en-noisy-dialogue",
+      "language": "english",
+      "audio_seconds": 19.02,
+      "source": {
+        "url": "https://huggingface.co/csukuangfj2/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25/resolve/main/test_wavs/f1_noise.wav",
+        "original_sha256": "7ae35f5d8f038e518f3abdeda5f78d71cb2f67c9ca29cb9a49a0b4d0702909bd",
+        "rights": "Public vendor test asset; license for sample audio is not separately stated; not redistributed."
+      },
+      "reference_source": {
+        "url": "https://huggingface.co/csukuangfj2/sherpa-onnx-qwen3-asr-0.6B-int8-2026-03-25/blob/main/test_wavs/transcript.txt",
+        "type": "vendor-provided-reference-not-independent-human-gold"
+      },
+      "recipe": null,
+      "pcm_sha256": "6fbaf85e93aea0be14b8934df691e518e441b0cc7e76012e22a45b2d98cd369f",
+      "reference": "Okay, Charles. It looks like we have a problem with the radio. What happened? Yeah, someone spilled water on their machine. I uh, yeah. Charles, can you hear us? Mamma mia.",
+      "actual_output": "Okay, Charles. It looks like we have a problem with the radio. What happened? Yeah, someone spilled water on their machine. I, uh, yeah. Charles, can you hear us? One more yeah.",
+      "score": {
+        "reference_character_count": 131,
+        "hypothesis_character_count": 134,
+        "character_errors": 9,
+        "cer": 0.06870229007633588,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 11,
+          "hypothesis_count": 12,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 1,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "word_errors": 3,
+        "reference_word_count": 31,
+        "wer": 0.0967741935483871
+      },
+      "decode_seconds": 4.686622351997357,
+      "memory_after_decode": {
+        "rss_kib": 2514704,
+        "peak_rss_kib": 2514428
+      }
+    },
+    {
+      "id": "user-lyrics",
+      "language": "chinese",
+      "audio_seconds": 21.696,
+      "source": {
+        "type": "user-upload",
+        "sha256": "122e5f277c6e20efcfd515e1549cb45cb40b89998d265589725fe5bdd75952bd",
+        "private": true,
+        "rights": "Private user recording; never publish video or PCM."
+      },
+      "reference_source": {
+        "type": "user-provided-text",
+        "given_to_inference": false
+      },
+      "recipe": null,
+      "pcm_sha256": "8933b1e813ec67abeb6de3067625a2dfec13672fd7706181cd571d143617794b",
+      "reference": "满天红伞，无人生还。我的遗憾，是不能洁白的带你离开。",
+      "actual_output": "在无声中，我让你明白：是我们节拍，离不开你。",
+      "score": {
+        "reference_character_count": 22,
+        "hypothesis_character_count": 18,
+        "character_errors": 20,
+        "cer": 0.9090909090909091,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 4,
+          "hypothesis_count": 4,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 1,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "digit_equivalent_cer": 0.9090909090909091
+      },
+      "decode_seconds": 3.5615621539982385,
+      "memory_after_decode": {
+        "rss_kib": 2514716,
+        "peak_rss_kib": 2514428
+      }
+    },
+    {
+      "id": "noise",
+      "language": "chinese",
+      "audio_seconds": 5,
+      "source": {
+        "type": "generated-seeded-noise"
+      },
+      "reference_source": {
+        "type": "known-empty-by-construction"
+      },
+      "recipe": {
+        "rng": "Python random.Random",
+        "seed": 20261013,
+        "uniform": [
+          -0.03,
+          0.03
+        ],
+        "samples": 80000
+      },
+      "pcm_sha256": "60ce8607268552a37e3d1e2022d7629db4d6d63b4d07cb0c9b5396558e56930d",
+      "reference": "",
+      "actual_output": "嗯。",
+      "score": {
+        "reference_character_count": 0,
+        "hypothesis_character_count": 1,
+        "character_errors": 1,
+        "cer": null,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": true,
+        "punctuation": {
+          "reference_count": 0,
+          "hypothesis_count": 1,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 1,
+          "boundary_exact_when_lexical_exact": null
+        }
+      },
+      "decode_seconds": 0.7735371379967546,
+      "memory_after_decode": {
+        "rss_kib": 2514728,
+        "peak_rss_kib": 2514428
+      }
+    }
+  ],
+  "algorithm_experiments": [
+    {
+      "id": "qwen06-fast-atempo075",
+      "source_case_id": "zh-fast",
+      "algorithm": "FFmpeg atempo=0.75, pitch preserved; identical model and decoder settings",
+      "original_pcm_sha256": "8ed6de5a6673e93d5bba306db190ab8f5ca786f2b01d85de328a47312ca0ba00",
+      "derived_pcm_sha256": "999d051ff07660825f43329760694acb2d23ad794e839acc88acacc0f4c28098",
+      "original_audio_seconds": 11.380375,
+      "derived_audio_seconds": 15.1579375,
+      "time_to_original_scale": 0.7507865103679179,
+      "reference": "蹦出来之后，左手、右手接一个慢动作，右边再直接拉到这上面之后，直接拉到这个轮胎上，上边再接过去之后，然后上边再直接拉到这个位置了之后，右边再直接这个位置接倒过去的之后，再倒一下，然后右边再直接抓住这个上边了之后，直接从这边上边过去了之后，直接抓住这个树杈，然后这个位置直接倒到这个树杈",
+      "actual_output": "放出来之后，左手、右手接一个慢动作，右边再直接拉到地上面之后，直接拉到这个轮胎上，上面再直接过去了之后，然后上面再直接拉到这个位置之后，右边再直接这个位置直接倒过去的时候再倒一下，然后右边再直接抓住那个上面之后，直接从这边上面过去了之后，直接抓住这个车叉，然后这个位置直接倒着这个车叉。",
+      "score": {
+        "reference_character_count": 130,
+        "hypothesis_character_count": 131,
+        "character_errors": 19,
+        "cer": 0.14615384615384616,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 11,
+          "hypothesis_count": 11,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 1,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "digit_equivalent_cer": 0.14615384615384616
+      },
+      "decode_seconds": 7.56927793599607,
+      "memory_after_decode": {
+        "rss_kib": 2582988,
+        "peak_rss_kib": 2582652
+      },
+      "timestamp_note": "No acoustic timestamps were returned; none were invented.",
+      "adopted": false
+    },
+    {
+      "id": "qwen06-fast-8s-overlap1s",
+      "source_case_id": "zh-fast",
+      "algorithm": "Two original-speed 8-second chunks with 1-second overlap; exact normalized suffix/prefix matching, bounded by generated character rate and known overlap; no reference alignment.",
+      "original_pcm_sha256": "8ed6de5a6673e93d5bba306db190ab8f5ca786f2b01d85de328a47312ca0ba00",
+      "reference": "蹦出来之后，左手、右手接一个慢动作，右边再直接拉到这上面之后，直接拉到这个轮胎上，上边再接过去之后，然后上边再直接拉到这个位置了之后，右边再直接这个位置接倒过去的之后，再倒一下，然后右边再直接抓住这个上边了之后，直接从这边上边过去了之后，直接抓住这个树杈，然后这个位置直接倒到这个树杈",
+      "chunks": [
+        {
+          "start": 0,
+          "end": 8,
+          "text": "放出来之后，左手右手接一个慢动作，右边再直接拉到气筒上面之后，直接拉到这个轮胎上面，再接过去之后，然后上面再直接拉到这个位置了，之后右边再直接这个位置接到我们去了，之后再倒一下，然后右边再直接抓住。",
+          "decode_seconds": 4.438589489000151
+        },
+        {
+          "start": 7,
+          "end": 11.380375,
+          "text": "一下，然后又被带直接抓住这个上面的之后，直接从这边上面过去了之后，直接抓住这个树杈，然后这个直接抓住这个树杈。",
+          "decode_seconds": 2.2342342939955415
+        }
+      ],
+      "actual_output": "放出来之后，左手右手接一个慢动作，右边再直接拉到气筒上面之后，直接拉到这个轮胎上面，再接过去之后，然后上面再直接拉到这个位置了，之后右边再直接这个位置接到我们去了，之后再倒一下，然后右边再直接抓住。一下，然后又被带直接抓住这个上面的之后，直接从这边上面过去了之后，直接抓住这个树杈，然后这个直接抓住这个树杈。",
+      "score": {
+        "reference_character_count": 130,
+        "hypothesis_character_count": 140,
+        "character_errors": 28,
+        "cer": 0.2153846153846154,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 11,
+          "hypothesis_count": 14,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 3,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "digit_equivalent_cer": 0.2153846153846154
+      },
+      "decode_seconds": 6.6728237829956925,
+      "merge": {
+        "overlap_seconds": 1,
+        "estimated_character_rate": 11.414547841223637,
+        "max_matching_characters": 23,
+        "matched_characters": 0
+      },
+      "limits": "Chunk input ranges are real; Qwen has no aligned token times. Exact overlap can fail when either chunk differs; no confidence is inferred.",
+      "adopted": false
+    }
+  ],
+  "error_alignment": {
+    "zh-fast": {
+      "normalized_reference": "蹦出来之后左手右手接一个慢动作右边再直接拉到这上面之后直接拉到这个轮胎上上边再接过去之后然后上边再直接拉到这个位置了之后右边再直接这个位置接倒过去的之后再倒一下然后右边再直接抓住这个上边了之后直接从这边上边过去了之后直接抓住这个树杈然后这个位置直接倒到这个树杈",
+      "normalized_hypothesis": "放出来之后左手右手接一个慢动作右边再直接拉到线上面之后直接拉到这个轮胎上面再接过去之后然后上面再直接拉到这个位置之后右边再直接这个位置接到我去了之后再倒一下然后右边再直接抓住这个上面的时候直接从这边上面过去之后直接抓住这个树杈然后这个位置直接抓住这个树杈",
+      "reference_characters": 130,
+      "hypothesis_characters": 127,
+      "errors": 17,
+      "cer": 0.13076923076923078,
+      "groups": [
+        {
+          "cells": [
+            {
+              "operation": "substitute",
+              "reference_index": 0,
+              "hypothesis_index": 0,
+              "reference": "蹦",
+              "hypothesis": "放"
+            }
+          ],
+          "reference_start_1_based": 1,
+          "hypothesis_start_1_based": 1,
+          "reference": "蹦",
+          "hypothesis": "放",
+          "reference_context": "蹦出来之后左手右手",
+          "hypothesis_context": "放出来之后左手右手",
+          "errors": 1
+        },
+        {
+          "cells": [
+            {
+              "operation": "substitute",
+              "reference_index": 22,
+              "hypothesis_index": 22,
+              "reference": "这",
+              "hypothesis": "线"
+            }
+          ],
+          "reference_start_1_based": 23,
+          "hypothesis_start_1_based": 23,
+          "reference": "这",
+          "hypothesis": "线",
+          "reference_context": "作右边再直接拉到这上面之后直接拉到",
+          "hypothesis_context": "作右边再直接拉到线上面之后直接拉到",
+          "errors": 1
+        },
+        {
+          "cells": [
+            {
+              "operation": "delete",
+              "reference_index": 35,
+              "hypothesis_index": 35,
+              "reference": "上",
+              "hypothesis": ""
+            }
+          ],
+          "reference_start_1_based": 36,
+          "hypothesis_start_1_based": 36,
+          "reference": "上",
+          "hypothesis": "",
+          "reference_context": "直接拉到这个轮胎上上边再接过去之后",
+          "hypothesis_context": "直接拉到这个轮胎上面再接过去之后然",
+          "errors": 1
+        },
+        {
+          "cells": [
+            {
+              "operation": "substitute",
+              "reference_index": 37,
+              "hypothesis_index": 36,
+              "reference": "边",
+              "hypothesis": "面"
+            }
+          ],
+          "reference_start_1_based": 38,
+          "hypothesis_start_1_based": 37,
+          "reference": "边",
+          "hypothesis": "面",
+          "reference_context": "拉到这个轮胎上上边再接过去之后然后",
+          "hypothesis_context": "接拉到这个轮胎上面再接过去之后然后",
+          "errors": 1
+        },
+        {
+          "cells": [
+            {
+              "operation": "substitute",
+              "reference_index": 47,
+              "hypothesis_index": 46,
+              "reference": "边",
+              "hypothesis": "面"
+            }
+          ],
+          "reference_start_1_based": 48,
+          "hypothesis_start_1_based": 47,
+          "reference": "边",
+          "hypothesis": "面",
+          "reference_context": "接过去之后然后上边再直接拉到这个位",
+          "hypothesis_context": "接过去之后然后上面再直接拉到这个位",
+          "errors": 1
+        },
+        {
+          "cells": [
+            {
+              "operation": "delete",
+              "reference_index": 57,
+              "hypothesis_index": 56,
+              "reference": "了",
+              "hypothesis": ""
+            }
+          ],
+          "reference_start_1_based": 58,
+          "hypothesis_start_1_based": 57,
+          "reference": "了",
+          "hypothesis": "",
+          "reference_context": "直接拉到这个位置了之后右边再直接这",
+          "hypothesis_context": "直接拉到这个位置之后右边再直接这个",
+          "errors": 1
+        },
+        {
+          "cells": [
+            {
+              "operation": "substitute",
+              "reference_index": 70,
+              "hypothesis_index": 68,
+              "reference": "倒",
+              "hypothesis": "到"
+            },
+            {
+              "operation": "substitute",
+              "reference_index": 71,
+              "hypothesis_index": 69,
+              "reference": "过",
+              "hypothesis": "我"
+            }
+          ],
+          "reference_start_1_based": 71,
+          "hypothesis_start_1_based": 69,
+          "reference": "倒过",
+          "hypothesis": "到我",
+          "reference_context": "再直接这个位置接倒过去的之后再倒一下",
+          "hypothesis_context": "再直接这个位置接到我去了之后再倒一下",
+          "errors": 2
+        },
+        {
+          "cells": [
+            {
+              "operation": "substitute",
+              "reference_index": 73,
+              "hypothesis_index": 71,
+              "reference": "的",
+              "hypothesis": "了"
+            }
+          ],
+          "reference_start_1_based": 74,
+          "hypothesis_start_1_based": 72,
+          "reference": "的",
+          "hypothesis": "了",
+          "reference_context": "这个位置接倒过去的之后再倒一下然后",
+          "hypothesis_context": "这个位置接到我去了之后再倒一下然后",
+          "errors": 1
+        },
+        {
+          "cells": [
+            {
+              "operation": "substitute",
+              "reference_index": 92,
+              "hypothesis_index": 90,
+              "reference": "边",
+              "hypothesis": "面"
+            },
+            {
+              "operation": "substitute",
+              "reference_index": 93,
+              "hypothesis_index": 91,
+              "reference": "了",
+              "hypothesis": "的"
+            },
+            {
+              "operation": "substitute",
+              "reference_index": 94,
+              "hypothesis_index": 92,
+              "reference": "之",
+              "hypothesis": "时"
+            },
+            {
+              "operation": "substitute",
+              "reference_index": 95,
+              "hypothesis_index": 93,
+              "reference": "后",
+              "hypothesis": "候"
+            }
+          ],
+          "reference_start_1_based": 93,
+          "hypothesis_start_1_based": 91,
+          "reference": "边了之后",
+          "hypothesis": "面的时候",
+          "reference_context": "再直接抓住这个上边了之后直接从这边上边过",
+          "hypothesis_context": "再直接抓住这个上面的时候直接从这边上面过",
+          "errors": 4
+        },
+        {
+          "cells": [
+            {
+              "operation": "substitute",
+              "reference_index": 102,
+              "hypothesis_index": 100,
+              "reference": "边",
+              "hypothesis": "面"
+            }
+          ],
+          "reference_start_1_based": 103,
+          "hypothesis_start_1_based": 101,
+          "reference": "边",
+          "hypothesis": "面",
+          "reference_context": "之后直接从这边上边过去了之后直接抓",
+          "hypothesis_context": "时候直接从这边上面过去之后直接抓住",
+          "errors": 1
+        },
+        {
+          "cells": [
+            {
+              "operation": "delete",
+              "reference_index": 105,
+              "hypothesis_index": 103,
+              "reference": "了",
+              "hypothesis": ""
+            }
+          ],
+          "reference_start_1_based": 106,
+          "hypothesis_start_1_based": 104,
+          "reference": "了",
+          "hypothesis": "",
+          "reference_context": "接从这边上边过去了之后直接抓住这个",
+          "hypothesis_context": "接从这边上面过去之后直接抓住这个树",
+          "errors": 1
+        },
+        {
+          "cells": [
+            {
+              "operation": "substitute",
+              "reference_index": 124,
+              "hypothesis_index": 121,
+              "reference": "倒",
+              "hypothesis": "抓"
+            },
+            {
+              "operation": "substitute",
+              "reference_index": 125,
+              "hypothesis_index": 122,
+              "reference": "到",
+              "hypothesis": "住"
+            }
+          ],
+          "reference_start_1_based": 125,
+          "hypothesis_start_1_based": 122,
+          "reference": "倒到",
+          "hypothesis": "抓住",
+          "reference_context": "然后这个位置直接倒到这个树杈",
+          "hypothesis_context": "然后这个位置直接抓住这个树杈",
+          "errors": 2
+        }
+      ],
+      "alignment_note": "One deterministic optimal alignment; other tie-equivalent edit locations may exist.",
+      "classification_against_reference_only": {
+        "content_substitutions": {
+          "errors": 6,
+          "examples": [
+            "蹦→放",
+            "这→线",
+            "倒过→到我",
+            "倒到→抓住"
+          ]
+        },
+        "direction_wording": {
+          "errors": 4,
+          "example": "边→面"
+        },
+        "deletions": {
+          "errors": 3,
+          "characters": [
+            "上",
+            "了",
+            "了"
+          ]
+        },
+        "particle_or_temporal_wording": {
+          "errors": 4,
+          "examples": [
+            "的→了",
+            "了之后→的时候"
+          ]
+        },
+        "note": "This classifies written differences against the unchanged provider reference, not independently verified acoustic truth."
+      }
+    },
+    "zh-noisy-digits": {
+      "normalized_reference": "拨号请再说一次请说出您要拨打的号码幺三五八幺八八七五七一三五八二八八八幺八八纠正纠正九六九纠正纠正不是九六",
+      "normalized_hypothesis": "拨号请再说一次请说出你要拨打的号码幺三五八幺八八七五五七一三五八二八八八幺八八八幺八八七百里有建设项目限速一百公里纠正纠正九六九纠正纠正不是九六",
+      "reference_characters": 53,
+      "hypothesis_characters": 72,
+      "errors": 20,
+      "cer": 0.37735849056603776,
+      "groups": [
+        {
+          "cells": [
+            {
+              "operation": "substitute",
+              "reference_index": 10,
+              "hypothesis_index": 10,
+              "reference": "您",
+              "hypothesis": "你"
+            }
+          ],
+          "reference_start_1_based": 11,
+          "hypothesis_start_1_based": 11,
+          "reference": "您",
+          "hypothesis": "你",
+          "reference_context": "请再说一次请说出您要拨打的号码幺三",
+          "hypothesis_context": "请再说一次请说出你要拨打的号码幺三",
+          "errors": 1
+        },
+        {
+          "cells": [
+            {
+              "operation": "insert",
+              "reference_index": 25,
+              "hypothesis_index": 25,
+              "reference": "",
+              "hypothesis": "五"
+            }
+          ],
+          "reference_start_1_based": 26,
+          "hypothesis_start_1_based": 26,
+          "reference": "",
+          "hypothesis": "五",
+          "reference_context": "幺三五八幺八八七五七一三五八二八八",
+          "hypothesis_context": "幺三五八幺八八七五五七一三五八二八",
+          "errors": 1
+        },
+        {
+          "cells": [
+            {
+              "operation": "insert",
+              "reference_index": 32,
+              "hypothesis_index": 33,
+              "reference": "",
+              "hypothesis": "八"
+            },
+            {
+              "operation": "insert",
+              "reference_index": 32,
+              "hypothesis_index": 34,
+              "reference": "",
+              "hypothesis": "八"
+            },
+            {
+              "operation": "insert",
+              "reference_index": 32,
+              "hypothesis_index": 35,
+              "reference": "",
+              "hypothesis": "八"
+            },
+            {
+              "operation": "insert",
+              "reference_index": 32,
+              "hypothesis_index": 36,
+              "reference": "",
+              "hypothesis": "幺"
+            }
+          ],
+          "reference_start_1_based": 33,
+          "hypothesis_start_1_based": 34,
+          "reference": "",
+          "hypothesis": "八八八幺",
+          "reference_context": "七五七一三五八二八八八幺八八纠正纠",
+          "hypothesis_context": "五五七一三五八二八八八幺八八八幺八八七百",
+          "errors": 4
+        },
+        {
+          "cells": [
+            {
+              "operation": "insert",
+              "reference_index": 38,
+              "hypothesis_index": 43,
+              "reference": "",
+              "hypothesis": "七"
+            },
+            {
+              "operation": "insert",
+              "reference_index": 38,
+              "hypothesis_index": 44,
+              "reference": "",
+              "hypothesis": "百"
+            },
+            {
+              "operation": "insert",
+              "reference_index": 38,
+              "hypothesis_index": 45,
+              "reference": "",
+              "hypothesis": "里"
+            },
+            {
+              "operation": "insert",
+              "reference_index": 38,
+              "hypothesis_index": 46,
+              "reference": "",
+              "hypothesis": "有"
+            },
+            {
+              "operation": "insert",
+              "reference_index": 38,
+              "hypothesis_index": 47,
+              "reference": "",
+              "hypothesis": "建"
+            },
+            {
+              "operation": "insert",
+              "reference_index": 38,
+              "hypothesis_index": 48,
+              "reference": "",
+              "hypothesis": "设"
+            },
+            {
+              "operation": "insert",
+              "reference_index": 38,
+              "hypothesis_index": 49,
+              "reference": "",
+              "hypothesis": "项"
+            },
+            {
+              "operation": "insert",
+              "reference_index": 38,
+              "hypothesis_index": 50,
+              "reference": "",
+              "hypothesis": "目"
+            },
+            {
+              "operation": "insert",
+              "reference_index": 38,
+              "hypothesis_index": 51,
+              "reference": "",
+              "hypothesis": "限"
+            },
+            {
+              "operation": "insert",
+              "reference_index": 38,
+              "hypothesis_index": 52,
+              "reference": "",
+              "hypothesis": "速"
+            },
+            {
+              "operation": "insert",
+              "reference_index": 38,
+              "hypothesis_index": 53,
+              "reference": "",
+              "hypothesis": "一"
+            },
+            {
+              "operation": "insert",
+              "reference_index": 38,
+              "hypothesis_index": 54,
+              "reference": "",
+              "hypothesis": "百"
+            },
+            {
+              "operation": "insert",
+              "reference_index": 38,
+              "hypothesis_index": 55,
+              "reference": "",
+              "hypothesis": "公"
+            },
+            {
+              "operation": "insert",
+              "reference_index": 38,
+              "hypothesis_index": 56,
+              "reference": "",
+              "hypothesis": "里"
+            }
+          ],
+          "reference_start_1_based": 39,
+          "hypothesis_start_1_based": 44,
+          "reference": "",
+          "hypothesis": "七百里有建设项目限速一百公里",
+          "reference_context": "八二八八八幺八八纠正纠正九六九纠正",
+          "hypothesis_context": "八幺八八八幺八八七百里有建设项目限速一百公里纠正纠正九六九纠",
+          "errors": 14
+        }
+      ],
+      "alignment_note": "One deterministic optimal alignment; other tie-equivalent edit locations may exist.",
+      "classification_against_reference_only": {
+        "pronoun_substitution": {
+          "errors": 1,
+          "example": "您→你"
+        },
+        "extra_digit": {
+          "errors": 1,
+          "example": "七五七→七五五七"
+        },
+        "additional_digits": {
+          "errors": 4,
+          "raw_output_phrase": "八幺八八",
+          "note": "Repeated digits have several tie-equivalent optimal alignment locations."
+        },
+        "unannotated_navigation_like_phrase": {
+          "errors": 14,
+          "text": "七百里有建设项目限速一百公里",
+          "audibility_independently_verified": false
+        },
+        "score_unchanged": true
+      }
+    }
+  },
+  "qwen17_uncompleted": {
+    "repository": "solavr/sherpa-onnx-qwen3-asr-1.7B-int8",
+    "revision": "455608654fe097e55cc9ecac65fd83e53d2347c1",
+    "is_official_qwen_or_sherpa_release": false,
+    "base_model": "Qwen/Qwen3-ASR-1.7B@7278e1e70fe206f11671096ffdd38061171dd6e5",
+    "expected_weights_and_tokenizer_bytes": 4394550026,
+    "expected_model_sha256": {
+      "conv_frontend.onnx": "04e7cf82516a445c3dfb7d9662ca3231afb8220c14116c7cec83aedb0f3a8fd7",
+      "encoder.int8.onnx": "d4a47f8aef45649486db25a12880e50a4844fe107f4f59adfee79170875c0b7f",
+      "decoder.int8.onnx": "5873c56e5431830065bbc7814fe64e65608cb83c60cd346b0649524d0731db37",
+      "decoder.int8.onnx.data": "92bdbc584e1bc4657cdb4de4cad10f336082a754a0e9ce52acab2f9050a88b20",
+      "tokenizer/vocab.json": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910",
+      "tokenizer/merges.txt": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5",
+      "tokenizer/tokenizer_config.json": "4942d005604266809309cabc9f4e9cb89ce855d59b14681fdc0e1cc62ea26c4c"
+    },
+    "conversion_manifest_sha256": "1cf672902d8e95101362c647a6e415b54176c5d71f3d383cb0be3cdd7104ddba",
+    "verified_complete_downloads": {
+      "conv_frontend.onnx": {
+        "bytes": 54223863,
+        "sha256": "04e7cf82516a445c3dfb7d9662ca3231afb8220c14116c7cec83aedb0f3a8fd7"
+      }
+    },
+    "status": "download stopped within bounded task; no inference or accuracy result",
+    "reason": "Public download bandwidth made 4.4GB impossible within the ten-minute budget, including parallel Range transfer.",
+    "sherpa_stft_fix_verified": {
+      "runtime_version": "1.13.8",
+      "source_url": "https://github.com/k2-fsa/sherpa-onnx/blob/v1.13.8/sherpa-onnx/csrc/offline-recognizer-qwen3-asr-impl.cc",
+      "source_sha256": "d9daad0eafcd066fa088eb06d858ecfd394fef35ce1e6f595ab934e6e5525824",
+      "qwen_sets_align_to_stft_center": true,
+      "repetition_loop_guard_in_source": true
+    }
+  },
+  "limitations": [
+    "Official INT8 artifact does not reproduce official BF16 accuracy claims.",
+    "Native CPU run, not browser-WASM or phone feasibility evidence.",
+    "No aligner was loaded; returned token timing is not acoustic word alignment.",
+    "Small non-independent diagnostics do not establish general ASR accuracy.",
+    "Chinese is forced for the synthetic-noise case, matching its benchmark selection.",
+    "The provider digit reference does not contain the navigation-like phrase emitted by Qwen; other models omit it, but no independent listening verification establishes whether it is audible background speech or a model error. Original strict score is retained.",
+    "The fast-speech reference and hypothesis differ on direction words, particles and actions. One optimal character alignment is retained separately without changing the scoring standard.",
+    "Qwen0.6 weights are roughly 987MB; native RSS rose to about 2.46GiB across cases. A single previous WEB-WASM inference is insufficient evidence for repeated browser use or mobile reliability.",
+    "No user recording, video frame, WAV or PCM is included. The private case retains only hashes, the user-supplied reference and diagnostic transcript.",
+    "These six cases include five independent recordings and one synthetic negative. Vendor references are not independently hand-annotated; this is not a representative accuracy benchmark.",
+    "Both fast-speech algorithm variants worsened CER and were not added to production."
+  ]
+}
