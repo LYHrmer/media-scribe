@@ -9,3 +9,5 @@ analysis-model-cache/
 public/models-ocr/
 public/vendor/opencv/
 public/models-punctuation/
+public/models-vad/
+public/models-sensevoice/
