@@ -63,3 +63,15 @@ BENCHMARK_DECODING=text CASES=zh-clean,zh-fast,zh-noisy-digits,zh-with-pause SKI
 ```
 
 脚本执行实际 Vite 构建产物和 WASM，不使用原生推理替代。HTTP、Cache API、Worker 消息传输在 Node VM 中模拟；这不是手机浏览器 UI 测试。记录实际输出、CER/WER、文件哈希和缓存复用。参考答案只参与推理后评分。`process_rss_mib` 包含同进程多个模拟 Worker、测试缓存及下载缓冲，不是浏览器标签页或手机内存测量。
+
+## v0.5.1：真实中英文采访
+
+见 [MELI 固定输入和许可](../../docs/benchmarks/MELI_INTERVIEWS.md) 与 [采访实验](../../docs/INTERVIEW_VALIDATION.md)。
+
+```sh
+python scripts/benchmarks/prepare-meli-interviews.py --output-dir /absolute/outside-repo/meli
+python scripts/benchmarks/prepare-meli-interviews.py --output-dir /absolute/outside-repo/meli --holdout
+SKIP_CACHE_CHECK=1 BENCHMARK_DECODING=text node --experimental-vm-modules scripts/benchmarks/run-sensevoice-production.mjs dist /absolute/outside-repo/meli/cases.local.json /absolute/outside-repo/meli/retry.json
+```
+
+默认识别省略 BENCHMARK_DECODING；中文/英文应分别选择产品对应模型。现有 Whisper 运行器通过 BENCHMARK_DECODING=text 调用真实英文重试（20秒/3秒）；timestamps保留30秒/5秒。媒体和参考清单不要提交；公开结果记录参考SHA、实际输出、模式和模型指纹，MELI标点不评分。顺序运行大模型以避免测试容器并行内存耗尽，不把退出137记为识别错字。
