@@ -1,0 +1,14 @@
+{
+  "model": "sherpa-Qwen3-ASR-0.6B-int8",
+  "runtime": "1.13.8",
+  "num_threads": 2,
+  "max_total_len": 2048,
+  "max_new_tokens": 512,
+  "temperature": 1e-06,
+  "top_p": 0.8,
+  "seed": 42,
+  "language": "explicit same Chinese/English as current product",
+  "hotwords": "",
+  "reason": "Reserve context for complete <=45s interviews and generation; model ONNX max_total_len dimension verified dynamic",
+  "comparison_note": "Not numerically identical decoder limits to older six-case 512/128 diagnostic. A separate fixed six-case historical replication uses old limits."
+}

@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "purpose": "Portable official Web WASM research assets acquisition and reference-free runner; not a production Worker or browser/mobile validation.",
+  "packaging_started_inference": false,
+  "runner_sha256": "51433db6d36340339124e61d134e700f0291f9e444701c6031ffea79d599025b",
+  "official_runtime": {
+    "archive_url": "https://pub.dev/api/archives/sherpa_onnx_web-1.13.8.tar.gz",
+    "archive_bytes": 4351745,
+    "archive_sha256": "e25a3813eb080636280b23dd4b0098252902675158b66dceda1efba061adf5d7",
+    "version": "1.13.8",
+    "files": [
+      {
+        "file": "sherpa-onnx-wasm-web.js",
+        "bytes": 93039,
+        "sha256": "28f909145d93018c90c181035a008880ceaa94a72b66603dc7bb7c619714c23c"
+      },
+      {
+        "file": "sherpa-onnx-wasm-web.wasm",
+        "bytes": 15133855,
+        "sha256": "e0d84744c39a28121f7738a161a21612788f4e8f07879a7224e74919e9831573"
+      },
+      {
+        "file": "sherpa-onnx-asr.js",
+        "bytes": 53867,
+        "sha256": "d51ae8e8b756ee5e53423ffada0c9702973f154f561aca7984fe0b12f4060178"
+      }
+    ],
+    "wasm_memory": {
+      "initial_bytes": 536870912,
+      "maximum_bytes": 2147483648,
+      "shared": false,
+      "evidence": "Parsed actual WASM section 5 limits and matched runtime JS getHeapMax."
+    },
+    "status": "prepared_only_no_WASM_initialization_no_inference"
+  },
+  "verification": {
+    "python_syntax": "passed",
+    "node_syntax": "passed",
+    "download_helper_existing_assets_verify_only": "passed; no network or initialization",
+    "download_helper_local_archive_extract_and_verify": "passed into a separate local check directory; all 3 asset hashes and provenance bytes equal the actual experimental assets",
+    "network_download_path": "not exercised again during packaging; original official archive was retrieved and pinned earlier"
+  },
+  "files": [
+    {
+      "path": "scripts/run-qwen-web-wasm.mjs",
+      "experiment_source": "scripts/run-qwen-web-wasm.mjs",
+      "source_sha256": "51433db6d36340339124e61d134e700f0291f9e444701c6031ffea79d599025b",
+      "packaged_sha256": "51433db6d36340339124e61d134e700f0291f9e444701c6031ffea79d599025b",
+      "change": "byte-identical copy"
+    },
+    {
+      "path": "scripts/download-qwen-web-runtime.py",
+      "experiment_source": "scripts/download-qwen-web-runtime.py",
+      "source_sha256": "1253466190661fcc313b211f8a314f2fae0415ab0697b844f636508b58a6a567",
+      "packaged_sha256": "1253466190661fcc313b211f8a314f2fae0415ab0697b844f636508b58a6a567",
+      "change": "byte-identical copy"
+    },
+    {
+      "path": "web-kv1280-protocol-frozen.json",
+      "experiment_source": "web-kv1280-protocol-frozen.json",
+      "source_sha256": "a6a15fe96a2b07c7706f4a7cf3d74ee3edabb2906f92487c8ffc74f999edd895",
+      "packaged_sha256": "a6a15fe96a2b07c7706f4a7cf3d74ee3edabb2906f92487c8ffc74f999edd895",
+      "change": "byte-identical copy"
+    },
+    {
+      "path": "WEB_RUNTIME_PROVENANCE.json",
+      "experiment_source": "web-runtime/provenance.json",
+      "source_sha256": "68233015eb9a711b797a717c7f8cf38c09ab534e419a2fef6276eabd1b9118a3",
+      "packaged_sha256": "68233015eb9a711b797a717c7f8cf38c09ab534e419a2fef6276eabd1b9118a3",
+      "change": "byte-identical copy"
+    },
+    {
+      "path": "BROWSER_READINESS.md",
+      "experiment_source": "browser-readiness.md",
+      "source_sha256": "15c61fc1ecaf090b7fa63e3cd5b5184f98df93ede90d0e5c7251b6f187d42842",
+      "packaged_sha256": "07278be8dd5b070b6941ad81edfcfb4b8f2d3864e592a2b22004701b8c415221",
+      "change": "Repository-relative command and source paths only; experimental facts unchanged"
+    }
+  ],
+  "documentation": {
+    "path": "WEB_WASM.md",
+    "sha256": "8db20fda87bbd22e7431621a60a821c7956b8a79f561cda9d98d21f5696f2505",
+    "purpose": "New portable usage documentation; no model execution."
+  },
+  "final_experiment_status": {
+    "closed": true,
+    "production_integration": false,
+    "no_further_inference_this_round": true,
+    "kv2048_completed": 8,
+    "kv1280_completed": 10,
+    "fixed_case_count": 31,
+    "kv1280_failed_case": "meli-m00a-zh",
+    "kv1280_error": "Aborted(). Build with -sASSERTIONS for more info.",
+    "kv1280_wasm_heap_bytes": 2147483648,
+    "kv1280_rss_bytes": 2402598912,
+    "kv1280_report": "web-qwen-all-kv1280-v2.json",
+    "kv1280_report_sha256": "7504ed0e98f1fe9bb6c5b55b71e94092eb79818250afa0f81790df485894bd55",
+    "interpretation": "Both sequential protocols failed. Completion counts are not accuracy. Capacity proof does not establish lifecycle/workspace stability. Exact abort cause unknown; OOM not diagnosed."
+  }
+}

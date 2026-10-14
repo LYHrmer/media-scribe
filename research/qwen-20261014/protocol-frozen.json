@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-14",
+  "objective": "Reduce recognition errors on previously unseen speakers without reference leakage",
+  "candidates": [
+    {
+      "name": "official-Qwen3-ASR-0.6B-hf",
+      "revision": "7f1569a48a89f3e3f4dc3a5c9d28bddd903bc76c",
+      "dtype": "bfloat16"
+    },
+    {
+      "name": "official-Qwen3-ASR-1.7B-hf",
+      "revision": "bcd2b5b7f32b480ab5790554cfa8347f246a14f3",
+      "dtype": "bfloat16"
+    },
+    {
+      "name": "sherpa-Qwen3-ASR-0.6B-int8",
+      "purpose": "quantized deployability comparison"
+    }
+  ],
+  "official_decoding": {
+    "do_sample": false,
+    "max_new_tokens": 512,
+    "batch_size": 1,
+    "language": "same specified language as current product",
+    "context_or_hotwords": null,
+    "audio_processing": "unchanged frozen 16k PCM, full answer, no noise suppression or speed changes",
+    "primary_text": "Decode generated token suffix only with tokenizer skip_special_tokens=True and clean_up_tokenization_spaces=False; forced-language prefill belongs to input and is excluded with all input tokens; no repetition repair",
+    "official_processed_text": "Retain processor parsed/transcription_only output separately as diagnostic because Transformers 5.19.0 applies built-in repetition repair; never substitute it for primary text based on reference scores",
+    "interface_audit_note": "Recorded before first official model inference after reading installed Transformers 5.19.0 source; ndarray audio is passed unchanged with explicit 16000 Hz processor audio_kwargs"
+  },
+  "data_policy": {
+    "old_meli_15": "development/regression, not unseen",
+    "holdout": "8 new speakers frozen independently before inference, 4 Chinese 4 English",
+    "references": "scorer only, model process accepts whitelist with no reference"
+  },
+  "acceptance": {
+    "recognition": "Per-language corpus errors and per-speaker scores, keep all failures, no reference-based selection",
+    "deployment": "Native improvement alone does not validate browser. Resource use and WebAssembly/browser availability checked separately",
+    "punctuation": "MELI N/A; keep real punctuation without altering lexical scoring"
+  }
+}

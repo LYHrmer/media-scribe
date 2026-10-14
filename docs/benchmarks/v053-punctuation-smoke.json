@@ -1,0 +1,21 @@
+{
+  "version": "0.5.3",
+  "scope": "Actual compiled Vite ASR + VAD + punctuation workers and real WASM; only HTTP, Cache API and worker transport simulated. No browser UI or phone QA claim.",
+  "status": "pass",
+  "case_id": "user-lyrics",
+  "raw_text_unchanged": true,
+  "lexical_text_unchanged": true,
+  "adjacent_comma_before_fullstop_removed": true,
+  "asr_accuracy_improved": false,
+  "fingerprints": {
+    "vad.worker-C9h8-FgH.js": "e19bc613db3bdaa1e87f1fa91a6a4722613a83a4204c2b8d1bdb4ecabef04ebe",
+    "punctuation.worker-Ch2hTEJS.js": "178ac8d7ab9e4f7fd13a75d37763eafa1d276ac9c388771dcf7be98642620209",
+    "sensevoice.worker-Ch3ee6Yz.js": "e513d56cfd3d1b405a1e25211ce120bf24d56c415869e4bacd478f1dddb21ddc",
+    "models-sensevoice/runtime.mjs": "3a7e50f11a449f4b9fd2b9373fbb3f16fd487cce804ae6f51241d72c5f0dbcbe",
+    "models-sensevoice/asr.mjs": "6686bf26631572b161fc2b6532302d8eeda91a774c32f3216eced57ec5769ff2"
+  },
+  "source_reports": {
+    "baseline-new-zh-plus-lyrics.json": "bb91064df978db2cad3a9adeb369b8c4a3882753cefbc81a5c69ff4fb7709c37",
+    "v053-lyrics-punctuation-smoke.json": "bac4de899c92391b38eda6be461b9483f3d701cf895a5de64663730055715bf6"
+  }
+}

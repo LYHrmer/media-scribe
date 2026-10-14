@@ -23,15 +23,27 @@ export function splitSenseRanges(audio, ranges, sampleRate = 16000) {
 
 export function normalizeSensePunctuation(result) {
   const rawText = String(result.text || '');
-  const text = rawText.replace(/。{2,}/gu, '。');
+  // SenseVoice can emit a comma immediately before its sentence stop. Remove
+  // only that adjacent comma run; retain question/exclamation marks, ellipses,
+  // quotes and whitespace. The worker keeps the untouched model text as rawText.
+  const text = rawText.replace(/，+(?=。)/gu, '').replace(/。{2,}/gu, '。');
   if (text === rawText) return result;
   if (!Array.isArray(result.tokens) || !Array.isArray(result.timestamps)
-    || result.tokens.length !== result.timestamps.length || result.tokens.join('').trim() !== rawText.trim()) return { ...result, text };
+    || result.tokens.length !== result.timestamps.length || result.tokens.some(token => typeof token !== 'string')
+    || result.tokens.join('').trim() !== rawText.trim()) return { ...result, text };
+  const joined = result.tokens.join('');
+  const removedOffsets = new Set();
+  for (const match of joined.matchAll(/，+(?=。)/gu)) {
+    for (let index = match.index; index < match.index + match[0].length; index++) removedOffsets.add(index);
+  }
   const tokens = [], timestamps = [];
-  let previous = '';
+  let previous = '', sourceOffset = 0;
   for (let i = 0; i < result.tokens.length; i++) {
     let token = '';
     for (const char of result.tokens[i]) {
+      const removed = removedOffsets.has(sourceOffset);
+      sourceOffset += char.length;
+      if (removed) continue;
       if (char !== '。' || previous !== '。') token += char;
       previous = char;
     }

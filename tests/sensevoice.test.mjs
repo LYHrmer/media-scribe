@@ -122,3 +122,55 @@ test('repeated Chinese full stops are cleaned without changing words, decimals o
   assert.equal(late.segments.length, 1);
   assert.equal(late.segments[0].text, '你好。');
 });
+
+test('SenseVoice comma-stop artifact is removed across token boundaries with surviving timestamps intact', () => {
+  // Entirely synthetic text and alignment preserve repetition and split
+  // punctuation without publishing a private recording's transcription.
+  const text = '今今天图书开放，。';
+  for (const tokens of [
+    ['今今天', '图书开放', '，', '。'],
+    ['今今天', '图书开放，', '。'],
+    ['今今天', '图书开放', '，。'],
+  ]) {
+    const timestamps = tokens.map((_, index) => index * 0.3);
+    const original = { text, tokens, timestamps };
+    const before = structuredClone(original);
+    const cleaned = normalizeSensePunctuation(original);
+    assert.equal(cleaned.text, '今今天图书开放。');
+    assert.equal(cleaned.tokens.join(''), cleaned.text);
+    assert.deepEqual(original, before);
+    const retained = tokens.map((token, index) => ({ token: token.replace(/，/gu, ''), time: timestamps[index] })).filter(item => item.token);
+    assert.deepEqual(cleaned.tokens, retained.map(item => item.token));
+    assert.deepEqual(cleaned.timestamps, retained.map(item => item.time));
+    const cues = senseResultSegments(cleaned, 2);
+    assert.equal(cues.approximate, false);
+    assert.equal(cues.segments.map(segment => segment.text).join(''), cleaned.text);
+  }
+});
+
+test('comma-stop normalization preserves valid punctuation, quoted text, spacing, digits and words', () => {
+  for (const text of ['为什么？！', '真的吗！？', '等一下……', '等一下...', '他说：“你好。”',
+    '9.5点，开始。', '你好，\n。', '你好， 。', '你好，”。', '甲,。', '甲，.', '甲、。']) {
+    const result = { text, tokens: [text], timestamps: [0] };
+    assert.equal(normalizeSensePunctuation(result), result, text);
+  }
+  const result = { text: '😀他说：“好，。”再见，，。。', tokens: ['😀他说：“好，', '。”再见，', '，。', '。'], timestamps: [0, 0.3, 0.6, 0.9] };
+  const cleaned = normalizeSensePunctuation(result);
+  assert.equal(cleaned.text, '😀他说：“好。”再见。');
+  assert.equal(cleaned.tokens.join(''), cleaned.text);
+  assert.deepEqual(cleaned.timestamps, [0, 0.3, 0.6]);
+  assert.deepEqual(normalizeSensePunctuation(cleaned), cleaned);
+  assert.equal(cleaned.text.replace(/[，。]/gu, ''), result.text.replace(/[，。]/gu, ''));
+});
+
+test('unusable token metadata cannot be invented by punctuation cleanup', () => {
+  for (const extra of [{}, { tokens: ['另一个文本'], timestamps: [0] },
+    { tokens: ['你好，', '。'], timestamps: [0] }, { tokens: ['你好，', null], timestamps: [0, 1] }]) {
+    const original = { text: '你好，。', ...extra };
+    const before = structuredClone(original);
+    const cleaned = normalizeSensePunctuation(original);
+    assert.equal(cleaned.text, '你好。');
+    assert.deepEqual(original, before);
+    assert.equal(senseResultSegments(cleaned, 2).approximate, true);
+  }
+});

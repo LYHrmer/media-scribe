@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "purpose": "Research runner portability package; no models, media, references or inference transcripts included.",
+  "packaging_executes_downloads_or_models": false,
+  "files": [
+    {
+      "path": "download-official.py",
+      "source_sha256": "6864698eb1b8067e416a629afb903105bf64f3866374ebad2641b3d9b3b777d8",
+      "packaged_sha256": "6864698eb1b8067e416a629afb903105bf64f3866374ebad2641b3d9b3b777d8",
+      "change": "byte-identical copy"
+    },
+    {
+      "path": "protocol-frozen.json",
+      "source_sha256": "4e3310b1e37d803681e09d53fb73b939ac90df259a9bdbc3967318d06f3ff4a0",
+      "packaged_sha256": "4e3310b1e37d803681e09d53fb73b939ac90df259a9bdbc3967318d06f3ff4a0",
+      "change": "byte-identical copy"
+    },
+    {
+      "path": "native-protocol-frozen.json",
+      "source_sha256": "18751d948ae4666861accdd92c936a4ee1857d86c6d31b4fbbe0348d169dfbc2",
+      "packaged_sha256": "18751d948ae4666861accdd92c936a4ee1857d86c6d31b4fbbe0348d169dfbc2",
+      "change": "byte-identical copy"
+    },
+    {
+      "path": "scripts/run-official-qwen.py",
+      "source_sha256": "c1cd3d7241016dd286bf1dc7dd8d0a4de641be96e80e9a5e3b62317c39ad44e8",
+      "packaged_sha256": "c1cd3d7241016dd286bf1dc7dd8d0a4de641be96e80e9a5e3b62317c39ad44e8",
+      "change": "byte-identical copy"
+    },
+    {
+      "path": "scripts/run-native-qwen.py",
+      "source_sha256": "bac97a593172f7e9d1886f846398ae73bdff3563aa68b63dce5b11aaa302671a",
+      "packaged_sha256": "bac97a593172f7e9d1886f846398ae73bdff3563aa68b63dce5b11aaa302671a",
+      "change": "byte-identical copy"
+    },
+    {
+      "path": "scripts/download-qwen-int8.py",
+      "source_sha256": "85412930b50dc54952d86b798c106315b59f9970c94555a760896cb422ec203b",
+      "packaged_sha256": "fd9fa97df848d5c58d5997fce8dd45e979d947563f8aa8c1cb0d29e2cf2d0eda",
+      "change": "Only ROOT download destination adapted from a session-specific absolute directory to script.parent.parent/models/qwen3-asr-0.6B-int8; URLs, revisions, hashes and behavior unchanged."
+    }
+  ]
+}
