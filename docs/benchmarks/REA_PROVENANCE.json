@@ -1,0 +1,54 @@
+{
+  "rea_package": "rea-agents",
+  "version": "6.4.0",
+  "npm_integrity": "sha512-Vj1zWfSlna5bphGoaoI/TcVBuYvze9u+OyPC3Shz8YkBqaCTqB4COnnRoX7XDwMpwI24ZlFEel2yEj0k8LTWEQ==",
+  "installation": "local --ignore-scripts; no setup/global/MCP configuration changes",
+  "successful_workflow": "import-reference-source",
+  "full_application_trace": "attempted twice per repository; unsupported host process ownership check (procps lookup self failure)",
+  "source_imports": [
+    {
+      "project": "Whisper Web",
+      "file": "whisper-web-source-import-full.json",
+      "artifact_sha256": "37063af85084c5cc055e83dfa4cc90d8de9572c5b35ad30090b755c5402c1a49",
+      "source_root_sha256": "f1476883b0a25d18b1bb9ff578f02fc543b63dbc2cd54f0586156e3eda15ca9f",
+      "git_head": "81869ed62970ff4373509b6004a6c9a3f0c5b64d",
+      "schema": "HistoricalSourceGraph",
+      "inventory_state": "partial",
+      "entry_count": 42,
+      "relationship_count": 34,
+      "parse_failure_count": 0,
+      "exclusions": [
+        {
+          "path": ".git",
+          "reason": "default-ignored",
+          "pattern": ".git/"
+        }
+      ],
+      "limitations": [
+        "Path identity is revalidated around operations; Node lacks portable descriptor-relative openat traversal, so a syscall-boundary pathname race remains."
+      ]
+    },
+    {
+      "project": "Transcribe.js",
+      "file": "transcribe-js-source-import-full.json",
+      "artifact_sha256": "2454d8e5da89e63fe71991e636438eaba05422077997ef394da7d7a9ff4da9ea",
+      "source_root_sha256": "ad66cd0d1e460e85126352f6f662a56d0818de4a1d3c3165e7e61ce3194b7155",
+      "git_head": "f3ad934d682ef57c7ff612de0382cc196ab7b6b2",
+      "schema": "HistoricalSourceGraph",
+      "inventory_state": "partial",
+      "entry_count": 80,
+      "relationship_count": 39,
+      "parse_failure_count": 0,
+      "exclusions": [
+        {
+          "path": ".git",
+          "reason": "default-ignored",
+          "pattern": ".git/"
+        }
+      ],
+      "limitations": [
+        "Path identity is revalidated around operations; Node lacks portable descriptor-relative openat traversal, so a syscall-boundary pathname race remains."
+      ]
+    }
+  ]
+}

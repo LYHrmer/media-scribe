@@ -9,6 +9,7 @@ const ALLOWED_MODELS = new Set(['Xenova/whisper-tiny', 'Xenova/whisper-small']);
 const ALLOWED_LANGUAGES = new Set(['chinese', 'english']);
 const ALLOWED_DECODINGS = new Set(['timestamps', 'text']);
 const APPROXIMATE_TIMING_WARNING = '本次采用另一种正文解码尝试；字幕时间仅为音频段的粗略范围，需要对照原音核对。';
+const INVALID_TIMING_WARNING = '部分字幕的时间戳无效或与正文不一致；已保留完整正文，相关字幕仅使用音频段的粗略范围，请对照原音核对。';
 const SAMPLE_RATE = 16000;
 const MAX_SAMPLES = SAMPLE_RATE * 30 * 60;
 // Keep only one model resident: loading multiple models can exhaust the memory
@@ -116,19 +117,26 @@ function actionableError(error) {
 }
 
 function normalizeSegments(output, duration) {
+  const text = String(output.text || '').trim();
+  if (!text || duration < 0.001) return { segments: [], approximate: false };
+  const fallback = () => ({ segments: [{ start: 0, end: duration, text }], approximate: true });
+  if (!Array.isArray(output.chunks)) return fallback();
   const segments = [];
-  for (const chunk of output.chunks || []) {
-    const text = String(chunk.text || '').trim();
-    if (!text) continue;
+  for (const chunk of output.chunks) {
+    const part = String(chunk?.text || '').trim();
+    if (!part) continue;
     const rawStart = chunk.timestamp?.[0];
     const rawEnd = chunk.timestamp?.[1];
-    const start = Math.max(segments.at(-1)?.start || 0, Math.min(duration, Number.isFinite(rawStart) ? rawStart : 0));
-    const end = Math.min(duration, Number.isFinite(rawEnd) ? rawEnd : duration);
-    if (end > start && Math.round(end * 1000) > Math.round(start * 1000)) segments.push({ start, end, text });
+    // Invalid timestamps are not permission to drop words or pretend that a
+    // clamped timestamp is precise. Preserve this range's complete transcript.
+    if (!Number.isFinite(rawStart) || !Number.isFinite(rawEnd) || rawStart < 0 || rawEnd > duration
+      || rawStart < (segments.at(-1)?.start ?? 0) || rawEnd <= rawStart
+      || Math.round(rawEnd * 1000) <= Math.round(rawStart * 1000)) return fallback();
+    segments.push({ start: rawStart, end: rawEnd, text: part });
   }
-  const text = String(output.text || '').trim();
-  if (!segments.length && text && duration >= 0.001) segments.push({ start: 0, end: duration, text });
-  return segments;
+  const withoutWhitespace = value => value.replace(/\s/gu, '');
+  if (withoutWhitespace(segments.map(segment => segment.text).join('')) !== withoutWhitespace(text)) return fallback();
+  return { segments, approximate: false };
 }
 
 self.addEventListener('message', async event => {
@@ -175,6 +183,7 @@ self.addEventListener('message', async event => {
     };
     const texts = [];
     const segments = [];
+    let approximate = false;
     for (const range of ranges) {
       const audio = range.start === 0 && range.end === job.audio.length
         ? job.audio : job.audio.subarray(range.start, range.end);
@@ -190,8 +199,11 @@ self.addEventListener('message', async event => {
           segments.push({ start: offset, end, text });
         }
       } else {
-        for (const segment of normalizeSegments(output, audio.length / SAMPLE_RATE)) {
-          segments.push({ ...segment, start: segment.start + offset, end: segment.end + offset });
+        const normalized = normalizeSegments(output, audio.length / SAMPLE_RATE);
+        approximate ||= normalized.approximate;
+        for (const segment of normalized.segments) {
+          segments.push({ ...segment, start: segment.start + offset,
+            end: normalized.approximate ? range.end / SAMPLE_RATE : segment.end + offset });
         }
       }
     }
@@ -202,8 +214,9 @@ self.addEventListener('message', async event => {
       segments,
       duration,
       decoding,
-      ...(decoding === 'text' ? { timing: 'approximate' } : {}),
-      warnings: [...outputWarnings(text, activeSoundDuration), ...(decoding === 'text' ? [APPROXIMATE_TIMING_WARNING] : [])],
+      ...(decoding === 'text' || approximate ? { timing: 'approximate' } : {}),
+      warnings: [...outputWarnings(text, activeSoundDuration), ...(decoding === 'text' ? [APPROXIMATE_TIMING_WARNING] : []),
+        ...(approximate ? [INVALID_TIMING_WARNING] : [])],
     });
   } catch (error) {
     console.error('[听写匣] 本地识别错误：', error);

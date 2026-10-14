@@ -214,7 +214,7 @@ function renderOutput() {
   const upgradeHelp = shouldUpgradeOnRerun(entry) ? (COMPACT ? '未切换精度时，重转将改用中文增强，下载约 152 MiB。' : '未切换精度时，重转将改用高精度，下载约 190 MB 且更慢。') : '';
   const rerunHelp = `可切换画面 / 声音和精度后重试，并恢复上一版比较。相同设置通常结果相同。${forceSpeechHelp}`;
   const deferredHelp = `${forceSpeechHelp || '人声检测也可能漏掉歌声或轻声。点击「仍然尝试识别」会跳过这项检查，直接识别原音。'}${upgradeHelp}`;
-  ui['rerun-help'].textContent = rerunning ? '正在重新转写，原结果已保留。停止或失败后，仍可使用原结果。' : hasResult && entry.error ? `重新转写未完成：${entry.error} 原结果已保留，可再试一次。${forceSpeechHelp}` : entry?.result?.speechCheck?.deferred ? deferredHelp : upgradeHelp ? `${upgradeHelp}${rerunHelp}` : hasResult && entry.model === SENSEVOICE_MODEL ? `${nextDecoding(entry) === 'text' ? '重转将按原话识别，保留汉字数字，再补标点。' : '重转将恢复数字格式整理。'}${COMPACT ? '也可打开完整版，选择「通用高精度」比较另一套模型。' : '也可选择「通用高精度」比较另一套模型。'}原稿可恢复。${forceSpeechHelp}` : hasResult && nextDecoding(entry) === 'text' ? `重转将尝试另一种文字识别方式，字幕时间只保留粗略范围，结果仍需核对。${rerunHelp}` : hasResult && entry.decoding === 'text' ? `重转将恢复带时间轴的识别方式。${rerunHelp}` : rerunHelp;
+  ui['rerun-help'].textContent = rerunning ? '正在重新转写，原结果已保留。停止或失败后，仍可使用原结果。' : hasResult && entry.error ? `重新转写未完成：${entry.error} 原结果已保留，可再试一次。${forceSpeechHelp}` : entry?.result?.speechCheck?.deferred ? deferredHelp : upgradeHelp ? `${upgradeHelp}${rerunHelp}` : hasResult && entry.model === SENSEVOICE_MODEL ? `${nextDecoding(entry) === 'text' ? '重转将按原话识别，保留汉字数字，再补标点；低音量音轨会尝试适度放大。' : '重转将恢复数字格式整理。'}${COMPACT ? '也可打开完整版，选择「通用高精度」比较另一套模型。' : '也可选择「通用高精度」比较另一套模型。'}原稿可恢复。${forceSpeechHelp}` : hasResult && nextDecoding(entry) === 'text' ? `重转将尝试另一种文字识别方式，字幕时间只保留粗略范围，结果仍需核对。${rerunHelp}` : hasResult && entry.decoding === 'text' ? `重转将恢复带时间轴的识别方式。${rerunHelp}` : rerunHelp;
   const warnings = Array.isArray(entry?.result?.warnings) ? entry.result.warnings.filter(message => typeof message === 'string' && message.trim()) : [];
   ui['result-warning'].hidden = !warnings.length;
   ui['result-warning'].textContent = warnings.join(' ');
@@ -234,7 +234,7 @@ function renderOutput() {
   ui['visual-candidate-list'].replaceChildren(...candidates.map(candidate => {
     const row = document.createElement('p');
     const text = String(candidate.text || '').trim();
-    const reason = { static_text: '固定文字，请确认是否为字幕', needs_review: '字形不清或多帧读数不同' }[candidate.reason] || candidate.reason;
+    const reason = { static_text: '固定文字，请确认是否为字幕', needs_review: '字形不清或多帧读数不同', audio_unverified: '多帧文字一致，尚未与声音核对' }[candidate.reason] || candidate.reason;
     const alternatives = [...new Set((candidate.alternatives || []).map(item => item.text).filter(Boolean))].slice(0, 3);
     row.textContent = `${timeLabel(candidate.start ?? candidate.time ?? 0)} · ${text}${reason ? `（${reason}）` : ''}${alternatives.length > 1 ? ` 可对照：${alternatives.join(' / ')}` : ''}`;
     return row;
@@ -436,13 +436,26 @@ async function recognizeEntry(entry, token, settings, signal) {
   const video = isVideoFile(entry.file);
   if (settings.sourceMode === 'video' && !video) throw new Error('「仅识别画面字幕」需要视频文件。音频请切换「自动」或「仅识别声音」。');
   if (video && settings.sourceMode !== 'audio') {
-    progress = { stage: '正在读取视频画面', message: '先检查画面中的字幕，识别过程在本机完成。', percent: null };
+    progress = { stage: '正在读取视频画面', message: settings.sourceMode === 'video' ? '正在本机读取画面文字。' : '先读取画面文字供核对，随后继续识别完整音轨。识别过程在本机完成。', percent: null };
     renderProgress();
     try {
       const result = await recognizeVideo(entry, token, signal);
-      if (result) return result;
+      if (signal.aborted || token !== runToken) throw cancelError();
+      if (result && settings.sourceMode === 'video') return result;
       if (settings.sourceMode === 'video') throw new Error(`没有发现证据足够的重复字幕。可查看下方画面文字候选，或切换「仅识别声音」。${entry.result ? '原结果已保留。' : ''}`);
-      warnings.push('未找到足够可靠的画面字幕，本次已改用声音识别。可疑画面文字保留在候选中，未拼入正文。');
+      // Agreement between video frames only verifies a screen reading. A short
+      // name plate or title must never replace an interview's complete audio.
+      // OCR is already disposed before we load ASR; keep only its text evidence.
+      if (result) {
+        entry.visualCandidates = [
+          ...result.segments.map(segment => ({ ...segment, reason: 'audio_unverified' })),
+          ...(entry.visualCandidates || []),
+        ].sort((a, b) => (a.start ?? a.time ?? 0) - (b.start ?? b.time ?? 0));
+        entry.revision++;
+        warnings.push('画面文字已保留在下方候选中，尚未与声音逐字核对；正文来自完整音轨识别，标题和人名条不会自动拼入正文。');
+      } else {
+        warnings.push('未找到足够可靠的画面字幕，已继续识别声音。可疑画面文字保留在候选中，未拼入正文。');
+      }
     } catch (error) {
       if (signal.aborted || error.name === 'AbortError' || token !== runToken) throw cancelError();
       if (settings.sourceMode === 'video') throw error;

@@ -50,9 +50,16 @@ export function senseResultSegments(result, duration, offset = 0) {
     || timestamps.some((t, i) => !Number.isFinite(t) || t < 0 || t >= duration || (i && t < timestamps[i - 1]))) return fallback();
   const segments = [];
   let first = 0;
+  let previousToken = '';
   for (let i = 0; i < tokens.length; i++) {
-    const boundary = /[。！？.!?]$/u.test(tokens[i]) || i === tokens.length - 1
+    // A decimal point may be its own CTC token or follow digits in one token.
+    // Inspect adjacent characters, without changing any recognized characters.
+    const before = tokens[i].length > 1 ? tokens[i].at(-2) : previousToken.at(-1);
+    const decimalPoint = tokens[i].endsWith('.') && /\p{N}/u.test(before || '')
+      && /^\p{N}/u.test(tokens[i + 1] || '');
+    const boundary = (/[。！？.!?]$/u.test(tokens[i]) && !decimalPoint) || i === tokens.length - 1
       || (i - first >= 50 && /[，,；;]/u.test(tokens[i])) || timestamps[i + 1] - timestamps[i] > 1.2;
+    if (tokens[i]) previousToken = tokens[i];
     if (!boundary) continue;
     const part = tokens.slice(first, i + 1).join('').trim();
     const start = timestamps[first], end = Math.min(duration, timestamps[i + 1] ?? (timestamps[i] + 0.18));

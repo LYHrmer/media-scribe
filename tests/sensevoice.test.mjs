@@ -44,6 +44,36 @@ test('mismatched token text falls back to the unmodified full transcript', () =>
   assert.equal(result.segments[0].text, '123。');
 });
 
+test('CTC sentence boundaries preserve decimal numbers across token splits', () => {
+  for (const tokens of [
+    ['It is ', '2', '.', '5', ' meters', '.', ' Yes.'],
+    ['It is ', '2.', '5', ' meters', '.', ' Yes.'],
+    ['It is ', '2.5', ' meters.', ' Yes.'],
+    ['数值是', '0', '.', '05', '。', '结束。'],
+    ['数值是', '0.', '05', '。', '结束。'],
+    ['数值是', '0.05', '。', '结束。'],
+  ]) {
+    const text = tokens.join('');
+    const timestamps = tokens.map((_, i) => 0.1 + i * 0.2);
+    const result = senseResultSegments({ text, tokens, timestamps }, 3, 5);
+    assert.equal(result.approximate, false);
+    assert.equal(result.segments.length, 2, text);
+    assert.equal(result.segments[0].text, text.startsWith('It') ? 'It is 2.5 meters.' : '数值是0.05。');
+    assert.equal(result.segments.map(segment => segment.text).join('').replace(/\s/gu, ''), text.replace(/\s/gu, ''));
+    assert.doesNotThrow(() => renderSrt(result.segments));
+  }
+});
+
+test('a period after a number remains a sentence boundary before whitespace or a word', () => {
+  for (const suffix of [' Next.', 'Next.', ' 5 more.']) {
+    const tokens = ['It was 2', '.', suffix];
+    const result = senseResultSegments({ text: tokens.join(''), tokens, timestamps: [0.1, 0.5, 1] }, 2);
+    assert.equal(result.segments.length, 2);
+    assert.equal(result.segments[0].text, 'It was 2.');
+    assert.equal(result.segments[1].text, suffix.trim());
+  }
+});
+
 test('model manifest rejects wrong weights, excessive allocation and path traversal', () => {
   const asset = SENSEVOICE_ASSETS.tokens;
   const make = () => ({ version: 1, bytes: asset.bytes, sha256: asset.sha256, parts: [{ file: 'tokens.txt.part-0.gz.bin', bytes: asset.bytes, compressedBytes: 100, sha256: 'a'.repeat(64) }] });
