@@ -1,6 +1,6 @@
 {
   "name": "tingxie-local",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "private": true,
   "type": "module",
   "description": "浏览器本地音视频转文字，无API费用或用户文件上传",
