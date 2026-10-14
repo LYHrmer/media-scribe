@@ -87,7 +87,7 @@ async function splitOnnx(source, destination) {
 export async function prepareModelAssets({
   cacheDir = process.env.MODELS_CACHE_DIR || path.join(PROJECT_ROOT, '.cache/models'),
   publicDir = path.join(PROJECT_ROOT, 'public/models-v2'),
-  modelIds = process.env.VITE_COMPACT_BUILD === '1' ? ['Xenova/whisper-small'] : MODEL_IDS,
+  modelIds = process.env.VITE_COMPACT_BUILD === '1' ? ['Xenova/whisper-tiny'] : MODEL_IDS,
   fetchImpl = globalThis.fetch,
 } = {}) {
   await mkdir(publicDir, { recursive: true });
