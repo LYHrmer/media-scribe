@@ -32,6 +32,11 @@ private*/
 *.tar.gz
 *.tar.bz2
 *.zip
+# Reviewed code-only snapshots; model/data archives remain ignored.
+!lifecycle-source.zip
+!scoring-source.zip
+!vocal-source.zip
+!caption-source.zip
 *.partial
 *.log
 *.tmp

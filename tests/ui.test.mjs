@@ -91,7 +91,11 @@ function harness(decode = async () => decoded(), vision = {}) {
   const workers = [];
   class WorkerDouble {
     constructor() { this.messages = []; this.terminated = false; workers.push(this); }
-    postMessage(message) { this.messages.push(message); }
+    postMessage(message) {
+      assert.equal(this.terminated, false, 'a released Worker must never receive a new job');
+      vision.postMessage?.(message);
+      this.messages.push(message);
+    }
     terminate() { this.terminated = true; }
     result(text = '识别文字', warnings = [], metadata = {}) {
       this.onmessage?.({ data: { type: 'result', id: this.messages.at(-1).id,
@@ -170,8 +174,8 @@ test('a low-voice candidate avoids ASR and offers a force retry without losing t
   const forced = h.ui['rerun-button'].click();
   await flush();
   assert.equal(checks, 1, 'explicit override bypasses the gate');
-  assert.equal(h.workers[0].messages.at(-1).decoding, 'timestamps');
-  h.workers[0].result('确实有轻声。');
+  assert.equal(h.workers.at(-1).messages.at(-1).decoding, 'timestamps');
+  h.workers.at(-1).result('确实有轻声。');
   await forced;
   assert.equal(h.ui.transcript.value, '确实有轻声。');
   await h.ui['restore-button'].click();
@@ -186,13 +190,13 @@ test('the file override survives successful decoding retries and restoring the d
   await h.ui['start-button'].click();
   const forced = h.ui['rerun-button'].click();
   await flush();
-  h.workers[0].result('确认是人声。');
+  h.workers.at(-1).result('确认是人声。');
   await forced;
   assert.equal(checks, 1);
   const alternative = h.ui['rerun-button'].click();
   await flush();
-  assert.equal(h.workers[0].messages.at(-1).decoding, 'text');
-  h.workers[0].result('另一版人声文字。', ['字幕时间为粗略范围。'], { timing: 'approximate' });
+  assert.equal(h.workers.at(-1).messages.at(-1).decoding, 'text');
+  h.workers.at(-1).result('另一版人声文字。', ['字幕时间为粗略范围。'], { timing: 'approximate' });
   await alternative;
   assert.equal(checks, 1, 'the successful file override also applies to a different decoding strategy');
   assert.match(h.ui['rerun-help'].textContent, /已允许直接识别原音/);
@@ -201,7 +205,7 @@ test('the file override survives successful decoding retries and restoring the d
   await restored.ui['start-button'].click();
   const firstForced = restored.ui['rerun-button'].click();
   await flush();
-  restored.workers[0].result('已识别的原音。');
+  restored.workers.at(-1).result('已识别的原音。');
   await firstForced;
   await restored.ui['restore-button'].click();
   assert.equal(restored.ui.transcript.value, '');
@@ -209,7 +213,7 @@ test('the file override survives successful decoding retries and restoring the d
   const afterRestore = restored.ui['rerun-button'].click();
   await flush();
   assert.equal(checks, 2, 'restoring old text does not revoke the preference for this file');
-  restored.workers[0].result('恢复后仍直接识别。');
+  restored.workers.at(-1).result('恢复后仍直接识别。');
   await afterRestore;
   restored.controlsRestored();
 });
@@ -221,20 +225,20 @@ test('failed forced recognition can use the main retry button while another file
   await h.ui['start-button'].click();
   const forced = h.ui['rerun-button'].click();
   await flush();
-  h.workers[0].error('模型暂未加载');
+  h.workers.at(-1).error('模型暂未加载');
   await forced;
   assert.deepEqual(h.states(), ['未完成']);
   assert.match(h.ui['rerun-help'].textContent, /后续重试会跳过人声检查/);
   const retry = h.ui['start-button'].click();
   await flush();
   assert.equal(checks, 1, 'the main failed-file retry respects the explicit file override');
-  assert.equal(h.workers[0].messages.length, 2);
-  h.workers[0].result('重试完成。');
+  assert.equal(h.workers.length, 2);
+  h.workers.at(-1).result('重试完成。');
   await retry;
   await h.add([file('未允许的另一个.wav')]);
   await h.ui['start-button'].click();
   assert.equal(checks, 2, 'an unrelated file still undergoes the speech check');
-  assert.equal(h.workers[0].messages.length, 2, 'a deferred second file does not reach ASR');
+  assert.equal(h.workers.length, 2, 'a deferred second file does not reach ASR');
   assert.deepEqual(h.states(), ['已完成', '已完成']);
   assert.equal(h.ui['rerun-button'].textContent, '仍然尝试识别');
   assert.doesNotMatch(h.ui['rerun-help'].textContent, /已允许直接识别原音/);
@@ -256,7 +260,7 @@ test('stopping a forced attempt keeps its preference, while removing and adding 
   await flush();
   assert.equal(checks, 1);
   assert.equal(h.workers.length, 2);
-  h.workers[1].result('停止后继续原音。');
+  h.workers.at(-1).result('停止后继续原音。');
   await restart;
   await h.ui['clear-files'].click();
   await h.add([sourceFile]);
@@ -278,9 +282,9 @@ test('a deferred Tiny retry shows the cost of its automatic model upgrade', asyn
   const forced = h.ui['rerun-button'].click();
   await flush();
   assert.equal(checks, 1);
-  assert.equal(h.workers[0].messages.at(-1).model, 'Xenova/whisper-small');
-  assert.equal(h.workers[0].messages.at(-1).decoding, 'timestamps');
-  h.workers[0].result('原音识别。');
+  assert.equal(h.workers.at(-1).messages.at(-1).model, 'Xenova/whisper-small');
+  assert.equal(h.workers.at(-1).messages.at(-1).decoding, 'timestamps');
+  h.workers.at(-1).result('原音识别。');
   await forced;
 });
 
@@ -289,7 +293,7 @@ test('VAD failure continues ordinary ASR and stopping VAD ignores its stale deci
   await h.add([file('继续识别.wav')]);
   const run = h.ui['start-button'].click();
   await flush();
-  h.workers[0].result('原音结果。');
+  h.workers.at(-1).result('原音结果。');
   await run;
   assert.match(h.ui['result-warning'].textContent, /人声检查未完成/);
   assert.equal(h.ui.transcript.value, '原音结果。');
@@ -314,7 +318,7 @@ test('a returned VAD warning remains visible and exported when recognition conti
   await h.add([file('检查故障但可转写.wav')]);
   const run = h.ui['start-button'].click();
   await flush();
-  h.workers[0].result('继续识别的原音。');
+  h.workers.at(-1).result('继续识别的原音。');
   await run;
   assert.equal(h.ui.transcript.value, '继续识别的原音。');
   assert.equal(h.ui['result-warning'].hidden, false);
@@ -331,14 +335,14 @@ test('unchanged Small retries alternate real decoding strategies and retain appr
   await h.add([file('不同方式.wav')]);
   const initial = h.ui['start-button'].click();
   await flush();
-  assert.equal(h.workers[0].messages.at(-1).decoding, 'timestamps');
-  h.workers[0].result('第一版。');
+  assert.equal(h.workers.at(-1).messages.at(-1).decoding, 'timestamps');
+  h.workers.at(-1).result('第一版。');
   await initial;
   assert.match(h.ui['rerun-help'].textContent, /另一种文字识别方式/);
   const retry = h.ui['rerun-button'].click();
   await flush();
-  assert.equal(h.workers[0].messages.at(-1).decoding, 'text');
-  h.workers[0].result('另一版。', ['时间为粗略范围。'], { timing: 'approximate' });
+  assert.equal(h.workers.at(-1).messages.at(-1).decoding, 'text');
+  h.workers.at(-1).result('另一版。', ['时间为粗略范围。'], { timing: 'approximate' });
   await retry;
   h.ui['export-format'].value = 'json';
   await h.ui['export-button'].click();
@@ -346,8 +350,8 @@ test('unchanged Small retries alternate real decoding strategies and retain appr
   assert.match(h.ui['rerun-help'].textContent, /恢复带时间轴/);
   const third = h.ui['rerun-button'].click();
   await flush();
-  assert.equal(h.workers[0].messages.at(-1).decoding, 'timestamps');
-  h.workers[0].result('时间轴版。');
+  assert.equal(h.workers.at(-1).messages.at(-1).decoding, 'timestamps');
+  h.workers.at(-1).result('时间轴版。');
   await third;
   await h.ui['restore-button'].click();
   assert.equal(h.ui.transcript.value, '另一版。');
@@ -359,7 +363,7 @@ test('changing language updates the retry explanation and uses ordinary timestam
   await h.add([file('切换语言.wav')]);
   const initial = h.ui['start-button'].click();
   await flush();
-  h.workers[0].result('中文结果。');
+  h.workers.at(-1).result('中文结果。');
   await initial;
   assert.match(h.ui['rerun-help'].textContent, /另一种文字识别方式/);
   h.ui.language.value = 'english';
@@ -367,9 +371,9 @@ test('changing language updates the retry explanation and uses ordinary timestam
   assert.doesNotMatch(h.ui['rerun-help'].textContent, /另一种文字识别方式/);
   const changed = h.ui['rerun-button'].click();
   await flush();
-  assert.equal(h.workers[0].messages.at(-1).language, 'english');
-  assert.equal(h.workers[0].messages.at(-1).decoding, 'timestamps');
-  h.workers[0].result('English result.');
+  assert.equal(h.workers.at(-1).messages.at(-1).language, 'english');
+  assert.equal(h.workers.at(-1).messages.at(-1).decoding, 'timestamps');
+  h.workers.at(-1).result('English result.');
   await changed;
 });
 
@@ -404,7 +408,7 @@ test('cancel keeps completed draft and does not report a transcription failure',
   await h.add([file('saved.wav')]);
   const run = h.ui['start-button'].click();
   await flush();
-  h.workers[0].result('原稿');
+  h.workers.at(-1).result('原稿');
   await run;
   h.ui.transcript.value = '校对后的原稿';
   await h.ui.transcript.emit('input');
@@ -456,16 +460,16 @@ test('batch continues after decode and fatal Worker errors; retry only repeats f
   await flush();
   assert.equal(h.workers[0].terminated, true);
   assert.equal(h.workers.length, 2);
-  h.workers[1].result('已完成结果');
+  h.workers.at(-1).result('已完成结果');
   await run;
   h.controlsRestored();
   assert.deepEqual(h.states(), ['未完成', '未完成', '已完成']);
   assert.equal(h.ui['start-label'].textContent, '重试未完成文件');
   const retry = h.ui['start-button'].click();
   await flush();
-  h.workers[1].result('重试一');
+  h.workers.at(-1).result('重试一');
   await flush();
-  h.workers[1].result('重试二');
+  h.workers.at(-1).result('重试二');
   await retry;
   h.controlsRestored();
   assert.deepEqual(h.states(), ['已完成', '已完成', '已完成']);
@@ -488,10 +492,10 @@ test('stop during decoding restores controls and ignores late decoder completion
   await oldRun;
   assert.equal(h.workers[0].messages.length, 1, 'old run cannot submit a duplicate job');
   assert.equal(h.ui['start-button'].disabled, true);
-  h.workers[0].result('第一份');
+  h.workers.at(-1).result('第一份');
   await flush();
-  assert.equal(h.workers[0].messages.length, 2);
-  h.workers[0].result('第二份');
+  assert.equal(h.workers.length, 2);
+  h.workers.at(-1).result('第二份');
   await newRun;
   assert.deepEqual(h.states(), ['已完成', '已完成']);
   h.controlsRestored();
@@ -502,7 +506,7 @@ test('stop during inference preserves completed files and rejects stale Worker e
   await h.add([file('done.wav'), file('cancel.wav'), file('pending.wav')]);
   const oldRun = h.ui['start-button'].click();
   await flush();
-  h.workers[0].result('保留这份');
+  h.workers.at(-1).result('保留这份');
   await flush();
   await h.ui['stop-button'].click();
   await oldRun;
@@ -510,17 +514,17 @@ test('stop during inference preserves completed files and rejects stale Worker e
   assert.deepEqual(h.states(), ['已完成', '已停止', '待转写']);
   const newRun = h.ui['start-button'].click();
   await flush();
-  h.workers[0].result('过期文字');
-  h.workers[0].fatal();
-  assert.equal(h.workers[1].terminated, false);
+  h.workers[1].result('过期文字');
+  h.workers[1].fatal();
+  assert.equal(h.workers[2].terminated, false);
   assert.deepEqual(h.states(), ['已完成', '转写中', '待转写']);
-  h.workers[1].result('有效结果');
+  h.workers.at(-1).result('有效结果');
   await flush();
-  h.workers[1].result('最后结果');
+  h.workers.at(-1).result('最后结果');
   await newRun;
   await h.select(0);
   assert.equal(h.ui.transcript.value, '保留这份');
-  assert.equal(h.workers[1].messages.length, 2);
+  assert.equal(h.workers.length, 4);
   h.controlsRestored();
 });
 
@@ -529,10 +533,10 @@ test('recoverable recognition errors continue the queue without disabling retry'
   await h.add([file('error.wav'), file('success.wav')]);
   const run = h.ui['start-button'].click();
   await flush();
-  h.workers[0].error('模型下载失败');
+  h.workers.at(-1).error('模型下载失败');
   await flush();
-  assert.equal(h.workers[0].messages.length, 2);
-  h.workers[0].result();
+  assert.equal(h.workers.length, 2);
+  h.workers.at(-1).result();
   await run;
   h.controlsRestored();
   assert.equal(h.ui['start-button'].disabled, false);
@@ -547,9 +551,9 @@ test('drafts survive tab and file selection; TXT exports edits while subtitles a
   await h.add([file('甲.wav'), file('乙.wav')]);
   const run = h.ui['start-button'].click();
   await flush();
-  h.workers[0].result('原文甲');
+  h.workers.at(-1).result('原文甲');
   await flush();
-  h.workers[0].result('原文乙');
+  h.workers.at(-1).result('原文乙');
   await run;
   await h.select(0);
   h.ui.transcript.value = '修改后的正文😀';
@@ -579,7 +583,7 @@ test('clipboard failure selects edited text for manual copy and subsequent copy 
   await h.add([file('copy.wav')]);
   const run = h.ui['start-button'].click();
   await flush();
-  h.workers[0].result('待复制');
+  h.workers.at(-1).result('待复制');
   await run;
   h.ui.transcript.value = '校对后的文字';
   await h.ui.transcript.emit('input');
@@ -603,9 +607,9 @@ test('rerun uses current settings for only the selected file, then restores its 
   await h.add([file('甲.wav'), file('乙.wav')]);
   const initial = h.ui['start-button'].click();
   await flush();
-  h.workers[0].result('原始甲');
+  h.workers.at(-1).result('原始甲');
   await flush();
-  h.workers[0].result('原始乙');
+  h.workers.at(-1).result('原始乙');
   await initial;
   await h.add([file('仍待转写.wav')]);
   await h.select(0);
@@ -617,14 +621,14 @@ test('rerun uses current settings for only the selected file, then restores its 
   h.ui.language.value = 'english';
   const rerun = h.ui['rerun-button'].click();
   await flush();
-  const request = h.workers[0].messages.at(-1);
+  const request = h.workers.at(-1).messages.at(-1);
   assert.equal(request.model, 'Xenova/whisper-tiny');
   assert.equal(request.language, 'english');
   assert.equal(h.ui.transcript.value, '已校对的甲');
   assert.equal(h.ui.transcript.disabled, true);
   assert.equal(h.ui['result-meta'].textContent, oldMetadata, 'pending settings cannot relabel the old result');
   assert.equal(h.ui['rerun-button'].disabled, true);
-  h.workers[0].result('新的甲');
+  h.workers.at(-1).result('新的甲');
   await rerun;
   assert.deepEqual(reads, ['甲.wav', '乙.wav', '甲.wav']);
   assert.deepEqual(h.states(), ['已完成', '已完成', '待转写']);
@@ -651,7 +655,7 @@ test('rerun preserves the edited draft and result metadata throughout decoding a
   await h.add([file('保留.wav')]);
   const initial = h.ui['start-button'].click();
   await flush();
-  h.workers[0].result('识别原文');
+  h.workers.at(-1).result('识别原文');
   await initial;
   h.ui.transcript.value = '手工校对过的正文';
   await h.ui.transcript.emit('input');
@@ -666,9 +670,9 @@ test('rerun preserves the edited draft and result metadata throughout decoding a
   decoding.resolve(decoded());
   await flush();
   assert.deepEqual(h.states(), ['转写中']);
-  assert.equal(h.workers[0].messages.at(-1).language, 'chinese');
+  assert.equal(h.workers.at(-1).messages.at(-1).language, 'chinese');
   assert.equal(h.ui['result-meta'].textContent, oldMetadata);
-  h.workers[0].error('本次模型加载失败');
+  h.workers.at(-1).error('本次模型加载失败');
   await rerun;
   assert.equal(h.ui.transcript.value, '手工校对过的正文');
   assert.equal(h.ui.transcript.disabled, false);
@@ -687,7 +691,7 @@ test('stopping a rerun retains the draft and metadata and ignores late Worker ev
   await h.add([file('停止.wav')]);
   const initial = h.ui['start-button'].click();
   await flush();
-  h.workers[0].result('第一次结果');
+  h.workers.at(-1).result('第一次结果');
   await initial;
   h.ui.transcript.value = '用户修改的版本';
   await h.ui.transcript.emit('input');
@@ -703,11 +707,11 @@ test('stopping a rerun retains the draft and metadata and ignores late Worker ev
   assert.equal(h.ui['rerun-button'].disabled, false);
   const next = h.ui['rerun-button'].click();
   await flush();
-  h.workers[0].result('已停止任务的过期结果');
-  h.workers[0].fatal();
-  assert.equal(h.workers[1].terminated, false);
+  h.workers[1].result('已停止任务的过期结果');
+  h.workers[1].fatal();
+  assert.equal(h.workers[2].terminated, false);
   assert.equal(h.ui.transcript.value, '用户修改的版本');
-  h.workers[1].result('有效新结果');
+  h.workers.at(-1).result('有效新结果');
   await next;
   await h.ui['restore-button'].click();
   assert.equal(h.ui.transcript.value, '用户修改的版本');
@@ -727,7 +731,7 @@ test('decoder errors and canceled decoder completion cannot replace an existing 
   await h.add([file('解码.wav')]);
   const initial = h.ui['start-button'].click();
   await flush();
-  h.workers[0].result('仍可使用的结果');
+  h.workers.at(-1).result('仍可使用的结果');
   await initial;
   const oldMetadata = h.ui['result-meta'].textContent;
   await h.ui['rerun-button'].click();
@@ -743,7 +747,7 @@ test('decoder errors and canceled decoder completion cannot replace an existing 
   await canceled;
   assert.equal(h.workers[1].messages.length, 1);
   assert.equal(h.ui.transcript.value, '仍可使用的结果');
-  h.workers[1].result('最后版本');
+  h.workers.at(-1).result('最后版本');
   await next;
   assert.equal(h.ui.transcript.value, '最后版本');
   h.controlsRestored();
@@ -760,25 +764,25 @@ test('Chinese defaults to SenseVoice; existing Tiny and Small rerun choices rema
     await h.add([file('提高精度.wav')]);
     const initial = h.ui['start-button'].click();
     await flush();
-    h.workers[0].result('原结果');
+    h.workers.at(-1).result('原结果');
     await initial;
     const oldMetadata = h.ui['result-meta'].textContent;
     if (model === 'Xenova/whisper-tiny') assert.match(h.ui['rerun-help'].textContent, /改用高精度.*190 MB/);
     else assert.doesNotMatch(h.ui['rerun-help'].textContent, /改用高精度/);
     const upgraded = h.ui['rerun-button'].click();
     await flush();
-    assert.equal(h.workers[0].messages.at(-1).model, 'Xenova/whisper-small');
+    assert.equal(h.workers.at(-1).messages.at(-1).model, 'Xenova/whisper-small');
     assert.equal(h.ui.model.value, 'Xenova/whisper-small');
     assert.equal(h.ui['result-meta'].textContent, oldMetadata);
-    h.workers[0].result('高精度结果');
+    h.workers.at(-1).result('高精度结果');
     await upgraded;
     assert.match(h.ui['result-meta'].textContent, /高精度/);
     assert.match(h.ui['rerun-help'].textContent, /相同设置通常结果相同/);
     assert.doesNotMatch(h.ui['rerun-help'].textContent, /改用高精度/);
     const samePrecision = h.ui['rerun-button'].click();
     await flush();
-    assert.equal(h.workers[0].messages.at(-1).model, 'Xenova/whisper-small');
-    h.workers[0].result('第二次高精度结果');
+    assert.equal(h.workers.at(-1).messages.at(-1).model, 'Xenova/whisper-small');
+    h.workers.at(-1).result('第二次高精度结果');
     await samePrecision;
     h.controlsRestored();
   }
@@ -790,7 +794,7 @@ test('manual precision selection is respected even when the user returns to the 
   await h.add([file('手动选择.wav')]);
   const initial = h.ui['start-button'].click();
   await flush();
-  h.workers[0].result('快速结果');
+  h.workers.at(-1).result('快速结果');
   await initial;
   h.ui.model.value = 'Xenova/whisper-small';
   await h.ui.model.emit('change');
@@ -799,8 +803,8 @@ test('manual precision selection is respected even when the user returns to the 
   assert.doesNotMatch(h.ui['rerun-help'].textContent, /改用高精度/);
   const rerun = h.ui['rerun-button'].click();
   await flush();
-  assert.equal(h.workers[0].messages.at(-1).model, 'Xenova/whisper-tiny');
-  h.workers[0].result('仍使用手动选择的快速精度');
+  assert.equal(h.workers.at(-1).messages.at(-1).model, 'Xenova/whisper-tiny');
+  h.workers.at(-1).result('仍使用手动选择的快速精度');
   await rerun;
   h.controlsRestored();
 });
@@ -812,7 +816,7 @@ test('result warnings preserve all text and follow the prior version through rer
   await flush();
   const repeated = '重复内容重复内容重复内容';
   const warning = '识别结果中有较多重复内容，请对照音频校对。';
-  h.workers[0].result(repeated, [warning, '<提示文字>', null]);
+  h.workers.at(-1).result(repeated, [warning, '<提示文字>', null]);
   await initial;
   assert.equal(h.ui.transcript.value, repeated, 'a warning must not delete recognized text');
   assert.equal(h.ui['result-warning'].hidden, false);
@@ -820,7 +824,7 @@ test('result warnings preserve all text and follow the prior version through rer
   const rerun = h.ui['rerun-button'].click();
   await flush();
   assert.equal(h.ui['result-warning'].textContent, `${warning} <提示文字>`);
-  h.workers[0].result('新识别的内容');
+  h.workers.at(-1).result('新识别的内容');
   await rerun;
   assert.equal(h.ui['result-warning'].hidden, true);
   assert.equal(h.ui['result-warning'].textContent, '');
@@ -840,17 +844,17 @@ test('language choices explicitly default to Chinese and send English only when 
   await h.add([file('语言.wav')]);
   const initial = h.ui['start-button'].click();
   await flush();
-  assert.equal(h.workers[0].messages.at(-1).language, 'chinese');
-  assert.equal(h.workers[0].messages.at(-1).model, 'Xenova/whisper-small');
-  h.workers[0].result('中文原文');
+  assert.equal(h.workers.at(-1).messages.at(-1).language, 'chinese');
+  assert.equal(h.workers.at(-1).messages.at(-1).model, 'Xenova/whisper-small');
+  h.workers.at(-1).result('中文原文');
   await initial;
   assert.match(h.ui['result-meta'].textContent, /中文/);
   h.ui.language.value = 'english';
   await h.ui.language.emit('change');
   const rerun = h.ui['rerun-button'].click();
   await flush();
-  assert.equal(h.workers[0].messages.at(-1).language, 'english');
-  h.workers[0].result('English result');
+  assert.equal(h.workers.at(-1).messages.at(-1).language, 'english');
+  h.workers.at(-1).result('English result');
   await rerun;
   assert.match(h.ui['result-meta'].textContent, /英语/);
   await h.ui['restore-button'].click();
@@ -918,7 +922,7 @@ test('an interview name plate never bypasses full audio in auto mode and both OC
   assert.equal(decodedAudio, 1);
   assert.equal(h.workers.length, 1, 'reliable screen text cannot short-circuit ASR');
   assert.equal(h.workers[0].messages[0].audio.length, samples.length, 'the complete decoded audio is submitted');
-  h.workers[0].result('问：这个实验如何进行？答：我们先记录数据。');
+  h.workers.at(-1).result('问：这个实验如何进行？答：我们先记录数据。');
   await run;
   assert.equal(h.ui.transcript.value, '问：这个实验如何进行？答：我们先记录数据。');
   assert.doesNotMatch(h.ui['result-meta'].textContent, /画面字幕/);
@@ -962,7 +966,7 @@ test('auto video retries preserve and restore the matching audio draft and visua
   await h.add([{ ...file('interview-retry.mp4'), type: 'video/mp4' }]);
   const initial = h.ui['start-button'].click();
   await flush();
-  h.workers[0].result('第一次采访识别。');
+  h.workers.at(-1).result('第一次采访识别。');
   await initial;
   h.ui.transcript.value = '手动校对的采访。';
   await h.ui.transcript.emit('input');
@@ -972,7 +976,7 @@ test('auto video retries preserve and restore the matching audio draft and visua
   assert.equal(h.workers[0].terminated, true, 'old ASR heap is released before the next OCR pass');
   assert.equal(h.workers.length, 2);
   assert.equal(h.ui.transcript.value, '手动校对的采访。');
-  h.workers[1].result('第二次采访识别。');
+  h.workers.at(-1).result('第二次采访识别。');
   await retry;
   assert.match(h.ui['visual-candidate-list'].children[0].textContent, /标题2/);
   await h.ui['restore-button'].click();
@@ -988,7 +992,7 @@ test('uncertain video text stays out of the audio transcript and remains separat
   const run = h.ui['start-button'].click();
   await flush();
   assert.equal(h.workers.length, 1);
-  h.workers[0].result('识别出的声音。');
+  h.workers.at(-1).result('识别出的声音。');
   await run;
   assert.equal(h.ui.transcript.value, '识别出的声音。');
   assert.match(h.ui['result-warning'].textContent, /已继续识别声音/);
@@ -1003,7 +1007,7 @@ test('a visual-only rerun without reliable evidence retains the edited original 
   await h.add([{ ...file('compare.mp4'), type: 'video/mp4' }]);
   const initial = h.ui['start-button'].click();
   await flush();
-  h.workers[0].result('第一版。');
+  h.workers.at(-1).result('第一版。');
   await initial;
   h.ui.transcript.value = '已经校对的原稿。';
   await h.ui.transcript.emit('input');
@@ -1049,11 +1053,11 @@ test('stopping during punctuation preserves a manually edited previous result', 
   } });
   await h.add([file('punctuation.wav')]);
   const initial = h.ui['start-button'].click();
-  await flush(); h.workers[0].result('原始文字'); await initial;
+  await flush(); h.workers.at(-1).result('原始文字'); await initial;
   h.ui.transcript.value = '保留我校对的文字。';
   await h.ui.transcript.emit('input');
   const rerun = h.ui['rerun-button'].click();
-  await flush(); h.workers[0].result('新的识别文字'); await flush();
+  await flush(); h.workers.at(-1).result('新的识别文字'); await flush();
   assert.match(h.ui['progress-stage'].textContent, /标点/);
   await h.ui['stop-button'].click();
   assert.equal(punctuationSignal.aborted, true);
@@ -1068,23 +1072,23 @@ test('SenseVoice retries recreate the worker with real verbatim inference and re
   const h = harness(); h.ui.model.value = 'FunAudioLLM/SenseVoiceSmall';
   await h.add([file('中文快语速.wav')]);
   const first = h.ui['start-button'].click(); await flush();
-  assert.equal(h.workers[0].messages.at(-1).model, 'FunAudioLLM/SenseVoiceSmall');
-  assert.equal(h.workers[0].messages.at(-1).decoding, 'timestamps');
-  h.workers[0].result('第一版'); await first;
+  assert.equal(h.workers.at(-1).messages.at(-1).model, 'FunAudioLLM/SenseVoiceSmall');
+  assert.equal(h.workers.at(-1).messages.at(-1).decoding, 'timestamps');
+  h.workers.at(-1).result('第一版'); await first;
   h.ui.transcript.value = '保留我的修改'; await h.ui.transcript.emit('input');
   assert.match(h.ui['rerun-help'].textContent, /按原话识别/);
   const rerun = h.ui['rerun-button'].click(); await flush();
   assert.equal(h.workers[0].terminated, true, 'old WASM heap is released before loading the new recognizer');
-  assert.equal(h.workers[1].messages.at(-1).decoding, 'text');
-  h.workers[1].result('原话版本'); await rerun;
+  assert.equal(h.workers.at(-1).messages.at(-1).decoding, 'text');
+  h.workers.at(-1).result('原话版本'); await rerun;
   await h.ui['restore-button'].click();
   assert.equal(h.ui.transcript.value, '保留我的修改');
   h.ui.language.value = 'english'; await h.ui.language.emit('change');
   assert.equal(h.ui.model.value, 'Xenova/whisper-small', 'English keeps the existing validated Whisper model');
   const english = h.ui['rerun-button'].click(); await flush();
   assert.equal(h.workers[1].terminated, true);
-  assert.equal(h.workers[2].messages.at(-1).language, 'english');
-  h.workers[2].result('English words.'); await english;
+  assert.equal(h.workers.at(-1).messages.at(-1).language, 'english');
+  h.workers.at(-1).result('English words.'); await english;
   h.controlsRestored();
 });
 
@@ -1095,13 +1099,97 @@ test('compact build retains the enhanced model and fast fallback without request
   assert.equal(h.ui['full-version-link'].hidden, false);
   h.ui.model.value = 'Xenova/whisper-tiny';
   await h.add([file('compact.wav')]);
-  const run = h.ui['start-button'].click(); await flush(); h.workers[0].result('第一版'); await run;
+  const run = h.ui['start-button'].click(); await flush(); h.workers.at(-1).result('第一版'); await run;
   assert.match(h.ui['rerun-help'].textContent, /中文增强.*152/);
   const again = h.ui['rerun-button'].click(); await flush();
   assert.equal(h.workers[0].terminated, true);
-  assert.equal(h.workers[1].messages.at(-1).model, 'FunAudioLLM/SenseVoiceSmall');
-  h.workers[1].result('中文增强'); await again;
+  assert.equal(h.workers.at(-1).messages.at(-1).model, 'FunAudioLLM/SenseVoiceSmall');
+  h.workers.at(-1).result('中文增强'); await again;
   assert.match(h.ui['rerun-help'].textContent, /完整版/);
   h.ui.language.value = 'english'; await h.ui.language.emit('change');
   assert.equal(h.ui.model.value, 'FunAudioLLM/SenseVoiceSmall');
+});
+
+// These doubles verify lifecycle ordering, not browser memory reclamation.
+test('each file releases ASR before punctuation, the next decode and VAD; clear leaves none running', async () => {
+  let h;
+  let reads = 0;
+  const assertReleased = () => assert.ok(h.workers.every(worker => worker.terminated));
+  h = harness(async (_file, { signal }) => {
+    assert.equal(signal.aborted, false);
+    assertReleased();
+    reads++;
+    return decoded();
+  }, {
+    speechCheck: async () => { assertReleased(); return { reject: false }; },
+    punctuate: async result => { assertReleased(); return result; },
+  });
+  await h.add([file('one.wav'), file('two.wav')]);
+  const run = h.ui['start-button'].click();
+  await flush();
+  const first = h.workers[0];
+  first.result('第一份');
+  assert.equal(first.terminated, true, 'release is synchronous, before the result promise resolves');
+  await flush();
+  assert.equal(reads, 2);
+  assert.equal(h.workers.length, 2);
+  first.error('过期错误');
+  first.fatal();
+  assert.equal(h.workers[1].terminated, false);
+  h.workers[1].result('第二份');
+  await run;
+  assertReleased();
+  await h.ui['clear-files'].click();
+  assert.deepEqual(h.states(), []);
+  assertReleased();
+});
+
+test('ordinary errors and postMessage failures release the worker and permit fresh retries', async () => {
+  let failPost = true;
+  const h = harness(undefined, { postMessage: () => {
+    if (failPost) { failPost = false; throw new Error('模拟传输失败'); }
+  } });
+  await h.add([file('retry.wav')]);
+  await h.ui['start-button'].click();
+  assert.equal(h.workers[0].terminated, true);
+  assert.deepEqual(h.states(), ['未完成']);
+  const retry = h.ui['start-button'].click();
+  await flush();
+  assert.equal(h.workers.length, 2);
+  h.workers[1].error('模拟模型中止');
+  assert.equal(h.workers[1].terminated, true);
+  await retry;
+  const next = h.ui['start-button'].click();
+  await flush();
+  assert.equal(h.workers.length, 3);
+  h.workers[1].error('过期模型错误');
+  h.workers[1].fatal();
+  assert.equal(h.workers[2].terminated, false);
+  h.workers[2].result('恢复成功');
+  await next;
+  assert.equal(h.ui.transcript.value, '恢复成功');
+  assert.ok(h.workers.every(worker => worker.terminated));
+  h.controlsRestored();
+});
+
+test('stop passes an aborted signal to the decoder and preserves a fresh run signal', async () => {
+  const pending = deferred();
+  const signals = [];
+  const h = harness((_file, { signal }) => {
+    signals.push(signal);
+    return signals.length === 1 ? pending.promise : Promise.resolve(decoded());
+  });
+  await h.add([file('cancel-decode.wav')]);
+  const first = h.ui['start-button'].click();
+  await h.ui['stop-button'].click();
+  assert.equal(signals[0].aborted, true);
+  const next = h.ui['start-button'].click();
+  await flush();
+  assert.equal(signals[1].aborted, false);
+  pending.reject(Object.assign(new Error('stopped'), { name: 'AbortError' }));
+  await first;
+  assert.equal(h.workers.length, 1);
+  h.workers[0].result('新任务');
+  await next;
+  assert.equal(h.ui.transcript.value, '新任务');
 });

@@ -84,7 +84,7 @@ self.postMessage = event => {
 const context = vm.createContext({
   self, location: self.location, crypto: webcrypto, navigator: { hardwareConcurrency: 1 },
   console, fetch: assetFetch, caches: self.caches, Response, Request, Headers, URL, Blob,
-  TextEncoder, TextDecoder, WebAssembly, atob, btoa, setTimeout, clearTimeout,
+  TextEncoder, TextDecoder, WebAssembly, AbortController, AbortSignal, DOMException, atob, btoa, setTimeout, clearTimeout,
   setInterval, clearInterval, performance, ReadableStream, Float32Array, Float64Array,
   Int8Array, Uint8Array, Uint8ClampedArray, Int16Array, Uint16Array, Int32Array,
   Uint32Array, BigInt64Array, BigUint64Array, ArrayBuffer, SharedArrayBuffer, DataView,
