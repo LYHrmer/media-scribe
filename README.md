@@ -6,10 +6,10 @@
 
 ## 使用方式
 
-- **自动**：视频先读画面字幕，用多帧证据去重；没有可靠字幕时改用语音识别。音频直接识别声音。
+- **自动**：视频识别完整音轨，同时将画面文字保留在候选区供核对。标题、人名条不会自动替代语音；音频直接识别声音。
 - **仅识别声音**：忽略画面上的字幕、标题和标识。
 - **仅识别画面字幕**：适合有字幕或没有音轨的视频。可疑字另列为待核对候选，不自动拼进正文。
-- **中文增强**：默认使用 SenseVoice Small，保留上下文识别快语速；数字整理与按原话识别是两次真实推理，可恢复上一版。
+- **中文增强**：默认使用 SenseVoice Small，保留上下文识别快语速；数字整理与按原话识别是两次真实推理；按原话重试还会对低音量尝试适度放大，可恢复上一版。
 - 不满意可切换方式后点「不满意，重新转写」。高精度声音识别在设置未变时会交替尝试带时间轴与仅正文解码；后者只有粗略时间，不能当逐句字幕对齐。快速档未手动改动时重转会升为高精度。原结果及手工修改会保留，失败或停止后仍可使用，成功后可恢复上一版。
 - 声音识别前用约 2.2 MiB 的 Silero 模型检查人声。极低人声概率的文件先显示待核对提示，避免直接生成噪声幻觉；点击「仍然尝试识别」即可对该文件持续跳过检查。检测失败自动继续原识别，短片直接放行，不按 VAD 裁剪歌词。
 - 正文可以编辑、复制，导出 TXT；SRT、VTT、JSON 使用识别片段和时间轴。画面字幕时间表示抽样到字幕的时间，不是经过声音对齐的逐字时间。
@@ -19,6 +19,8 @@
 中文输出会按需运行本地 CT-Transformer 标点模型，补逗号、句号、问号等，保留原始字词与已有标点。通过只保留相关词表，将原模型约 72 MiB 裁成约 7.3 MiB；保留词输入的原/裁模型预测已实测一致。纯英文沿用语音/OCR 原标点，中英混合场景仍需校对。标点失败时保留原文；JSON 可追溯补标点前的文字。详见 [标点验证](docs/PUNCTUATION_VALIDATION.md)。
 
 ## 正确性与当前限制
+
+v0.5.1 新增真实中英文采访验证，修复画面标题截断语音流程、异常时间戳造成字幕漏字、小数被断句的问题。低音量增强仅用于用户主动重试，默认保留原音频。结果与未改善的实验见 [采访验证报告](docs/INTERVIEW_VALIDATION.md)，可复现来源见 [MELI 样本说明](docs/benchmarks/MELI_INTERVIEWS.md)。
 
 **能输出文字不代表识别正确。当前版本对快速中文、嘈杂语音和现场歌声仍可能严重漏字或编造文字。** 不应把模型名称或模型置信分当成准确率。
 
@@ -54,6 +56,6 @@ npm run dev
 
 ## 参考与许可
 
-借鉴 [Whisper Web](https://github.com/xenova/whisper-web) 的浏览器解码与 Worker 架构。按用户要求执行 [REA](https://github.com/morluto/rea) 6.4.0 分析 OpenWhispr 和 Vosk 浏览器版的源码切片，共 20 个文件、52 条导入/引用关系；未声称完成整款商业程序的二进制反编译。分析记录见 [ASR_ANALYSIS.md](docs/ASR_ANALYSIS.md)。
+借鉴 [Whisper Web](https://github.com/xenova/whisper-web) 的浏览器解码与 Worker 架构。按用户要求执行 [REA](https://github.com/morluto/rea) 6.4.0 分析 OpenWhispr 和 Vosk 浏览器版的源码切片，共 20 个文件、52 条导入/引用关系；未声称完成整款商业程序的二进制反编译。分析记录见 [ASR_ANALYSIS.md](docs/ASR_ANALYSIS.md)。本轮又使用 REA 源码导入分析 Whisper Web 与 Transcribe.js，成功关系图及完整应用分析受阻记录见 [REA 采访优化研究](docs/benchmarks/REA_ASR_RESEARCH.md)。
 
 项目代码见 LICENSE。Whisper、SenseVoice、sherpa-onnx、Transformers.js、ONNX Runtime、RapidOCR/PaddleOCR、OpenCV、Silero VAD 和 js-clipper 保留各自许可，见 `public/third-party-notices.txt` 与 `public/licenses/`。源码包不包含用户文件或模型权重。SenseVoiceSmall 权重采用 FunASR 模型协议（代码另为 MIT），保留 FunASR / Alibaba、SenseVoiceSmall 及 k2-fsa 转换来源；详见开源说明。
