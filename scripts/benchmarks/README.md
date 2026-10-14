@@ -170,3 +170,15 @@ python scripts/benchmarks/prepare-meli-interviews.py --output-dir /absolute/outs
 ```
 
 `--dry-run` 只检查参数和固定区间。依赖、左侧受访者声道、重采样、哈希失败处理、标点N/A、参考仅推理后评分及 **CC BY-NC-SA 4.0** 许可均与上文相同；媒体、完整标注和参考全文只保留本地。此预设不改变默认4例、`--holdout` 2例、`--accent` 5例或 `--accent-final` 2例。若后续根据这两例结果调参，应改记其为开发/诊断用例，不再声称独立未参与调参。
+
+## 编译后的 Whisper Worker
+
+`npm run build` 后，可直接运行实际 Vite Worker 与真实 WASM（传输与 Cache 仍是 Node VM 替身）：
+
+```bash
+BENCHMARK_MODEL=Xenova/whisper-small BENCHMARK_DECODING=timestamps \
+node --experimental-vm-modules scripts/benchmarks/run-compiled-production-wasm.mjs \
+  . /tmp/meli/cases.local.json /tmp/meli/compiled-results.json
+```
+
+只读观察器会记录进入真实解码器的 tokens、stride 和返回值；参考仅在推理完成后评分。`BENCHMARK_RAW_DIAGNOSTICS` 与 `BENCHMARK_EXPECTED_REPLAY` 可选地接收本地观察/回放 JSON 做逐值检查，不作为模型输入。运行前一次只启动一个模型进程。本轮 F00A 的构建产物验证与限制见 [口音报告](../../docs/ACCENT_VALIDATION.md)。
