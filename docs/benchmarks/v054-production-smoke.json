@@ -1,0 +1,71 @@
+{
+  "scope": "v0.5.4 compiled production workers in Node browser-shaped VM; not real browser/mobile QA",
+  "cases": [
+    {
+      "id": "en-jfk",
+      "actual_cli_exit_code": 0,
+      "result_sha256": "4887918a135868fc4dbbfd81b93b6c0a5f754d40c32cf1c53b5a01dea830f399",
+      "score": {
+        "reference_character_count": 83,
+        "hypothesis_character_count": 83,
+        "character_errors": 0,
+        "cer": 0,
+        "exact_lexical_match": true,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 4,
+          "hypothesis_count": 3,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 1,
+          "boundary_exact_when_lexical_exact": false
+        },
+        "word_errors": 0,
+        "reference_word_count": 22,
+        "wer": 0
+      }
+    },
+    {
+      "id": "zh-clean",
+      "actual_cli_exit_code": 0,
+      "result_sha256": "8ed2b53cfa806db28d5fbddb48b559b86f31d6e83c4f6b624bac81b72f664c85",
+      "score": {
+        "reference_character_count": 13,
+        "hypothesis_character_count": 13,
+        "character_errors": 0,
+        "cer": 0,
+        "exact_lexical_match": true,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 1,
+          "hypothesis_count": 1,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 0,
+          "boundary_exact_when_lexical_exact": true
+        },
+        "digit_equivalent_cer": 0
+      }
+    }
+  ],
+  "workers": [
+    {
+      "filename": "vad.worker-C9h8-FgH.js",
+      "sha256": "e19bc613db3bdaa1e87f1fa91a6a4722613a83a4204c2b8d1bdb4ecabef04ebe"
+    },
+    {
+      "filename": "transcriber.worker-ClBlgL1s.js",
+      "sha256": "6e0f0a572091206b7258a1276fd106e803f6766785cbaefdb21bfc9a04f91ed3"
+    },
+    {
+      "filename": "sensevoice.worker-gduX_vXW.js",
+      "sha256": "0a4c728cd09265a5a48e6569f6ad4cb57e6a3bb1e975ac351050199fb22f4532"
+    },
+    {
+      "filename": "punctuation.worker-Ch2hTEJS.js",
+      "sha256": "178ac8d7ab9e4f7fd13a75d37763eafa1d276ac9c388771dcf7be98642620209"
+    },
+    {
+      "filename": "video-ocr.worker-CiKI78o4.js",
+      "sha256": "cdf2ab04f1d160dc1aa85b570bc0221cb164ca949bbbc9edbe9a1826710b1bb9"
+    }
+  ]
+}

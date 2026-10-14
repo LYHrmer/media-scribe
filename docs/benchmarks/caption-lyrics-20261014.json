@@ -1,0 +1,628 @@
+{
+  "schema_version": 1,
+  "experiment": "caption-crop-green-20261014",
+  "protocol_sha256": "3f02b9a10631a4cd90874369d68a4a6bdd619a03bd768df86f365372b317af8e",
+  "reference_sha256": "809ed7da7a3aae1254c20a1859afa7ee1717e9b1fcebff4a9dc3de3c0714adc9",
+  "scorer_sha256": "50e29798683f66e3f5060fc4bad1e411e81a0ae01219274d939ed69b92ba3411",
+  "local_scored_artifact_sha256": "67547e5b52c6849b5ee65cfcafbc29c1b97471fe9b8b69220bdaaed075ce9698",
+  "scope": {
+    "videos": 1,
+    "previously_seen_development_video": true,
+    "frames_per_arm": 43,
+    "arms": 4,
+    "frame_evaluations": 172,
+    "unique_fully_readable_caption_strings": 1,
+    "fully_readable_boxes": 9,
+    "fully_readable_reference_characters": 72,
+    "partial_boxes": 26,
+    "unreadable_boxes": 9,
+    "no_localizable_caption_frames": 8,
+    "annotation_source": "Independent Astra agent, fork-none, pixels only; no supplied lyrics or OCR outputs. Not user/human frame-by-frame gold standard and not human-reviewed.",
+    "full_lyric_accuracy": null,
+    "human_reviewed": false,
+    "production_integrated": false,
+    "unseen_video_validation": false,
+    "phone_browser_validation": false
+  },
+  "baseline_equivalence": {
+    "baseline_sha256": "7548d2205b782c675e244455c13a14be06de45e69dd46f68ea7182618f95f3be",
+    "A0_sha256": "2720a0b7573bdd0850eee51e4f25dd30d026afa728cde0b45b6d1000bb510a14",
+    "same_runtime_wasm": true,
+    "frames": 43,
+    "passed": true,
+    "checks": [
+      {
+        "name": "t=0.250",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=0.750",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=1.250",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=1.750",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=2.250",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=2.750",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=3.250",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=3.750",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=4.250",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=4.750",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=5.250",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=5.750",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=6.250",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=6.750",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=7.250",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=7.750",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=8.250",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=8.750",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=9.250",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=9.750",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=10.250",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=10.750",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=11.250",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=11.750",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=12.250",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=12.750",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=13.250",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=13.750",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=14.250",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=14.750",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=15.250",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=15.750",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=16.250",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=16.750",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=17.250",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=17.750",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=18.250",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=18.750",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=19.250",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=19.750",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=20.250",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=20.750",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      },
+      {
+        "name": "t=21.250",
+        "same_name": true,
+        "same_pixels": true,
+        "same_accepted_observations": true,
+        "same_detected_count": true
+      }
+    ]
+  },
+  "arms": [
+    {
+      "id": "A0",
+      "precision": "standard",
+      "unclipRatio": 1.6,
+      "colorMode": "original",
+      "exit_code": 0,
+      "elapsed_seconds": 251.02054611399944,
+      "raw_observations": 139,
+      "rejection_counts": {
+        "accepted": 29,
+        "recognition_below_threshold": 80,
+        "empty_ctc": 30
+      },
+      "result_sha256": "2720a0b7573bdd0850eee51e4f25dd30d026afa728cde0b45b6d1000bb510a14",
+      "execution_receipt_sha256": "5205651622a354c7c5ffb3b0c54dd9f33825e5b09fb8f8ff5795aa819d8a83b4",
+      "primary_iou_010": {
+        "execution_complete": true,
+        "expected_frames": 43,
+        "completed_frames": 43,
+        "expected_caption_regions": 44,
+        "fully_readable_reference_regions": 9,
+        "scored_reference_regions": 9,
+        "full_readable_subset_CER": 0.08333333333333333,
+        "full_readable_subset_errors": 6,
+        "full_readable_subset_reference_characters": 72,
+        "substitutions": 6,
+        "deletions": 0,
+        "insertions": 0,
+        "exact_full_readable_regions": 6,
+        "raw_caption_region_coverage": 20,
+        "accepted_caption_region_coverage": 16,
+        "partial_known_spans": 48,
+        "partial_known_spans_exact_in_order": 6,
+        "accepted_output_characters_in_unscorable_regions": 58,
+        "accepted_observations_outside_caption_regions": 13,
+        "accepted_characters_outside_caption_regions": 18,
+        "frames_with_no_caption_region_but_accepted_output": 2,
+        "individual_scores_scope": "Completed arm, restricted independently readable subset",
+        "full_video_CER": null,
+        "full_video_CER_reason": "Partial and unreadable regions have no complete independent visual reference. Nine readable regions are a limited subset, not the full lyric.",
+        "outside_region_note": "Unmatched observations are not automatically OCR spelling errors: they may be non-caption text or manual geometry omissions. They require pixel-only adjudication; their increase is not counted as accuracy gain.",
+        "partial_span_note": "Exact in-order preservation of certain spans is a recall diagnostic, not full-line CER and not proof that intervening words are correct."
+      },
+      "sensitivity_iou_025": {
+        "execution_complete": true,
+        "expected_frames": 43,
+        "completed_frames": 43,
+        "expected_caption_regions": 44,
+        "fully_readable_reference_regions": 9,
+        "scored_reference_regions": 9,
+        "full_readable_subset_CER": 0.08333333333333333,
+        "full_readable_subset_errors": 6,
+        "full_readable_subset_reference_characters": 72,
+        "substitutions": 6,
+        "deletions": 0,
+        "insertions": 0,
+        "exact_full_readable_regions": 6,
+        "raw_caption_region_coverage": 20,
+        "accepted_caption_region_coverage": 16,
+        "partial_known_spans": 48,
+        "partial_known_spans_exact_in_order": 6,
+        "accepted_output_characters_in_unscorable_regions": 58,
+        "accepted_observations_outside_caption_regions": 13,
+        "accepted_characters_outside_caption_regions": 18,
+        "frames_with_no_caption_region_but_accepted_output": 2,
+        "individual_scores_scope": "Completed arm, restricted independently readable subset",
+        "full_video_CER": null,
+        "full_video_CER_reason": "Partial and unreadable regions have no complete independent visual reference. Nine readable regions are a limited subset, not the full lyric.",
+        "outside_region_note": "Unmatched observations are not automatically OCR spelling errors: they may be non-caption text or manual geometry omissions. They require pixel-only adjudication; their increase is not counted as accuracy gain.",
+        "partial_span_note": "Exact in-order preservation of certain spans is a recall diagnostic, not full-line CER and not proof that intervening words are correct."
+      }
+    },
+    {
+      "id": "A1",
+      "precision": "standard",
+      "unclipRatio": 1.6,
+      "colorMode": "green",
+      "exit_code": 0,
+      "elapsed_seconds": 265.8178710909997,
+      "raw_observations": 139,
+      "rejection_counts": {
+        "accepted": 23,
+        "recognition_below_threshold": 82,
+        "empty_ctc": 34
+      },
+      "result_sha256": "410f5d9161dacacd3e03c241c5f1483ef1c0508f49756d227fa643ad62fda34c",
+      "execution_receipt_sha256": "fb26c2da4760b1706357c65c4b175bf6e61f6a2bc096c5a0e7fcf6af9f4bc5e2",
+      "primary_iou_010": {
+        "execution_complete": true,
+        "expected_frames": 43,
+        "completed_frames": 43,
+        "expected_caption_regions": 44,
+        "fully_readable_reference_regions": 9,
+        "scored_reference_regions": 9,
+        "full_readable_subset_CER": 0.08333333333333333,
+        "full_readable_subset_errors": 6,
+        "full_readable_subset_reference_characters": 72,
+        "substitutions": 6,
+        "deletions": 0,
+        "insertions": 0,
+        "exact_full_readable_regions": 6,
+        "raw_caption_region_coverage": 20,
+        "accepted_caption_region_coverage": 14,
+        "partial_known_spans": 48,
+        "partial_known_spans_exact_in_order": 6,
+        "accepted_output_characters_in_unscorable_regions": 48,
+        "accepted_observations_outside_caption_regions": 9,
+        "accepted_characters_outside_caption_regions": 14,
+        "frames_with_no_caption_region_but_accepted_output": 1,
+        "individual_scores_scope": "Completed arm, restricted independently readable subset",
+        "full_video_CER": null,
+        "full_video_CER_reason": "Partial and unreadable regions have no complete independent visual reference. Nine readable regions are a limited subset, not the full lyric.",
+        "outside_region_note": "Unmatched observations are not automatically OCR spelling errors: they may be non-caption text or manual geometry omissions. They require pixel-only adjudication; their increase is not counted as accuracy gain.",
+        "partial_span_note": "Exact in-order preservation of certain spans is a recall diagnostic, not full-line CER and not proof that intervening words are correct."
+      },
+      "sensitivity_iou_025": {
+        "execution_complete": true,
+        "expected_frames": 43,
+        "completed_frames": 43,
+        "expected_caption_regions": 44,
+        "fully_readable_reference_regions": 9,
+        "scored_reference_regions": 9,
+        "full_readable_subset_CER": 0.08333333333333333,
+        "full_readable_subset_errors": 6,
+        "full_readable_subset_reference_characters": 72,
+        "substitutions": 6,
+        "deletions": 0,
+        "insertions": 0,
+        "exact_full_readable_regions": 6,
+        "raw_caption_region_coverage": 20,
+        "accepted_caption_region_coverage": 14,
+        "partial_known_spans": 48,
+        "partial_known_spans_exact_in_order": 6,
+        "accepted_output_characters_in_unscorable_regions": 48,
+        "accepted_observations_outside_caption_regions": 9,
+        "accepted_characters_outside_caption_regions": 14,
+        "frames_with_no_caption_region_but_accepted_output": 1,
+        "individual_scores_scope": "Completed arm, restricted independently readable subset",
+        "full_video_CER": null,
+        "full_video_CER_reason": "Partial and unreadable regions have no complete independent visual reference. Nine readable regions are a limited subset, not the full lyric.",
+        "outside_region_note": "Unmatched observations are not automatically OCR spelling errors: they may be non-caption text or manual geometry omissions. They require pixel-only adjudication; their increase is not counted as accuracy gain.",
+        "partial_span_note": "Exact in-order preservation of certain spans is a recall diagnostic, not full-line CER and not proof that intervening words are correct."
+      }
+    },
+    {
+      "id": "B0",
+      "precision": "standard",
+      "unclipRatio": 1.0,
+      "colorMode": "original",
+      "exit_code": 0,
+      "elapsed_seconds": 246.19898921799904,
+      "raw_observations": 139,
+      "rejection_counts": {
+        "accepted": 21,
+        "recognition_below_threshold": 81,
+        "empty_ctc": 37
+      },
+      "result_sha256": "bc766f9c518085a2f80d6524368deef99ecdbca15a78a0e0e0f6e92b1f139b9a",
+      "execution_receipt_sha256": "d47946fc5b4a8ee6af3d2a78d83d3623b48a43534aed14d11e0f0063a539054a",
+      "primary_iou_010": {
+        "execution_complete": true,
+        "expected_frames": 43,
+        "completed_frames": 43,
+        "expected_caption_regions": 44,
+        "fully_readable_reference_regions": 9,
+        "scored_reference_regions": 9,
+        "full_readable_subset_CER": 0.06944444444444445,
+        "full_readable_subset_errors": 5,
+        "full_readable_subset_reference_characters": 72,
+        "substitutions": 5,
+        "deletions": 0,
+        "insertions": 0,
+        "exact_full_readable_regions": 6,
+        "raw_caption_region_coverage": 20,
+        "accepted_caption_region_coverage": 13,
+        "partial_known_spans": 48,
+        "partial_known_spans_exact_in_order": 4,
+        "accepted_output_characters_in_unscorable_regions": 36,
+        "accepted_observations_outside_caption_regions": 8,
+        "accepted_characters_outside_caption_regions": 14,
+        "frames_with_no_caption_region_but_accepted_output": 2,
+        "individual_scores_scope": "Completed arm, restricted independently readable subset",
+        "full_video_CER": null,
+        "full_video_CER_reason": "Partial and unreadable regions have no complete independent visual reference. Nine readable regions are a limited subset, not the full lyric.",
+        "outside_region_note": "Unmatched observations are not automatically OCR spelling errors: they may be non-caption text or manual geometry omissions. They require pixel-only adjudication; their increase is not counted as accuracy gain.",
+        "partial_span_note": "Exact in-order preservation of certain spans is a recall diagnostic, not full-line CER and not proof that intervening words are correct."
+      },
+      "sensitivity_iou_025": {
+        "execution_complete": true,
+        "expected_frames": 43,
+        "completed_frames": 43,
+        "expected_caption_regions": 44,
+        "fully_readable_reference_regions": 9,
+        "scored_reference_regions": 9,
+        "full_readable_subset_CER": 0.06944444444444445,
+        "full_readable_subset_errors": 5,
+        "full_readable_subset_reference_characters": 72,
+        "substitutions": 5,
+        "deletions": 0,
+        "insertions": 0,
+        "exact_full_readable_regions": 6,
+        "raw_caption_region_coverage": 20,
+        "accepted_caption_region_coverage": 13,
+        "partial_known_spans": 48,
+        "partial_known_spans_exact_in_order": 4,
+        "accepted_output_characters_in_unscorable_regions": 36,
+        "accepted_observations_outside_caption_regions": 8,
+        "accepted_characters_outside_caption_regions": 14,
+        "frames_with_no_caption_region_but_accepted_output": 2,
+        "individual_scores_scope": "Completed arm, restricted independently readable subset",
+        "full_video_CER": null,
+        "full_video_CER_reason": "Partial and unreadable regions have no complete independent visual reference. Nine readable regions are a limited subset, not the full lyric.",
+        "outside_region_note": "Unmatched observations are not automatically OCR spelling errors: they may be non-caption text or manual geometry omissions. They require pixel-only adjudication; their increase is not counted as accuracy gain.",
+        "partial_span_note": "Exact in-order preservation of certain spans is a recall diagnostic, not full-line CER and not proof that intervening words are correct."
+      }
+    },
+    {
+      "id": "B1",
+      "precision": "standard",
+      "unclipRatio": 1.0,
+      "colorMode": "green",
+      "exit_code": 0,
+      "elapsed_seconds": 254.30541920499672,
+      "raw_observations": 139,
+      "rejection_counts": {
+        "accepted": 22,
+        "recognition_below_threshold": 75,
+        "empty_ctc": 42
+      },
+      "result_sha256": "42ad58b36018ea183a813cd2a598986340d2170bd1e5bdbe010451c6d88e76e6",
+      "execution_receipt_sha256": "66e03a84e25eebf71184c6cc56d8cacd4fd678f1364facbc4fba42142b4ca6b4",
+      "primary_iou_010": {
+        "execution_complete": true,
+        "expected_frames": 43,
+        "completed_frames": 43,
+        "expected_caption_regions": 44,
+        "fully_readable_reference_regions": 9,
+        "scored_reference_regions": 9,
+        "full_readable_subset_CER": 0.05555555555555555,
+        "full_readable_subset_errors": 4,
+        "full_readable_subset_reference_characters": 72,
+        "substitutions": 4,
+        "deletions": 0,
+        "insertions": 0,
+        "exact_full_readable_regions": 7,
+        "raw_caption_region_coverage": 20,
+        "accepted_caption_region_coverage": 14,
+        "partial_known_spans": 48,
+        "partial_known_spans_exact_in_order": 7,
+        "accepted_output_characters_in_unscorable_regions": 48,
+        "accepted_observations_outside_caption_regions": 8,
+        "accepted_characters_outside_caption_regions": 15,
+        "frames_with_no_caption_region_but_accepted_output": 2,
+        "individual_scores_scope": "Completed arm, restricted independently readable subset",
+        "full_video_CER": null,
+        "full_video_CER_reason": "Partial and unreadable regions have no complete independent visual reference. Nine readable regions are a limited subset, not the full lyric.",
+        "outside_region_note": "Unmatched observations are not automatically OCR spelling errors: they may be non-caption text or manual geometry omissions. They require pixel-only adjudication; their increase is not counted as accuracy gain.",
+        "partial_span_note": "Exact in-order preservation of certain spans is a recall diagnostic, not full-line CER and not proof that intervening words are correct."
+      },
+      "sensitivity_iou_025": {
+        "execution_complete": true,
+        "expected_frames": 43,
+        "completed_frames": 43,
+        "expected_caption_regions": 44,
+        "fully_readable_reference_regions": 9,
+        "scored_reference_regions": 9,
+        "full_readable_subset_CER": 0.05555555555555555,
+        "full_readable_subset_errors": 4,
+        "full_readable_subset_reference_characters": 72,
+        "substitutions": 4,
+        "deletions": 0,
+        "insertions": 0,
+        "exact_full_readable_regions": 7,
+        "raw_caption_region_coverage": 20,
+        "accepted_caption_region_coverage": 14,
+        "partial_known_spans": 48,
+        "partial_known_spans_exact_in_order": 7,
+        "accepted_output_characters_in_unscorable_regions": 48,
+        "accepted_observations_outside_caption_regions": 8,
+        "accepted_characters_outside_caption_regions": 15,
+        "frames_with_no_caption_region_but_accepted_output": 2,
+        "individual_scores_scope": "Completed arm, restricted independently readable subset",
+        "full_video_CER": null,
+        "full_video_CER_reason": "Partial and unreadable regions have no complete independent visual reference. Nine readable regions are a limited subset, not the full lyric.",
+        "outside_region_note": "Unmatched observations are not automatically OCR spelling errors: they may be non-caption text or manual geometry omissions. They require pixel-only adjudication; their increase is not counted as accuracy gain.",
+        "partial_span_note": "Exact in-order preservation of certain spans is a recall diagnostic, not full-line CER and not proof that intervening words are correct."
+      }
+    }
+  ],
+  "adoption": "Not adopted. Limited improvement on one repeated readable caption does not resolve difficult lyrics; accepted caption-region coverage regressed and unseen-video/human review is absent."
+}
