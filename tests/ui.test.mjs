@@ -10,7 +10,7 @@ import { isVideoFile } from '../src/video-frames.js';
 const [mainSource, exportSource, html] = await Promise.all([
   readFile(new URL('../src/main.js', import.meta.url), 'utf8'),
   readFile(new URL('../src/exports.js', import.meta.url), 'utf8'),
-  readFile(new URL('../index.html', import.meta.url), 'utf8'),
+  readFile(new URL('../transcribe.html', import.meta.url), 'utf8'),
 ]);
 
 class Element {
