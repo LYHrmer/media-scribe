@@ -1,5 +1,6 @@
 import { installModelAssetFetch } from './model-assets.js';
 import { findAudioRanges } from './audio-segments.js';
+import { transcribeWithSafeTimestampMerge } from './whisper-nonoverlap-wrapper.js';
 
 // This worker accepts only already-decoded local PCM, never an audio URL.
 // Models are downloaded from the same site; no media is uploaded.
@@ -187,7 +188,9 @@ self.addEventListener('message', async event => {
     for (const range of ranges) {
       const audio = range.start === 0 && range.end === job.audio.length
         ? job.audio : job.audio.subarray(range.start, range.end);
-      const output = await transcriber(audio, options);
+      const output = await transcribeWithSafeTimestampMerge(transcriber, audio, options, {
+        model, transformersVersion: (await getLibrary()).env.version,
+      });
       const text = String(output.text || '').trim();
       if (text) texts.push(text);
       const offset = range.start / SAMPLE_RATE;
