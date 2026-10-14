@@ -1,0 +1,2728 @@
+{
+  "version": "0.5.1",
+  "attribution": "Suyuan Liu and Molly Babel, University of British Columbia, MELI: Mandarin-English Language Interview, version 1.2",
+  "dataset": "https://doi.org/10.5683/SP3/5WMRUO",
+  "data_license": "MELI-derived transcript outputs in this file: CC BY-NC-SA 4.0; not the application MIT license. References and media are not included.",
+  "scope": "Real production models/WASM with simulated HTTP, Cache and Worker transport; not browser/phone end-to-end QA.",
+  "experiments_note": "Initial four interviews were development cases. F01A/M00B were frozen holdouts for the previously fixed gain rule. No reference text passed into model. Gain and shorter windows ship only in explicit retry.",
+  "interrupted_run": "en-baseline completed F00A only; process exited 137 with concurrent inference. cgroup reported one OOM kill. M00A then completed in an isolated process; do not score interruption as text error.",
+  "runs": [
+    {
+      "id": "sense-baseline-all",
+      "local_run_sha256": "ee0bc7f092717726f29598f695b68da6a2b61359d03c8ae47dd2e1f8ad071e60",
+      "decoding": "timestamps",
+      "model": "c71f0ce00bec95b07744e116345e33d8cbbe08cef896382cf907bf4b51a2cd51",
+      "fingerprints": {
+        "vad.worker-C9h8-FgH.js": "e19bc613db3bdaa1e87f1fa91a6a4722613a83a4204c2b8d1bdb4ecabef04ebe",
+        "punctuation.worker-Ch2hTEJS.js": "178ac8d7ab9e4f7fd13a75d37763eafa1d276ac9c388771dcf7be98642620209",
+        "sensevoice.worker-DTvd48of.js": "b228492d497384e0f81468c180842d6a59d3da32571b1b7e3bc90228044aef32",
+        "models-sensevoice/runtime.mjs": "3a7e50f11a449f4b9fd2b9373fbb3f16fd487cce804ae6f51241d72c5f0dbcbe",
+        "models-sensevoice/asr.mjs": "6686bf26631572b161fc2b6532302d8eeda91a774c32f3216eced57ec5769ff2"
+      },
+      "completed": true,
+      "cases": [
+        {
+          "id": "meli-f01b-zh",
+          "pcm_sha256": "b575ec11b47e8f77e2f93c9b70e34f86f76e81098cff87d979ad2c34eff63c56",
+          "reference_sha256": "e6933d5e94a02e812eb2d8d1d39976df8d639aca4d1aece0152f711930e0a2f7",
+          "score": {
+            "reference_character_count": 125,
+            "hypothesis_character_count": 120,
+            "character_errors": 7,
+            "cer": 0.056,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.056,
+            "punctuation": {
+              "evaluated": false,
+              "reason": "MELI references omit ordinary sentence punctuation."
+            }
+          },
+          "seconds": 10.882432874000001,
+          "output": {
+            "type": "result",
+            "id": 1,
+            "text": "有的时候会用方言，有时候会用普通话，因为嗯我感觉比较好一点，是因为我妈妈的普通话说的非常好，但是我爸爸说普通话确实还是会有一定口音。因为他的方言会就是我爸爸方言喜跟我妈妈的可能会有一点不一样。在湖南话有很多不同口音的方言。然后我爸爸家乡话会口音重非常多。嗯。",
+            "segments": [
+              {
+                "start": 0.06,
+                "end": 4.68,
+                "text": "有的时候会用方言，有时候会用普通话，因为嗯"
+              },
+              {
+                "start": 4.68,
+                "end": 10.56,
+                "text": "我感觉比较好一点，是因为我妈妈的普通话说的非常好，但是我爸爸说普通话确实还是会有一定口音。"
+              },
+              {
+                "start": 10.56,
+                "end": 13.74,
+                "text": "因为他的方言会"
+              },
+              {
+                "start": 13.74,
+                "end": 17.16,
+                "text": "就是我爸爸方言喜跟我妈妈的可能会有一点不一样。"
+              },
+              {
+                "start": 17.16,
+                "end": 20.04,
+                "text": "在湖南话有很多不同口音的方言。"
+              },
+              {
+                "start": 20.04,
+                "end": 24.72,
+                "text": "然后我爸爸家乡话会口音重非常多。"
+              },
+              {
+                "start": 24.72,
+                "end": 25.620625,
+                "text": "嗯。"
+              }
+            ],
+            "duration": 25.620625,
+            "decoding": "timestamps",
+            "warnings": [],
+            "speechCheck": {
+              "type": "result",
+              "id": 1,
+              "skipAsr": false,
+              "reason": "voice-possible",
+              "duration": 25.620625,
+              "checkedFrames": 4,
+              "maxProbability": null,
+              "observedMax": 0.5911469459533691,
+              "allProbabilitiesFinite": true,
+              "longestConsecutiveWeakFrames": 2,
+              "hasStrongPeak": true,
+              "analysisComplete": false
+            },
+            "rawText": "有的时候会用方言，有时候会用普通话，因为嗯我感觉比较好一点，是因为我妈妈的普通话说的非常好，但是我爸爸说普通话确实还是会有一定口音。因为他的方言会就是我爸爸方言喜跟我妈妈的可能会有一点不一样。在湖南话有很多不同口音的方言。然后我爸爸家乡话会口音重非常多。嗯。"
+          }
+        },
+        {
+          "id": "meli-m00a-zh",
+          "pcm_sha256": "973a08588a7784906d4b2c3101bbeff516964d9378ae52f81a2bd22f528bb33d",
+          "reference_sha256": "7a7d8902d778c9fafeabf419186dc79adc746d83eb7bd4ac27d4a488693881d4",
+          "score": {
+            "reference_character_count": 185,
+            "hypothesis_character_count": 184,
+            "character_errors": 10,
+            "cer": 0.05405405405405406,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.05405405405405406,
+            "punctuation": {
+              "evaluated": false,
+              "reason": "MELI references omit ordinary sentence punctuation."
+            }
+          },
+          "seconds": 8.220259162999998,
+          "output": {
+            "type": "result",
+            "id": 2,
+            "text": "我觉得川普可能对会在川普可能会展现在有些词汇上，嗯，他可能变为了普通话发音。但是他的可能就比如说一个词汇，本身普通话是前鼻韵，然后四川话是后鼻韵。那么他把这个前鼻音变成后，他把那后鼻音去变成前鼻音，但是他的音调并没有改变。那你会感觉到明显明显感，但是比如说本身这个是一声，但是你还是用四川话的四声去读它。\n那么那么这个词汇就是你会明显的感觉出来，这个它还是还是一种四川话的发音，并不是普通话的发音。对。",
+            "segments": [
+              {
+                "start": 0.06,
+                "end": 9.24,
+                "text": "我觉得川普可能对会在川普可能会展现在有些词汇上，嗯，他可能变为了普通话发音。"
+              },
+              {
+                "start": 9.24,
+                "end": 13.26,
+                "text": "但是他的可能就比如说一个词汇，"
+              },
+              {
+                "start": 13.26,
+                "end": 16.44,
+                "text": "本身普通话是前鼻韵，然后四川话是后鼻韵。"
+              },
+              {
+                "start": 16.44,
+                "end": 21.66,
+                "text": "那么他把这个前鼻音变成后，他把那后鼻音去变成前鼻音，但是他的音调并没有改变。"
+              },
+              {
+                "start": 21.66,
+                "end": 28.18,
+                "text": "那你会感觉到明显明显感，但是比如说本身这个是一声，但是你还是用四川话的四声去读它。"
+              },
+              {
+                "start": 28.24,
+                "end": 35.62,
+                "text": "那么那么这个词汇就是你会明显的感觉出来，这个它还是还是一种四川话的发音，并不是普通话的发音。"
+              },
+              {
+                "start": 35.62,
+                "end": 35.973375,
+                "text": "对。"
+              }
+            ],
+            "duration": 35.973375,
+            "decoding": "timestamps",
+            "warnings": [],
+            "speechCheck": {
+              "type": "result",
+              "id": 2,
+              "skipAsr": false,
+              "reason": "voice-possible",
+              "duration": 35.973375,
+              "checkedFrames": 4,
+              "maxProbability": null,
+              "observedMax": 0.819344162940979,
+              "allProbabilitiesFinite": true,
+              "longestConsecutiveWeakFrames": 2,
+              "hasStrongPeak": true,
+              "analysisComplete": false
+            },
+            "rawText": "我觉得川普可能对会在川普可能会展现在有些词汇上嗯，他可能变为了普通话发音。但是他的可能就比如说一个词汇本身普通话是前鼻韵，然后四川话是后鼻韵。那么他把这个前鼻音变成后他把那后鼻音去变成前鼻音，但是他的音调并没有改变。那你会感觉到明显明显感，但是比如说本身这个是一声，但是你还是用四川话的四声去读它。\n那么那么这个词汇就是你会明显的感觉出来这个它还是还是一种四川话的发音，并不是普通话的发音。对。"
+          }
+        },
+        {
+          "id": "meli-holdout-f01a-zh",
+          "pcm_sha256": "eeee334828ca96abd0904e29388accd5f82939d7fdc18a607630cea545ff66a8",
+          "reference_sha256": "0e20fac4340339941a6e16f9907e58ced68d4ad28e976584de254efcdcdf7375",
+          "score": {
+            "reference_character_count": 81,
+            "hypothesis_character_count": 82,
+            "character_errors": 3,
+            "cer": 0.037037037037037035,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.037037037037037035,
+            "punctuation": {
+              "evaluated": false,
+              "reason": "MELI references omit ordinary sentence punctuation."
+            }
+          },
+          "seconds": 4.553781416000001,
+          "output": {
+            "type": "result",
+            "id": 3,
+            "text": "呃，我问过，就他们后来发现我上海话讲的不太好，他就说你怎么上海话讲的不好，你不是上海人。然后我说因为你们不跟我讲上海话，嗯，他们好像是可能希望我就说普通话的时候，没有上海口音吧，可能。",
+            "segments": [
+              {
+                "start": 0,
+                "end": 8.46,
+                "text": "呃，我问过，就他们后来发现我上海话讲的不太好，他就说你怎么上海话讲的不好，你不是上海人。"
+              },
+              {
+                "start": 8.46,
+                "end": 13.92,
+                "text": "然后我说因为你们不跟我讲上海话，嗯，他们好像是"
+              },
+              {
+                "start": 13.92,
+                "end": 15.54,
+                "text": "可能"
+              },
+              {
+                "start": 15.54,
+                "end": 19.56,
+                "text": "希望我就说普通话的时候，"
+              },
+              {
+                "start": 19.56,
+                "end": 21.4439375,
+                "text": "没有上海口音吧，可能。"
+              }
+            ],
+            "duration": 21.4439375,
+            "decoding": "timestamps",
+            "warnings": [],
+            "speechCheck": {
+              "type": "result",
+              "id": 3,
+              "skipAsr": false,
+              "reason": "voice-possible",
+              "duration": 21.4439375,
+              "checkedFrames": 2,
+              "maxProbability": null,
+              "observedMax": 0.07334598898887634,
+              "allProbabilitiesFinite": true,
+              "longestConsecutiveWeakFrames": 2,
+              "hasStrongPeak": false,
+              "analysisComplete": false
+            },
+            "rawText": "呃，我问过，就他们后来发现我上海话讲的不太好，他就说你怎么上海话讲的不好，你不是上海人。然后我说因为你们不跟我讲上海话，嗯，他们好像是可能希望我就说普通话的时候，没有上海口音吧，可能。"
+          }
+        },
+        {
+          "id": "meli-holdout-m00b-zh",
+          "pcm_sha256": "0d36b193d802f0eba21e75cf13f60396da296b92f3f6fe47a1f593cf1320cba3",
+          "reference_sha256": "a200214bc6f2d6418a6aaaf1114411fcf288f08905637b2e61f67832da14f420",
+          "score": {
+            "reference_character_count": 54,
+            "hypothesis_character_count": 53,
+            "character_errors": 3,
+            "cer": 0.05555555555555555,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.05555555555555555,
+            "punctuation": {
+              "evaluated": false,
+              "reason": "MELI references omit ordinary sentence punctuation."
+            }
+          },
+          "seconds": 6.174419072000001,
+          "output": {
+            "type": "result",
+            "id": 4,
+            "text": "就是比如说我想个例子，我我觉得可能会说方言可以是一种那种让朋友之间的这个感情更加呃牢固一点，或者更有认同感一点。",
+            "segments": [
+              {
+                "start": 0.42,
+                "end": 2.76,
+                "text": "就是比如说"
+              },
+              {
+                "start": 2.76,
+                "end": 13.44,
+                "text": "我想个例子，"
+              },
+              {
+                "start": 13.44,
+                "end": 18.96,
+                "text": "我我觉得可能会说方言可以是一种那种"
+              },
+              {
+                "start": 18.96,
+                "end": 21.06,
+                "text": "让"
+              },
+              {
+                "start": 21.06,
+                "end": 24.96,
+                "text": "朋友之间的这个感情更加"
+              },
+              {
+                "start": 24.96,
+                "end": 28.04775,
+                "text": "呃牢固一点，或者更有认同感一点。"
+              }
+            ],
+            "duration": 28.04775,
+            "decoding": "timestamps",
+            "warnings": [],
+            "speechCheck": {
+              "type": "result",
+              "id": 4,
+              "skipAsr": false,
+              "reason": "voice-possible",
+              "duration": 28.04775,
+              "checkedFrames": 5,
+              "maxProbability": null,
+              "observedMax": 0.8447086215019226,
+              "allProbabilitiesFinite": true,
+              "longestConsecutiveWeakFrames": 2,
+              "hasStrongPeak": true,
+              "analysisComplete": false
+            },
+            "rawText": "就是比如说我想个例子，我我觉得可能会说方言可以是一种那种让朋友之间的这个感情更加呃牢固一点，或者更有认同感一点。"
+          }
+        },
+        {
+          "id": "zh-clean",
+          "pcm_sha256": "32679c5676d4a67bab7d297da1db34f92ec8a2f4899f4a03c6c80b3f4efdabdd",
+          "reference_sha256": "3dcf3d55f672e2d610a031580f924b47ddf147ff3d93f007b8386f9bef8cac58",
+          "score": {
+            "reference_character_count": 13,
+            "hypothesis_character_count": 13,
+            "character_errors": 0,
+            "cer": 0,
+            "exact_lexical_match": true,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0,
+            "punctuation": {
+              "reference_count": 1,
+              "hypothesis_count": 1,
+              "has_sentence_punctuation": true,
+              "sequence_errors": 0,
+              "boundary_exact_when_lexical_exact": true
+            }
+          },
+          "seconds": 1.040670618,
+          "output_sha256": "3e53801e97aed256c98ff017592143d42c4d86d1e5a7873e9cef8b74f481ccb3",
+          "audioGain": null,
+          "deferred": false
+        },
+        {
+          "id": "en-jfk",
+          "pcm_sha256": "16ba6e5258b459b41344a5542cf71429dfe446acf32c6a9dbdce02258c1f77e7",
+          "reference_sha256": "37d003a932256f11d07e00d0c1478443140ea5e87d817b0f8bc577c1d2aa2e1b",
+          "score": {
+            "reference_character_count": 83,
+            "hypothesis_character_count": 83,
+            "character_errors": 0,
+            "cer": 0,
+            "exact_lexical_match": true,
+            "false_positive_for_empty_reference": null,
+            "word_errors": 0,
+            "reference_word_count": 22,
+            "wer": 0,
+            "punctuation": {
+              "reference_count": 4,
+              "hypothesis_count": 2,
+              "has_sentence_punctuation": true,
+              "sequence_errors": 2,
+              "boundary_exact_when_lexical_exact": false
+            }
+          },
+          "seconds": 6.164279821000004,
+          "output_sha256": "ee093687c0dd7f2d3864bfe9b95b90bb47735b00c4255dd36865df6137ec33a7",
+          "audioGain": null,
+          "deferred": false
+        },
+        {
+          "id": "zh-fast",
+          "pcm_sha256": "8ed6de5a6673e93d5bba306db190ab8f5ca786f2b01d85de328a47312ca0ba00",
+          "reference_sha256": "aeec446ab3a32d980c02463e22868deeee948880245fd942e968dddacad31706",
+          "score": {
+            "reference_character_count": 130,
+            "hypothesis_character_count": 128,
+            "character_errors": 20,
+            "cer": 0.15384615384615385,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.15384615384615385,
+            "punctuation": {
+              "reference_count": 11,
+              "hypothesis_count": 14,
+              "has_sentence_punctuation": true,
+              "sequence_errors": 3,
+              "boundary_exact_when_lexical_exact": null
+            }
+          },
+          "seconds": 6.247372532999995,
+          "output_sha256": "13d64fbade4da1edc36b2ea19a5c6c04fd2f8cbf86686775117ecc21dff47c42",
+          "audioGain": null,
+          "deferred": false
+        },
+        {
+          "id": "zh-noisy-digits",
+          "pcm_sha256": "162c06cacf17383517878f77d0b9d2ed91a6085f56859f8164c8da15a8388434",
+          "reference_sha256": "7a99b3b8099f75b5e98f828ef4ee7accafb3fb9e2ef1f162e928d414c60663d8",
+          "score": {
+            "reference_character_count": 53,
+            "hypothesis_character_count": 29,
+            "character_errors": 46,
+            "cer": 0.8679245283018868,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.5283018867924528,
+            "punctuation": {
+              "reference_count": 9,
+              "hypothesis_count": 1,
+              "has_sentence_punctuation": true,
+              "sequence_errors": 8,
+              "boundary_exact_when_lexical_exact": null
+            }
+          },
+          "seconds": 4.899641008999999,
+          "output_sha256": "4c42c68594f3a1f9738350a5503b16906df8e2d4c4723b03b1cbdf309cf771c7",
+          "audioGain": null,
+          "deferred": false
+        },
+        {
+          "id": "en-noisy-dialogue",
+          "pcm_sha256": "6fbaf85e93aea0be14b8934df691e518e441b0cc7e76012e22a45b2d98cd369f",
+          "reference_sha256": "d380d37cf77de6d848c86f8745fd03238d4f59557794f6580dddd8ed645e026f",
+          "score": {
+            "reference_character_count": 131,
+            "hypothesis_character_count": 105,
+            "character_errors": 40,
+            "cer": 0.3053435114503817,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "word_errors": 13,
+            "reference_word_count": 31,
+            "wer": 0.41935483870967744,
+            "punctuation": {
+              "reference_count": 11,
+              "hypothesis_count": 5,
+              "has_sentence_punctuation": true,
+              "sequence_errors": 6,
+              "boundary_exact_when_lexical_exact": null
+            }
+          },
+          "seconds": 8.147881117999997,
+          "output_sha256": "9b93af360f951dd85628d039dcfaf8e2d76708c75ff561cb68c54757e4cac21c",
+          "audioGain": null,
+          "deferred": false
+        },
+        {
+          "id": "zh-low-volume",
+          "pcm_sha256": "07a3deff6d10f2590d0b652f04ce89d36c74a16acfcdd3b2799996a1ae53701c",
+          "reference_sha256": "3dcf3d55f672e2d610a031580f924b47ddf147ff3d93f007b8386f9bef8cac58",
+          "score": {
+            "reference_character_count": 13,
+            "hypothesis_character_count": 13,
+            "character_errors": 0,
+            "cer": 0,
+            "exact_lexical_match": true,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0,
+            "punctuation": {
+              "reference_count": 1,
+              "hypothesis_count": 1,
+              "has_sentence_punctuation": true,
+              "sequence_errors": 0,
+              "boundary_exact_when_lexical_exact": true
+            }
+          },
+          "seconds": 5.471852458000002,
+          "output_sha256": "f39ccab37c8aa11ec847e2be57b4443f219fc6d5fe4b9361d41f78ff61ee3efd",
+          "audioGain": null,
+          "deferred": false
+        },
+        {
+          "id": "zh-instrumental",
+          "pcm_sha256": "a8e620c102abd4e9239d3f355e7463eeb25e44e5e7873affe27e0134843cb06b",
+          "reference_sha256": "3dcf3d55f672e2d610a031580f924b47ddf147ff3d93f007b8386f9bef8cac58",
+          "score": {
+            "reference_character_count": 13,
+            "hypothesis_character_count": 13,
+            "character_errors": 0,
+            "cer": 0,
+            "exact_lexical_match": true,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0,
+            "punctuation": {
+              "reference_count": 1,
+              "hypothesis_count": 1,
+              "has_sentence_punctuation": true,
+              "sequence_errors": 0,
+              "boundary_exact_when_lexical_exact": true
+            }
+          },
+          "seconds": 1.0221014730000024,
+          "output_sha256": "de193ff83ac93fca6c4726425df812bfb754d6f262ff10a9fd65beb19d492b66",
+          "audioGain": null,
+          "deferred": false
+        },
+        {
+          "id": "silence",
+          "pcm_sha256": "ac2878215ad33205d1732578c89f25ededaad1b676911c540825bcf4baa42d9b",
+          "reference_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "score": {
+            "reference_character_count": 0,
+            "hypothesis_character_count": 0,
+            "character_errors": 0,
+            "cer": null,
+            "exact_lexical_match": true,
+            "false_positive_for_empty_reference": false,
+            "punctuation": {
+              "reference_count": 0,
+              "hypothesis_count": 0,
+              "has_sentence_punctuation": false,
+              "sequence_errors": 0,
+              "boundary_exact_when_lexical_exact": true
+            }
+          },
+          "seconds": 0.11475291399999696,
+          "output_sha256": "f2b10671e1cf8f6da29edd9823005213e4c12dbec68a77fef718fff59d67949c",
+          "audioGain": null,
+          "deferred": true
+        },
+        {
+          "id": "noise",
+          "pcm_sha256": "60ce8607268552a37e3d1e2022d7629db4d6d63b4d07cb0c9b5396558e56930d",
+          "reference_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "score": {
+            "reference_character_count": 0,
+            "hypothesis_character_count": 0,
+            "character_errors": 0,
+            "cer": null,
+            "exact_lexical_match": true,
+            "false_positive_for_empty_reference": false,
+            "punctuation": {
+              "reference_count": 0,
+              "hypothesis_count": 0,
+              "has_sentence_punctuation": false,
+              "sequence_errors": 0,
+              "boundary_exact_when_lexical_exact": true
+            }
+          },
+          "seconds": 0.10755821399999695,
+          "output_sha256": "943818f0479565e90c0207f0fbf3283bf24d698e6dfb30bc8d9b4622876ad82d",
+          "audioGain": null,
+          "deferred": true
+        },
+        {
+          "id": "zh-with-pause",
+          "pcm_sha256": "e0a3e8fea00ca53ec914e92cf2332b8247f678e803c69fce2549120444c6e1f2",
+          "reference_sha256": "fac8f94daeb5df235f5983905696000c770902d232ca89a7573ba96e701ea549",
+          "score": {
+            "reference_character_count": 26,
+            "hypothesis_character_count": 26,
+            "character_errors": 0,
+            "cer": 0,
+            "exact_lexical_match": true,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0,
+            "punctuation": {
+              "reference_count": 2,
+              "hypothesis_count": 3,
+              "has_sentence_punctuation": true,
+              "sequence_errors": 1,
+              "boundary_exact_when_lexical_exact": false
+            }
+          },
+          "seconds": 2.9357489200000053,
+          "output_sha256": "a596b7afba62542c28fe7d5911b407fafa5d379e01f8a9fbdcf2ae540a7ac64d",
+          "audioGain": null,
+          "deferred": false
+        }
+      ]
+    },
+    {
+      "id": "sense-old-retry-all",
+      "local_run_sha256": "0826d0868870ac5b2519230afa4353c7f7fb2dbbc67dbb579ea2844c4438f392",
+      "decoding": "text",
+      "model": "c71f0ce00bec95b07744e116345e33d8cbbe08cef896382cf907bf4b51a2cd51",
+      "fingerprints": {
+        "vad.worker-C9h8-FgH.js": "e19bc613db3bdaa1e87f1fa91a6a4722613a83a4204c2b8d1bdb4ecabef04ebe",
+        "punctuation.worker-Ch2hTEJS.js": "178ac8d7ab9e4f7fd13a75d37763eafa1d276ac9c388771dcf7be98642620209",
+        "sensevoice.worker-DTvd48of.js": "b228492d497384e0f81468c180842d6a59d3da32571b1b7e3bc90228044aef32",
+        "models-sensevoice/runtime.mjs": "3a7e50f11a449f4b9fd2b9373fbb3f16fd487cce804ae6f51241d72c5f0dbcbe",
+        "models-sensevoice/asr.mjs": "6686bf26631572b161fc2b6532302d8eeda91a774c32f3216eced57ec5769ff2"
+      },
+      "completed": true,
+      "cases": [
+        {
+          "id": "meli-f01b-zh",
+          "pcm_sha256": "b575ec11b47e8f77e2f93c9b70e34f86f76e81098cff87d979ad2c34eff63c56",
+          "reference_sha256": "e6933d5e94a02e812eb2d8d1d39976df8d639aca4d1aece0152f711930e0a2f7",
+          "score": {
+            "reference_character_count": 125,
+            "hypothesis_character_count": 119,
+            "character_errors": 7,
+            "cer": 0.056,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.056,
+            "punctuation": {
+              "evaluated": false,
+              "reason": "MELI references omit ordinary sentence punctuation."
+            }
+          },
+          "seconds": 11.161935424000001,
+          "output": {
+            "type": "result",
+            "id": 1,
+            "text": "有的时候会用方言，有时候会用普通话，因为嗯我感觉比较好一点，是因为我妈妈的普通话说非常好，但是我爸爸说普通话确实还是会有一定口音，因为他的方言会就是我爸爸方言喜跟我妈妈的可能会有一点不一样。在湖南话有很多不同口音的方言。然后我爸爸家乡话会口音重非常多嗯。",
+            "segments": [
+              {
+                "start": 0.06,
+                "end": 4.62,
+                "text": "有的时候会用方言，有时候会用普通话，因为嗯"
+              },
+              {
+                "start": 4.62,
+                "end": 13.74,
+                "text": "我感觉比较好一点，是因为我妈妈的普通话说非常好，但是我爸爸说普通话确实还是会有一定口音，因为他的方言会"
+              },
+              {
+                "start": 13.74,
+                "end": 24.9,
+                "text": "就是我爸爸方言喜跟我妈妈的可能会有一点不一样。在湖南话有很多不同口音的方言。然后我爸爸家乡话会口音重非常多嗯。"
+              }
+            ],
+            "duration": 25.620625,
+            "decoding": "text",
+            "warnings": [
+              "本次按原话识别，数字可能写为汉字。号码、人名和听不清的内容仍需核对。"
+            ],
+            "speechCheck": {
+              "type": "result",
+              "id": 1,
+              "skipAsr": false,
+              "reason": "voice-possible",
+              "duration": 25.620625,
+              "checkedFrames": 4,
+              "maxProbability": null,
+              "observedMax": 0.5911469459533691,
+              "allProbabilitiesFinite": true,
+              "longestConsecutiveWeakFrames": 2,
+              "hasStrongPeak": true,
+              "analysisComplete": false
+            },
+            "rawText": "有的时候会用方言有时候会用普通话因为嗯我感觉比较好一点是因为我妈妈的普通话说非常好但是我爸爸说普通话确实还是会有一定口音因为他的方言会就是我爸爸方言喜跟我妈妈的可能会有一点不一样在湖南话有很多不同口音的方言然后我爸爸家乡话会口音重非常多嗯"
+          }
+        },
+        {
+          "id": "meli-m00a-zh",
+          "pcm_sha256": "973a08588a7784906d4b2c3101bbeff516964d9378ae52f81a2bd22f528bb33d",
+          "reference_sha256": "7a7d8902d778c9fafeabf419186dc79adc746d83eb7bd4ac27d4a488693881d4",
+          "score": {
+            "reference_character_count": 185,
+            "hypothesis_character_count": 184,
+            "character_errors": 10,
+            "cer": 0.05405405405405406,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.05405405405405406,
+            "punctuation": {
+              "evaluated": false,
+              "reason": "MELI references omit ordinary sentence punctuation."
+            }
+          },
+          "seconds": 7.9514996139999985,
+          "output": {
+            "type": "result",
+            "id": 2,
+            "text": "我觉得川普可能对会在川普可能会展现在有些词汇上，嗯，他可能变为了普通话发音，但是他的可能就比如说一个词汇，本身普通话是前鼻韵，然后四川话是后鼻韵，那么他把这个前鼻音变成后，他把那后鼻音去变成前鼻音，但是他的音调并没有改变，那你会感觉到明显明显感。但是比如说本身这个是一声，但是你还是用四川话的四声去读它。\n那么那么这个词汇就是你会明显的感觉出来，这个它还是还是一种四川话的发音，并不是普通话的发音，对。",
+            "segments": [
+              {
+                "start": 0.06,
+                "end": 13.26,
+                "text": "我觉得川普可能对会在川普可能会展现在有些词汇上，嗯，他可能变为了普通话发音，但是他的可能就比如说一个词汇，"
+              },
+              {
+                "start": 13.26,
+                "end": 27.84,
+                "text": "本身普通话是前鼻韵，然后四川话是后鼻韵，那么他把这个前鼻音变成后，他把那后鼻音去变成前鼻音，但是他的音调并没有改变，那你会感觉到明显明显感。但是比如说本身这个是一声，但是你还是用四川话的四声去读它。"
+              },
+              {
+                "start": 28.24,
+                "end": 35.8,
+                "text": "那么那么这个词汇就是你会明显的感觉出来，这个它还是还是一种四川话的发音，并不是普通话的发音，对。"
+              }
+            ],
+            "duration": 35.973375,
+            "decoding": "text",
+            "warnings": [
+              "本次按原话识别，数字可能写为汉字。号码、人名和听不清的内容仍需核对。"
+            ],
+            "speechCheck": {
+              "type": "result",
+              "id": 2,
+              "skipAsr": false,
+              "reason": "voice-possible",
+              "duration": 35.973375,
+              "checkedFrames": 4,
+              "maxProbability": null,
+              "observedMax": 0.819344162940979,
+              "allProbabilitiesFinite": true,
+              "longestConsecutiveWeakFrames": 2,
+              "hasStrongPeak": true,
+              "analysisComplete": false
+            },
+            "rawText": "我觉得川普可能对会在川普可能会展现在有些词汇上嗯他可能变为了普通话发音但是他的可能就比如说一个词汇本身普通话是前鼻韵然后四川话是后鼻韵那么他把这个前鼻音变成后他把那后鼻音去变成前鼻音但是他的音调并没有改变那你会感觉到明显明显感但是比如说本身这个是一声但是你还是用四川话的四声去读它\n那么那么这个词汇就是你会明显的感觉出来这个它还是还是一种四川话的发音并不是普通话的发音对"
+          }
+        },
+        {
+          "id": "meli-holdout-f01a-zh",
+          "pcm_sha256": "eeee334828ca96abd0904e29388accd5f82939d7fdc18a607630cea545ff66a8",
+          "reference_sha256": "0e20fac4340339941a6e16f9907e58ced68d4ad28e976584de254efcdcdf7375",
+          "score": {
+            "reference_character_count": 81,
+            "hypothesis_character_count": 82,
+            "character_errors": 3,
+            "cer": 0.037037037037037035,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.037037037037037035,
+            "punctuation": {
+              "evaluated": false,
+              "reason": "MELI references omit ordinary sentence punctuation."
+            }
+          },
+          "seconds": 4.239899861000001,
+          "output": {
+            "type": "result",
+            "id": 3,
+            "text": "呃，我问过，就他们后来发现我上海话讲的不太好，他就说你怎么上海话讲的不好，你不是上海人。然后我说因为你们不跟我讲上海话，嗯，他们好像是可能希望我就说普通话的时候没有上海口音吧，可能。",
+            "segments": [
+              {
+                "start": 0,
+                "end": 13.92,
+                "text": "呃，我问过，就他们后来发现我上海话讲的不太好，他就说你怎么上海话讲的不好，你不是上海人。然后我说因为你们不跟我讲上海话，嗯，他们好像是"
+              },
+              {
+                "start": 13.92,
+                "end": 15.54,
+                "text": "可能"
+              },
+              {
+                "start": 15.54,
+                "end": 19.56,
+                "text": "希望我就说普通话的时候"
+              },
+              {
+                "start": 19.56,
+                "end": 21.24,
+                "text": "没有上海口音吧，可能。"
+              }
+            ],
+            "duration": 21.4439375,
+            "decoding": "text",
+            "warnings": [
+              "本次按原话识别，数字可能写为汉字。号码、人名和听不清的内容仍需核对。"
+            ],
+            "speechCheck": {
+              "type": "result",
+              "id": 3,
+              "skipAsr": false,
+              "reason": "voice-possible",
+              "duration": 21.4439375,
+              "checkedFrames": 2,
+              "maxProbability": null,
+              "observedMax": 0.07334598898887634,
+              "allProbabilitiesFinite": true,
+              "longestConsecutiveWeakFrames": 2,
+              "hasStrongPeak": false,
+              "analysisComplete": false
+            },
+            "rawText": "呃我问过就他们后来发现我上海话讲的不太好他就说你怎么上海话讲的不好你不是上海人然后我说因为你们不跟我讲上海话嗯他们好像是可能希望我就说普通话的时候没有上海口音吧可能"
+          }
+        },
+        {
+          "id": "meli-holdout-m00b-zh",
+          "pcm_sha256": "0d36b193d802f0eba21e75cf13f60396da296b92f3f6fe47a1f593cf1320cba3",
+          "reference_sha256": "a200214bc6f2d6418a6aaaf1114411fcf288f08905637b2e61f67832da14f420",
+          "score": {
+            "reference_character_count": 54,
+            "hypothesis_character_count": 53,
+            "character_errors": 3,
+            "cer": 0.05555555555555555,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.05555555555555555,
+            "punctuation": {
+              "evaluated": false,
+              "reason": "MELI references omit ordinary sentence punctuation."
+            }
+          },
+          "seconds": 6.014858034,
+          "output": {
+            "type": "result",
+            "id": 4,
+            "text": "就是比如说我想个例子，我我觉得可能会说方言可以是一种那种让朋友之间的这个感情更加呃牢固一点，或者更有认同感一点。",
+            "segments": [
+              {
+                "start": 0.42,
+                "end": 2.76,
+                "text": "就是比如说"
+              },
+              {
+                "start": 2.76,
+                "end": 13.44,
+                "text": "我想个例子，"
+              },
+              {
+                "start": 13.44,
+                "end": 18.96,
+                "text": "我我觉得可能会说方言可以是一种那种"
+              },
+              {
+                "start": 18.96,
+                "end": 21.06,
+                "text": "让"
+              },
+              {
+                "start": 21.06,
+                "end": 24.96,
+                "text": "朋友之间的这个感情更加"
+              },
+              {
+                "start": 24.96,
+                "end": 27.9,
+                "text": "呃牢固一点，或者更有认同感一点。"
+              }
+            ],
+            "duration": 28.04775,
+            "decoding": "text",
+            "warnings": [
+              "本次按原话识别，数字可能写为汉字。号码、人名和听不清的内容仍需核对。"
+            ],
+            "speechCheck": {
+              "type": "result",
+              "id": 4,
+              "skipAsr": false,
+              "reason": "voice-possible",
+              "duration": 28.04775,
+              "checkedFrames": 5,
+              "maxProbability": null,
+              "observedMax": 0.8447086215019226,
+              "allProbabilitiesFinite": true,
+              "longestConsecutiveWeakFrames": 2,
+              "hasStrongPeak": true,
+              "analysisComplete": false
+            },
+            "rawText": "就是比如说我想个例子我我觉得可能会说方言可以是一种那种让朋友之间的这个感情更加呃牢固一点或者更有认同感一点"
+          }
+        },
+        {
+          "id": "zh-clean",
+          "pcm_sha256": "32679c5676d4a67bab7d297da1db34f92ec8a2f4899f4a03c6c80b3f4efdabdd",
+          "reference_sha256": "3dcf3d55f672e2d610a031580f924b47ddf147ff3d93f007b8386f9bef8cac58",
+          "score": {
+            "reference_character_count": 13,
+            "hypothesis_character_count": 13,
+            "character_errors": 3,
+            "cer": 0.23076923076923078,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.07692307692307693,
+            "punctuation": {
+              "reference_count": 1,
+              "hypothesis_count": 2,
+              "has_sentence_punctuation": true,
+              "sequence_errors": 1,
+              "boundary_exact_when_lexical_exact": null
+            }
+          },
+          "seconds": 1.161063467,
+          "output_sha256": "b64331d9350ffd008645b128653339b0b6c3cf48c62d9f55ed5800fc65f7fa4d",
+          "audioGain": null,
+          "deferred": false
+        },
+        {
+          "id": "en-jfk",
+          "pcm_sha256": "16ba6e5258b459b41344a5542cf71429dfe446acf32c6a9dbdce02258c1f77e7",
+          "reference_sha256": "37d003a932256f11d07e00d0c1478443140ea5e87d817b0f8bc577c1d2aa2e1b",
+          "score": {
+            "reference_character_count": 83,
+            "hypothesis_character_count": 83,
+            "character_errors": 0,
+            "cer": 0,
+            "exact_lexical_match": true,
+            "false_positive_for_empty_reference": null,
+            "word_errors": 0,
+            "reference_word_count": 22,
+            "wer": 0,
+            "punctuation": {
+              "reference_count": 4,
+              "hypothesis_count": 0,
+              "has_sentence_punctuation": false,
+              "sequence_errors": 4,
+              "boundary_exact_when_lexical_exact": false
+            }
+          },
+          "seconds": 6.292538477999998,
+          "output_sha256": "fb072c58df94cb9581ec583ee70870b180da255fd32aa3252c7d9414c1f4879c",
+          "audioGain": null,
+          "deferred": false
+        },
+        {
+          "id": "zh-fast",
+          "pcm_sha256": "8ed6de5a6673e93d5bba306db190ab8f5ca786f2b01d85de328a47312ca0ba00",
+          "reference_sha256": "aeec446ab3a32d980c02463e22868deeee948880245fd942e968dddacad31706",
+          "score": {
+            "reference_character_count": 130,
+            "hypothesis_character_count": 128,
+            "character_errors": 20,
+            "cer": 0.15384615384615385,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.15384615384615385,
+            "punctuation": {
+              "reference_count": 11,
+              "hypothesis_count": 12,
+              "has_sentence_punctuation": true,
+              "sequence_errors": 1,
+              "boundary_exact_when_lexical_exact": null
+            }
+          },
+          "seconds": 6.553584560999996,
+          "output_sha256": "392d0b6ba3b9c103ba4e6eb3e3774e36fca88c0cef683e9e60dea3bcab8367ea",
+          "audioGain": null,
+          "deferred": false
+        },
+        {
+          "id": "zh-noisy-digits",
+          "pcm_sha256": "162c06cacf17383517878f77d0b9d2ed91a6085f56859f8164c8da15a8388434",
+          "reference_sha256": "7a99b3b8099f75b5e98f828ef4ee7accafb3fb9e2ef1f162e928d414c60663d8",
+          "score": {
+            "reference_character_count": 53,
+            "hypothesis_character_count": 29,
+            "character_errors": 27,
+            "cer": 0.5094339622641509,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.5094339622641509,
+            "punctuation": {
+              "reference_count": 9,
+              "hypothesis_count": 1,
+              "has_sentence_punctuation": true,
+              "sequence_errors": 8,
+              "boundary_exact_when_lexical_exact": null
+            }
+          },
+          "seconds": 4.562129332999997,
+          "output_sha256": "2e2a08d8bfaca9707b792973f08a84f114acc1df88ad033e0e4eee1304bbcadf",
+          "audioGain": null,
+          "deferred": false
+        },
+        {
+          "id": "en-noisy-dialogue",
+          "pcm_sha256": "6fbaf85e93aea0be14b8934df691e518e441b0cc7e76012e22a45b2d98cd369f",
+          "reference_sha256": "d380d37cf77de6d848c86f8745fd03238d4f59557794f6580dddd8ed645e026f",
+          "score": {
+            "reference_character_count": 131,
+            "hypothesis_character_count": 96,
+            "character_errors": 47,
+            "cer": 0.35877862595419846,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "word_errors": 14,
+            "reference_word_count": 31,
+            "wer": 0.45161290322580644,
+            "punctuation": {
+              "reference_count": 11,
+              "hypothesis_count": 0,
+              "has_sentence_punctuation": false,
+              "sequence_errors": 11,
+              "boundary_exact_when_lexical_exact": null
+            }
+          },
+          "seconds": 7.8296696149999985,
+          "output_sha256": "25261645c3785c5df8c6a58074effd1ce26b4c55dd63a0c4638942a76cb1f70c",
+          "audioGain": null,
+          "deferred": false
+        },
+        {
+          "id": "zh-low-volume",
+          "pcm_sha256": "07a3deff6d10f2590d0b652f04ce89d36c74a16acfcdd3b2799996a1ae53701c",
+          "reference_sha256": "3dcf3d55f672e2d610a031580f924b47ddf147ff3d93f007b8386f9bef8cac58",
+          "score": {
+            "reference_character_count": 13,
+            "hypothesis_character_count": 13,
+            "character_errors": 3,
+            "cer": 0.23076923076923078,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.07692307692307693,
+            "punctuation": {
+              "reference_count": 1,
+              "hypothesis_count": 2,
+              "has_sentence_punctuation": true,
+              "sequence_errors": 1,
+              "boundary_exact_when_lexical_exact": null
+            }
+          },
+          "seconds": 4.859124616000001,
+          "output_sha256": "24ff6dbb5baf3793329ed9e5709e2d31ac2578990f29c1c2499322740650be6f",
+          "audioGain": null,
+          "deferred": false
+        },
+        {
+          "id": "zh-instrumental",
+          "pcm_sha256": "a8e620c102abd4e9239d3f355e7463eeb25e44e5e7873affe27e0134843cb06b",
+          "reference_sha256": "3dcf3d55f672e2d610a031580f924b47ddf147ff3d93f007b8386f9bef8cac58",
+          "score": {
+            "reference_character_count": 13,
+            "hypothesis_character_count": 13,
+            "character_errors": 3,
+            "cer": 0.23076923076923078,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.07692307692307693,
+            "punctuation": {
+              "reference_count": 1,
+              "hypothesis_count": 2,
+              "has_sentence_punctuation": true,
+              "sequence_errors": 1,
+              "boundary_exact_when_lexical_exact": null
+            }
+          },
+          "seconds": 0.9930283449999988,
+          "output_sha256": "a0ee58dfbfe8538e31c5b6bf5801336ee8d5938d5a81286e7c852e98cdb6a563",
+          "audioGain": null,
+          "deferred": false
+        },
+        {
+          "id": "silence",
+          "pcm_sha256": "ac2878215ad33205d1732578c89f25ededaad1b676911c540825bcf4baa42d9b",
+          "reference_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "score": {
+            "reference_character_count": 0,
+            "hypothesis_character_count": 0,
+            "character_errors": 0,
+            "cer": null,
+            "exact_lexical_match": true,
+            "false_positive_for_empty_reference": false,
+            "punctuation": {
+              "reference_count": 0,
+              "hypothesis_count": 0,
+              "has_sentence_punctuation": false,
+              "sequence_errors": 0,
+              "boundary_exact_when_lexical_exact": true
+            }
+          },
+          "seconds": 0.10392145399999572,
+          "output_sha256": "f2b10671e1cf8f6da29edd9823005213e4c12dbec68a77fef718fff59d67949c",
+          "audioGain": null,
+          "deferred": true
+        },
+        {
+          "id": "noise",
+          "pcm_sha256": "60ce8607268552a37e3d1e2022d7629db4d6d63b4d07cb0c9b5396558e56930d",
+          "reference_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "score": {
+            "reference_character_count": 0,
+            "hypothesis_character_count": 0,
+            "character_errors": 0,
+            "cer": null,
+            "exact_lexical_match": true,
+            "false_positive_for_empty_reference": false,
+            "punctuation": {
+              "reference_count": 0,
+              "hypothesis_count": 0,
+              "has_sentence_punctuation": false,
+              "sequence_errors": 0,
+              "boundary_exact_when_lexical_exact": true
+            }
+          },
+          "seconds": 0.10078355999999622,
+          "output_sha256": "943818f0479565e90c0207f0fbf3283bf24d698e6dfb30bc8d9b4622876ad82d",
+          "audioGain": null,
+          "deferred": true
+        },
+        {
+          "id": "zh-with-pause",
+          "pcm_sha256": "e0a3e8fea00ca53ec914e92cf2332b8247f678e803c69fce2549120444c6e1f2",
+          "reference_sha256": "fac8f94daeb5df235f5983905696000c770902d232ca89a7573ba96e701ea549",
+          "score": {
+            "reference_character_count": 26,
+            "hypothesis_character_count": 26,
+            "character_errors": 4,
+            "cer": 0.15384615384615385,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0,
+            "punctuation": {
+              "reference_count": 2,
+              "hypothesis_count": 4,
+              "has_sentence_punctuation": true,
+              "sequence_errors": 2,
+              "boundary_exact_when_lexical_exact": null
+            }
+          },
+          "seconds": 2.6468700329999995,
+          "output_sha256": "38db76735ae78137d32a1f18b8b10ac38301bb62582fa1097e221a0e23c193d1",
+          "audioGain": null,
+          "deferred": false
+        }
+      ]
+    },
+    {
+      "id": "sense-new-retry-all",
+      "local_run_sha256": "6c6a02a481e1d55c32ace89278e2817e9f66526f8d0ccdd2f1c15e94055ff0f1",
+      "decoding": "text",
+      "model": "c71f0ce00bec95b07744e116345e33d8cbbe08cef896382cf907bf4b51a2cd51",
+      "fingerprints": {
+        "vad.worker-C9h8-FgH.js": "e19bc613db3bdaa1e87f1fa91a6a4722613a83a4204c2b8d1bdb4ecabef04ebe",
+        "punctuation.worker-Ch2hTEJS.js": "178ac8d7ab9e4f7fd13a75d37763eafa1d276ac9c388771dcf7be98642620209",
+        "sensevoice.worker-BssZ2wUc.js": "f6c708dcc3cf10a92dd35d95611a7ce222f7a478e8d286767b9901139dfe624f",
+        "models-sensevoice/runtime.mjs": "3a7e50f11a449f4b9fd2b9373fbb3f16fd487cce804ae6f51241d72c5f0dbcbe",
+        "models-sensevoice/asr.mjs": "6686bf26631572b161fc2b6532302d8eeda91a774c32f3216eced57ec5769ff2"
+      },
+      "completed": true,
+      "cases": [
+        {
+          "id": "meli-f01b-zh",
+          "pcm_sha256": "b575ec11b47e8f77e2f93c9b70e34f86f76e81098cff87d979ad2c34eff63c56",
+          "reference_sha256": "e6933d5e94a02e812eb2d8d1d39976df8d639aca4d1aece0152f711930e0a2f7",
+          "score": {
+            "reference_character_count": 125,
+            "hypothesis_character_count": 121,
+            "character_errors": 6,
+            "cer": 0.048,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.048,
+            "punctuation": {
+              "evaluated": false,
+              "reason": "MELI references omit ordinary sentence punctuation."
+            }
+          },
+          "seconds": 11.784220347999998,
+          "output": {
+            "type": "result",
+            "id": 1,
+            "text": "有的时候会用方言，有时候会用普通话，因为嗯我感觉比较好一点，是因为我妈妈的普通话说的非常好。但是我爸爸说普通话确实还是会有一定口音，因为他的方言会就是我爸爸方言喜跟我妈妈的可能会有一点不一样。在湖南的话有很多不同口音的方言。然后我爸爸家乡话会口音重非常多嗯。",
+            "segments": [
+              {
+                "start": 0.06,
+                "end": 4.68,
+                "text": "有的时候会用方言，有时候会用普通话，因为嗯"
+              },
+              {
+                "start": 4.68,
+                "end": 13.74,
+                "text": "我感觉比较好一点，是因为我妈妈的普通话说的非常好。但是我爸爸说普通话确实还是会有一定口音，因为他的方言会"
+              },
+              {
+                "start": 13.74,
+                "end": 24.9,
+                "text": "就是我爸爸方言喜跟我妈妈的可能会有一点不一样。在湖南的话有很多不同口音的方言。然后我爸爸家乡话会口音重非常多嗯。"
+              }
+            ],
+            "duration": 25.620625,
+            "decoding": "text",
+            "audioGain": 5.8590949408721675,
+            "warnings": [
+              "本次按原话识别，数字可能写为汉字。号码、人名和听不清的内容仍需核对。",
+              "本次重试也适度提高了低音量；可恢复上一版，对照原音选择结果。"
+            ],
+            "speechCheck": {
+              "type": "result",
+              "id": 1,
+              "skipAsr": false,
+              "reason": "voice-possible",
+              "duration": 25.620625,
+              "checkedFrames": 4,
+              "maxProbability": null,
+              "observedMax": 0.5911469459533691,
+              "allProbabilitiesFinite": true,
+              "longestConsecutiveWeakFrames": 2,
+              "hasStrongPeak": true,
+              "analysisComplete": false
+            },
+            "rawText": "有的时候会用方言有时候会用普通话因为嗯我感觉比较好一点是因为我妈妈的普通话说的非常好但是我爸爸说普通话确实还是会有一定口音因为他的方言会就是我爸爸方言喜跟我妈妈的可能会有一点不一样在湖南的话有很多不同口音的方言然后我爸爸家乡话会口音重非常多嗯"
+          }
+        },
+        {
+          "id": "meli-m00a-zh",
+          "pcm_sha256": "973a08588a7784906d4b2c3101bbeff516964d9378ae52f81a2bd22f528bb33d",
+          "reference_sha256": "7a7d8902d778c9fafeabf419186dc79adc746d83eb7bd4ac27d4a488693881d4",
+          "score": {
+            "reference_character_count": 185,
+            "hypothesis_character_count": 184,
+            "character_errors": 10,
+            "cer": 0.05405405405405406,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.05405405405405406,
+            "punctuation": {
+              "evaluated": false,
+              "reason": "MELI references omit ordinary sentence punctuation."
+            }
+          },
+          "seconds": 8.511998058999998,
+          "output": {
+            "type": "result",
+            "id": 2,
+            "text": "我觉得川普可能对会在川普可能会展现在有些词汇上，嗯，他可能变为了普通话发音，但是他的可能就比如说一个词汇，本身普通话是前鼻韵，然后四川话是后鼻韵，那么他把这个前鼻音变成后，他把那后鼻音去变成前鼻音，但是他的音调并没有改变，那你会感觉到明显明显感。但是比如说本身这个是一声，但是你还是用四川话的四声去读它。\n那么那么这个词汇就是你会明显的感觉出来，这个它还是还是一种四川话的发音，并不是普通话的发音，对。",
+            "segments": [
+              {
+                "start": 0.06,
+                "end": 13.26,
+                "text": "我觉得川普可能对会在川普可能会展现在有些词汇上，嗯，他可能变为了普通话发音，但是他的可能就比如说一个词汇，"
+              },
+              {
+                "start": 13.26,
+                "end": 27.84,
+                "text": "本身普通话是前鼻韵，然后四川话是后鼻韵，那么他把这个前鼻音变成后，他把那后鼻音去变成前鼻音，但是他的音调并没有改变，那你会感觉到明显明显感。但是比如说本身这个是一声，但是你还是用四川话的四声去读它。"
+              },
+              {
+                "start": 28.24,
+                "end": 35.8,
+                "text": "那么那么这个词汇就是你会明显的感觉出来，这个它还是还是一种四川话的发音，并不是普通话的发音，对。"
+              }
+            ],
+            "duration": 35.973375,
+            "decoding": "text",
+            "warnings": [
+              "本次按原话识别，数字可能写为汉字。号码、人名和听不清的内容仍需核对。"
+            ],
+            "speechCheck": {
+              "type": "result",
+              "id": 2,
+              "skipAsr": false,
+              "reason": "voice-possible",
+              "duration": 35.973375,
+              "checkedFrames": 4,
+              "maxProbability": null,
+              "observedMax": 0.819344162940979,
+              "allProbabilitiesFinite": true,
+              "longestConsecutiveWeakFrames": 2,
+              "hasStrongPeak": true,
+              "analysisComplete": false
+            },
+            "rawText": "我觉得川普可能对会在川普可能会展现在有些词汇上嗯他可能变为了普通话发音但是他的可能就比如说一个词汇本身普通话是前鼻韵然后四川话是后鼻韵那么他把这个前鼻音变成后他把那后鼻音去变成前鼻音但是他的音调并没有改变那你会感觉到明显明显感但是比如说本身这个是一声但是你还是用四川话的四声去读它\n那么那么这个词汇就是你会明显的感觉出来这个它还是还是一种四川话的发音并不是普通话的发音对"
+          }
+        },
+        {
+          "id": "meli-holdout-f01a-zh",
+          "pcm_sha256": "eeee334828ca96abd0904e29388accd5f82939d7fdc18a607630cea545ff66a8",
+          "reference_sha256": "0e20fac4340339941a6e16f9907e58ced68d4ad28e976584de254efcdcdf7375",
+          "score": {
+            "reference_character_count": 81,
+            "hypothesis_character_count": 82,
+            "character_errors": 3,
+            "cer": 0.037037037037037035,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.037037037037037035,
+            "punctuation": {
+              "evaluated": false,
+              "reason": "MELI references omit ordinary sentence punctuation."
+            }
+          },
+          "seconds": 4.888636699000003,
+          "output": {
+            "type": "result",
+            "id": 3,
+            "text": "呃，我问过，就他们后来发现我上海话讲的不太好，他就说你怎么上海话讲的不好，你不是上海人。然后我说因为你们不跟我讲上海话，嗯，他们好像是可能希望我就说普通话的时候没有上海口音吧，可能。",
+            "segments": [
+              {
+                "start": 0,
+                "end": 13.92,
+                "text": "呃，我问过，就他们后来发现我上海话讲的不太好，他就说你怎么上海话讲的不好，你不是上海人。然后我说因为你们不跟我讲上海话，嗯，他们好像是"
+              },
+              {
+                "start": 13.92,
+                "end": 15.54,
+                "text": "可能"
+              },
+              {
+                "start": 15.54,
+                "end": 19.56,
+                "text": "希望我就说普通话的时候"
+              },
+              {
+                "start": 19.56,
+                "end": 21.24,
+                "text": "没有上海口音吧，可能。"
+              }
+            ],
+            "duration": 21.4439375,
+            "decoding": "text",
+            "warnings": [
+              "本次按原话识别，数字可能写为汉字。号码、人名和听不清的内容仍需核对。"
+            ],
+            "speechCheck": {
+              "type": "result",
+              "id": 3,
+              "skipAsr": false,
+              "reason": "voice-possible",
+              "duration": 21.4439375,
+              "checkedFrames": 2,
+              "maxProbability": null,
+              "observedMax": 0.07334598898887634,
+              "allProbabilitiesFinite": true,
+              "longestConsecutiveWeakFrames": 2,
+              "hasStrongPeak": false,
+              "analysisComplete": false
+            },
+            "rawText": "呃我问过就他们后来发现我上海话讲的不太好他就说你怎么上海话讲的不好你不是上海人然后我说因为你们不跟我讲上海话嗯他们好像是可能希望我就说普通话的时候没有上海口音吧可能"
+          }
+        },
+        {
+          "id": "meli-holdout-m00b-zh",
+          "pcm_sha256": "0d36b193d802f0eba21e75cf13f60396da296b92f3f6fe47a1f593cf1320cba3",
+          "reference_sha256": "a200214bc6f2d6418a6aaaf1114411fcf288f08905637b2e61f67832da14f420",
+          "score": {
+            "reference_character_count": 54,
+            "hypothesis_character_count": 53,
+            "character_errors": 3,
+            "cer": 0.05555555555555555,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.05555555555555555,
+            "punctuation": {
+              "evaluated": false,
+              "reason": "MELI references omit ordinary sentence punctuation."
+            }
+          },
+          "seconds": 6.599920937000003,
+          "output": {
+            "type": "result",
+            "id": 4,
+            "text": "就是比如说我想个例子，我我觉得可能会说方言可以是一种那种让朋友之间的这个感情更加呃牢固一点，或者更有认同感一点。",
+            "segments": [
+              {
+                "start": 0.42,
+                "end": 2.76,
+                "text": "就是比如说"
+              },
+              {
+                "start": 2.76,
+                "end": 13.44,
+                "text": "我想个例子，"
+              },
+              {
+                "start": 13.44,
+                "end": 18.96,
+                "text": "我我觉得可能会说方言可以是一种那种"
+              },
+              {
+                "start": 18.96,
+                "end": 21.06,
+                "text": "让"
+              },
+              {
+                "start": 21.06,
+                "end": 24.96,
+                "text": "朋友之间的这个感情更加"
+              },
+              {
+                "start": 24.96,
+                "end": 27.9,
+                "text": "呃牢固一点，或者更有认同感一点。"
+              }
+            ],
+            "duration": 28.04775,
+            "decoding": "text",
+            "audioGain": 6.244839737526648,
+            "warnings": [
+              "本次按原话识别，数字可能写为汉字。号码、人名和听不清的内容仍需核对。",
+              "本次重试也适度提高了低音量；可恢复上一版，对照原音选择结果。"
+            ],
+            "speechCheck": {
+              "type": "result",
+              "id": 4,
+              "skipAsr": false,
+              "reason": "voice-possible",
+              "duration": 28.04775,
+              "checkedFrames": 5,
+              "maxProbability": null,
+              "observedMax": 0.8447086215019226,
+              "allProbabilitiesFinite": true,
+              "longestConsecutiveWeakFrames": 2,
+              "hasStrongPeak": true,
+              "analysisComplete": false
+            },
+            "rawText": "就是比如说我想个例子我我觉得可能会说方言可以是一种那种让朋友之间的这个感情更加呃牢固一点或者更有认同感一点"
+          }
+        },
+        {
+          "id": "zh-clean",
+          "pcm_sha256": "32679c5676d4a67bab7d297da1db34f92ec8a2f4899f4a03c6c80b3f4efdabdd",
+          "reference_sha256": "3dcf3d55f672e2d610a031580f924b47ddf147ff3d93f007b8386f9bef8cac58",
+          "score": {
+            "reference_character_count": 13,
+            "hypothesis_character_count": 13,
+            "character_errors": 3,
+            "cer": 0.23076923076923078,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.07692307692307693,
+            "punctuation": {
+              "reference_count": 1,
+              "hypothesis_count": 2,
+              "has_sentence_punctuation": true,
+              "sequence_errors": 1,
+              "boundary_exact_when_lexical_exact": null
+            }
+          },
+          "seconds": 1.133697107,
+          "output_sha256": "b64331d9350ffd008645b128653339b0b6c3cf48c62d9f55ed5800fc65f7fa4d",
+          "audioGain": null,
+          "deferred": false
+        },
+        {
+          "id": "en-jfk",
+          "pcm_sha256": "16ba6e5258b459b41344a5542cf71429dfe446acf32c6a9dbdce02258c1f77e7",
+          "reference_sha256": "37d003a932256f11d07e00d0c1478443140ea5e87d817b0f8bc577c1d2aa2e1b",
+          "score": {
+            "reference_character_count": 83,
+            "hypothesis_character_count": 83,
+            "character_errors": 0,
+            "cer": 0,
+            "exact_lexical_match": true,
+            "false_positive_for_empty_reference": null,
+            "word_errors": 0,
+            "reference_word_count": 22,
+            "wer": 0,
+            "punctuation": {
+              "reference_count": 4,
+              "hypothesis_count": 0,
+              "has_sentence_punctuation": false,
+              "sequence_errors": 4,
+              "boundary_exact_when_lexical_exact": false
+            }
+          },
+          "seconds": 6.499424613999996,
+          "output_sha256": "fb072c58df94cb9581ec583ee70870b180da255fd32aa3252c7d9414c1f4879c",
+          "audioGain": null,
+          "deferred": false
+        },
+        {
+          "id": "zh-fast",
+          "pcm_sha256": "8ed6de5a6673e93d5bba306db190ab8f5ca786f2b01d85de328a47312ca0ba00",
+          "reference_sha256": "aeec446ab3a32d980c02463e22868deeee948880245fd942e968dddacad31706",
+          "score": {
+            "reference_character_count": 130,
+            "hypothesis_character_count": 128,
+            "character_errors": 20,
+            "cer": 0.15384615384615385,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.15384615384615385,
+            "punctuation": {
+              "reference_count": 11,
+              "hypothesis_count": 12,
+              "has_sentence_punctuation": true,
+              "sequence_errors": 1,
+              "boundary_exact_when_lexical_exact": null
+            }
+          },
+          "seconds": 7.235691994000001,
+          "output_sha256": "392d0b6ba3b9c103ba4e6eb3e3774e36fca88c0cef683e9e60dea3bcab8367ea",
+          "audioGain": null,
+          "deferred": false
+        },
+        {
+          "id": "zh-noisy-digits",
+          "pcm_sha256": "162c06cacf17383517878f77d0b9d2ed91a6085f56859f8164c8da15a8388434",
+          "reference_sha256": "7a99b3b8099f75b5e98f828ef4ee7accafb3fb9e2ef1f162e928d414c60663d8",
+          "score": {
+            "reference_character_count": 53,
+            "hypothesis_character_count": 29,
+            "character_errors": 27,
+            "cer": 0.5094339622641509,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.5094339622641509,
+            "punctuation": {
+              "reference_count": 9,
+              "hypothesis_count": 1,
+              "has_sentence_punctuation": true,
+              "sequence_errors": 8,
+              "boundary_exact_when_lexical_exact": null
+            }
+          },
+          "seconds": 5.224934793,
+          "output_sha256": "2e2a08d8bfaca9707b792973f08a84f114acc1df88ad033e0e4eee1304bbcadf",
+          "audioGain": null,
+          "deferred": false
+        },
+        {
+          "id": "en-noisy-dialogue",
+          "pcm_sha256": "6fbaf85e93aea0be14b8934df691e518e441b0cc7e76012e22a45b2d98cd369f",
+          "reference_sha256": "d380d37cf77de6d848c86f8745fd03238d4f59557794f6580dddd8ed645e026f",
+          "score": {
+            "reference_character_count": 131,
+            "hypothesis_character_count": 96,
+            "character_errors": 47,
+            "cer": 0.35877862595419846,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "word_errors": 14,
+            "reference_word_count": 31,
+            "wer": 0.45161290322580644,
+            "punctuation": {
+              "reference_count": 11,
+              "hypothesis_count": 0,
+              "has_sentence_punctuation": false,
+              "sequence_errors": 11,
+              "boundary_exact_when_lexical_exact": null
+            }
+          },
+          "seconds": 8.439477893999996,
+          "output_sha256": "25261645c3785c5df8c6a58074effd1ce26b4c55dd63a0c4638942a76cb1f70c",
+          "audioGain": null,
+          "deferred": false
+        },
+        {
+          "id": "zh-low-volume",
+          "pcm_sha256": "07a3deff6d10f2590d0b652f04ce89d36c74a16acfcdd3b2799996a1ae53701c",
+          "reference_sha256": "3dcf3d55f672e2d610a031580f924b47ddf147ff3d93f007b8386f9bef8cac58",
+          "score": {
+            "reference_character_count": 13,
+            "hypothesis_character_count": 13,
+            "character_errors": 3,
+            "cer": 0.23076923076923078,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.07692307692307693,
+            "punctuation": {
+              "reference_count": 1,
+              "hypothesis_count": 2,
+              "has_sentence_punctuation": true,
+              "sequence_errors": 1,
+              "boundary_exact_when_lexical_exact": null
+            }
+          },
+          "seconds": 5.416716648000001,
+          "output_sha256": "32c6edac9bfa6501e4cd4d5e0a5530b80f0019463689df8babf76a7b87a7d0d2",
+          "audioGain": 6.053986222663479,
+          "deferred": false
+        },
+        {
+          "id": "zh-instrumental",
+          "pcm_sha256": "a8e620c102abd4e9239d3f355e7463eeb25e44e5e7873affe27e0134843cb06b",
+          "reference_sha256": "3dcf3d55f672e2d610a031580f924b47ddf147ff3d93f007b8386f9bef8cac58",
+          "score": {
+            "reference_character_count": 13,
+            "hypothesis_character_count": 13,
+            "character_errors": 3,
+            "cer": 0.23076923076923078,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.07692307692307693,
+            "punctuation": {
+              "reference_count": 1,
+              "hypothesis_count": 2,
+              "has_sentence_punctuation": true,
+              "sequence_errors": 1,
+              "boundary_exact_when_lexical_exact": null
+            }
+          },
+          "seconds": 1.0368871190000064,
+          "output_sha256": "a0ee58dfbfe8538e31c5b6bf5801336ee8d5938d5a81286e7c852e98cdb6a563",
+          "audioGain": null,
+          "deferred": false
+        },
+        {
+          "id": "silence",
+          "pcm_sha256": "ac2878215ad33205d1732578c89f25ededaad1b676911c540825bcf4baa42d9b",
+          "reference_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "score": {
+            "reference_character_count": 0,
+            "hypothesis_character_count": 0,
+            "character_errors": 0,
+            "cer": null,
+            "exact_lexical_match": true,
+            "false_positive_for_empty_reference": false,
+            "punctuation": {
+              "reference_count": 0,
+              "hypothesis_count": 0,
+              "has_sentence_punctuation": false,
+              "sequence_errors": 0,
+              "boundary_exact_when_lexical_exact": true
+            }
+          },
+          "seconds": 0.10730904399999418,
+          "output_sha256": "f2b10671e1cf8f6da29edd9823005213e4c12dbec68a77fef718fff59d67949c",
+          "audioGain": null,
+          "deferred": true
+        },
+        {
+          "id": "noise",
+          "pcm_sha256": "60ce8607268552a37e3d1e2022d7629db4d6d63b4d07cb0c9b5396558e56930d",
+          "reference_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "score": {
+            "reference_character_count": 0,
+            "hypothesis_character_count": 0,
+            "character_errors": 0,
+            "cer": null,
+            "exact_lexical_match": true,
+            "false_positive_for_empty_reference": false,
+            "punctuation": {
+              "reference_count": 0,
+              "hypothesis_count": 0,
+              "has_sentence_punctuation": false,
+              "sequence_errors": 0,
+              "boundary_exact_when_lexical_exact": true
+            }
+          },
+          "seconds": 0.1167893929999991,
+          "output_sha256": "943818f0479565e90c0207f0fbf3283bf24d698e6dfb30bc8d9b4622876ad82d",
+          "audioGain": null,
+          "deferred": true
+        },
+        {
+          "id": "zh-with-pause",
+          "pcm_sha256": "e0a3e8fea00ca53ec914e92cf2332b8247f678e803c69fce2549120444c6e1f2",
+          "reference_sha256": "fac8f94daeb5df235f5983905696000c770902d232ca89a7573ba96e701ea549",
+          "score": {
+            "reference_character_count": 26,
+            "hypothesis_character_count": 26,
+            "character_errors": 4,
+            "cer": 0.15384615384615385,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0,
+            "punctuation": {
+              "reference_count": 2,
+              "hypothesis_count": 4,
+              "has_sentence_punctuation": true,
+              "sequence_errors": 2,
+              "boundary_exact_when_lexical_exact": null
+            }
+          },
+          "seconds": 2.960456918999989,
+          "output_sha256": "38db76735ae78137d32a1f18b8b10ac38301bb62582fa1097e221a0e23c193d1",
+          "audioGain": null,
+          "deferred": false
+        }
+      ]
+    },
+    {
+      "id": "en-baseline",
+      "local_run_sha256": "54fa6ad65c65a71943e81c5a4127c31451f9f2d708994a1c545179d36ffb31e1",
+      "decoding": "timestamps",
+      "model": "Xenova/whisper-small",
+      "fingerprints": {
+        "wasm_sha256": "f061472c6e77d6d50d079aacdc0ff9b63fee287ddd2cbf46cf62438d3891de2b",
+        "browser_bundle_sha256": "6886f55555f4c913ebec1841c5107b4ad4046bb0e7fbd4ef2a918b10eaf5943b",
+        "source_sha256": {
+          "transcriber.worker.js": "91862e79a2dcb8171256497f5e7a2be28cfd779a861cff224af35beb3a95b783",
+          "audio-segments.js": "8c6dbfaf7faeed742a88823167b631b0353c65c94880f384fd6ea11515b8c362",
+          "model-assets.js": "01c3bf5c61326267304cf23170d41027a4c45f871a65c670521f55cae6285722"
+        },
+        "num_threads": 1,
+        "host": "linux x64",
+        "node": "v24.19.0"
+      },
+      "completed": false,
+      "cases": [
+        {
+          "id": "meli-f00a-en",
+          "pcm_sha256": "851649f5812e85129633774e3ed12cd142845d587cad389cd839e61cf6ef36f8",
+          "reference_sha256": "80bbaf01da53d7f7b1529ac8ecc2e14069951aeae01af641683e2bcb0b7addf3",
+          "score": {
+            "reference_character_count": 196,
+            "hypothesis_character_count": 187,
+            "character_errors": 13,
+            "cer": 0.0663265306122449,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "word_errors": 4,
+            "reference_word_count": 52,
+            "wer": 0.07692307692307693,
+            "punctuation": {
+              "evaluated": false,
+              "reason": "MELI references omit ordinary sentence punctuation."
+            }
+          },
+          "seconds": 71.093025664,
+          "output": {
+            "type": "result",
+            "id": "meli-f00a-en",
+            "text": "Actually, I think learning English is not that hard for me because I just feel like I'm okay with reading and writing kind of like more arts skill. Yes, and I think my pronunciation is not so good, but it's like at the okay stage, like yeah",
+            "segments": [
+              {
+                "start": 0,
+                "end": 11.28,
+                "text": "Actually, I think learning English is not that hard for me because I just feel like I'm"
+              },
+              {
+                "start": 11.28,
+                "end": 33.04,
+                "text": "okay with reading and writing kind of like more arts skill. Yes, and I think my pronunciation is not so good, but it's like at the okay stage, like yeah"
+              }
+            ],
+            "duration": 34.6899375,
+            "decoding": "timestamps",
+            "warnings": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "en-baseline-m00a-isolated",
+      "local_run_sha256": "932218784e599868b7af07af798cd1958c36509d3c79006335292b30b22506e5",
+      "decoding": "timestamps",
+      "model": "Xenova/whisper-small",
+      "fingerprints": {
+        "wasm_sha256": "f061472c6e77d6d50d079aacdc0ff9b63fee287ddd2cbf46cf62438d3891de2b",
+        "browser_bundle_sha256": "6886f55555f4c913ebec1841c5107b4ad4046bb0e7fbd4ef2a918b10eaf5943b",
+        "source_sha256": {
+          "transcriber.worker.js": "91862e79a2dcb8171256497f5e7a2be28cfd779a861cff224af35beb3a95b783",
+          "model-assets.js": "01c3bf5c61326267304cf23170d41027a4c45f871a65c670521f55cae6285722",
+          "audio-segments.js": "8c6dbfaf7faeed742a88823167b631b0353c65c94880f384fd6ea11515b8c362"
+        },
+        "num_threads": 1,
+        "host": "linux x64",
+        "node": "v24.19.0"
+      },
+      "completed": true,
+      "cases": [
+        {
+          "id": "meli-m00a-en",
+          "pcm_sha256": "5e3e56d11815dc8c2205f61f5543a95a1b267f057037f0ac3b38a18ba7d7efcc",
+          "reference_sha256": "6296837a80963295cab83faf31fac2a2867fe449b0ff0408584be7747d47cb67",
+          "score": {
+            "reference_character_count": 425,
+            "hypothesis_character_count": 379,
+            "character_errors": 65,
+            "cer": 0.15294117647058825,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "word_errors": 27,
+            "reference_word_count": 103,
+            "wer": 0.2621359223300971,
+            "punctuation": {
+              "evaluated": false,
+              "reason": "MELI references omit ordinary sentence punctuation."
+            }
+          },
+          "seconds": 99.220326979,
+          "output": {
+            "type": "result",
+            "id": "meli-m00a-en",
+            "text": "But later on, as my vocabulary and my years grow older, I find my understanding about the English in this language much better. So I find beyond from the grammar rules, I find the English language, how it's developed, how it's from his language, also the language trees amongst the European language family, I find it so interesting about his history, how he developed, how he spread all over the world with English colony. So, from now on I think English is still interesting.",
+            "segments": [
+              {
+                "start": 0,
+                "end": 6.36,
+                "text": "But later on, as my vocabulary and my years grow older,"
+              },
+              {
+                "start": 6.36,
+                "end": 9.88,
+                "text": "I find my understanding about the English in this language"
+              },
+              {
+                "start": 9.88,
+                "end": 10.72,
+                "text": "much better."
+              },
+              {
+                "start": 10.72,
+                "end": 15.84,
+                "text": "So I find beyond from the grammar rules,"
+              },
+              {
+                "start": 15.84,
+                "end": 18.24,
+                "text": "I find the English language, how it's developed,"
+              },
+              {
+                "start": 18.24,
+                "end": 23,
+                "text": "how it's from his language, also the language trees"
+              },
+              {
+                "start": 23,
+                "end": 33,
+                "text": "amongst the European language family, I find it so interesting about his history, how he developed, how he spread all over the world with English colony."
+              },
+              {
+                "start": 33,
+                "end": 38,
+                "text": "So, from now on I think English is still interesting."
+              }
+            ],
+            "duration": 38.8804375,
+            "decoding": "timestamps",
+            "warnings": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "en-text",
+      "local_run_sha256": "6cacf574c17c139d4a2a67cc41ecddf6dda4a9d5b23d30c44cecbe96d0edd0ff",
+      "decoding": "text",
+      "model": "Xenova/whisper-small",
+      "fingerprints": {
+        "wasm_sha256": "f061472c6e77d6d50d079aacdc0ff9b63fee287ddd2cbf46cf62438d3891de2b",
+        "browser_bundle_sha256": "6886f55555f4c913ebec1841c5107b4ad4046bb0e7fbd4ef2a918b10eaf5943b",
+        "source_sha256": {
+          "transcriber.worker.js": "91862e79a2dcb8171256497f5e7a2be28cfd779a861cff224af35beb3a95b783",
+          "audio-segments.js": "8c6dbfaf7faeed742a88823167b631b0353c65c94880f384fd6ea11515b8c362",
+          "model-assets.js": "01c3bf5c61326267304cf23170d41027a4c45f871a65c670521f55cae6285722"
+        },
+        "num_threads": 1,
+        "host": "linux x64",
+        "node": "v24.19.0"
+      },
+      "completed": true,
+      "cases": [
+        {
+          "id": "meli-f00a-en",
+          "pcm_sha256": "851649f5812e85129633774e3ed12cd142845d587cad389cd839e61cf6ef36f8",
+          "reference_sha256": "80bbaf01da53d7f7b1529ac8ecc2e14069951aeae01af641683e2bcb0b7addf3",
+          "score": {
+            "reference_character_count": 196,
+            "hypothesis_character_count": 187,
+            "character_errors": 13,
+            "cer": 0.0663265306122449,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "word_errors": 4,
+            "reference_word_count": 52,
+            "wer": 0.07692307692307693,
+            "punctuation": {
+              "evaluated": false,
+              "reason": "MELI references omit ordinary sentence punctuation."
+            }
+          },
+          "seconds": 91.34518918799999,
+          "output": {
+            "type": "result",
+            "id": "meli-f00a-en",
+            "text": "Actually, I think learning English is not that hard for me because I just feel like I'm okay with reading and writing kind of like more arts skill. Yes. And I think my pronunciation is not so good, but it's like at the okay stage, like, yeah.",
+            "segments": [
+              {
+                "start": 0,
+                "end": 34.6899375,
+                "text": "Actually, I think learning English is not that hard for me because I just feel like I'm okay with reading and writing kind of like more arts skill. Yes. And I think my pronunciation is not so good, but it's like at the okay stage, like, yeah."
+              }
+            ],
+            "duration": 34.6899375,
+            "decoding": "text",
+            "timing": "approximate",
+            "warnings": [
+              "本次采用另一种正文解码尝试；字幕时间仅为音频段的粗略范围，需要对照原音核对。"
+            ]
+          }
+        },
+        {
+          "id": "meli-m00a-en",
+          "pcm_sha256": "5e3e56d11815dc8c2205f61f5543a95a1b267f057037f0ac3b38a18ba7d7efcc",
+          "reference_sha256": "6296837a80963295cab83faf31fac2a2867fe449b0ff0408584be7747d47cb67",
+          "score": {
+            "reference_character_count": 425,
+            "hypothesis_character_count": 382,
+            "character_errors": 68,
+            "cer": 0.16,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "word_errors": 30,
+            "reference_word_count": 103,
+            "wer": 0.2912621359223301,
+            "punctuation": {
+              "evaluated": false,
+              "reason": "MELI references omit ordinary sentence punctuation."
+            }
+          },
+          "seconds": 88.722375258,
+          "output": {
+            "type": "result",
+            "id": "meli-m00a-en",
+            "text": "But later on as my vocabulary and my years grow older, I find my understanding about the English in this language much better. So I find beyond from the grammar rules, I find in English language, how this development, how this from his language, also the language trees amongst the European language family, I find it so interesting about his history, how he developed, how he spread all over the world with English colony. So, from now on, I think English is still interesting.",
+            "segments": [
+              {
+                "start": 0,
+                "end": 38.8804375,
+                "text": "But later on as my vocabulary and my years grow older, I find my understanding about the English in this language much better. So I find beyond from the grammar rules, I find in English language, how this development, how this from his language, also the language trees amongst the European language family, I find it so interesting about his history, how he developed, how he spread all over the world with English colony. So, from now on, I think English is still interesting."
+              }
+            ],
+            "duration": 38.8804375,
+            "decoding": "text",
+            "timing": "approximate",
+            "warnings": [
+              "本次采用另一种正文解码尝试；字幕时间仅为音频段的粗略范围，需要对照原音核对。"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "en-shorter",
+      "local_run_sha256": "e7f7f35024426c036d887612ddd4553d97b65e46927e1adaf9e81541e8490b0c",
+      "decoding": "timestamps",
+      "model": "Xenova/whisper-small",
+      "fingerprints": {
+        "wasm_sha256": "f061472c6e77d6d50d079aacdc0ff9b63fee287ddd2cbf46cf62438d3891de2b",
+        "browser_bundle_sha256": "6886f55555f4c913ebec1841c5107b4ad4046bb0e7fbd4ef2a918b10eaf5943b",
+        "source_sha256": {
+          "transcriber.worker.js": "78f4470682ce7a4e623b8685a212794874affe12f4fc6239cfd7192cafdd4f39",
+          "model-assets.js": "01c3bf5c61326267304cf23170d41027a4c45f871a65c670521f55cae6285722",
+          "audio-segments.js": "8c6dbfaf7faeed742a88823167b631b0353c65c94880f384fd6ea11515b8c362"
+        },
+        "num_threads": 1,
+        "host": "linux x64",
+        "node": "v24.19.0"
+      },
+      "completed": true,
+      "cases": [
+        {
+          "id": "meli-f00a-en",
+          "pcm_sha256": "851649f5812e85129633774e3ed12cd142845d587cad389cd839e61cf6ef36f8",
+          "reference_sha256": "80bbaf01da53d7f7b1529ac8ecc2e14069951aeae01af641683e2bcb0b7addf3",
+          "score": {
+            "reference_character_count": 196,
+            "hypothesis_character_count": 187,
+            "character_errors": 13,
+            "cer": 0.0663265306122449,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "word_errors": 4,
+            "reference_word_count": 52,
+            "wer": 0.07692307692307693,
+            "punctuation": {
+              "evaluated": false,
+              "reason": "MELI references omit ordinary sentence punctuation."
+            }
+          },
+          "seconds": 96.432739429,
+          "output": {
+            "type": "result",
+            "id": "meli-f00a-en",
+            "text": "Actually, I think learning English is not that hard for me. Because I just feel like I'm okay with reading and writing kind of like more arts skill? Yes. And I think my pronunciation is not so good but it's like at the okay stage like yeah",
+            "segments": [
+              {
+                "start": 0,
+                "end": 8.48,
+                "text": "Actually, I think learning English is not that hard for me."
+              },
+              {
+                "start": 8.48,
+                "end": 28.8,
+                "text": "Because I just feel like I'm okay with reading and writing kind of like more arts skill? Yes. And I think my pronunciation is not so good but it's like"
+              },
+              {
+                "start": 28.8,
+                "end": 33.04,
+                "text": "at the okay stage like yeah"
+              }
+            ],
+            "duration": 34.6899375,
+            "decoding": "timestamps",
+            "warnings": []
+          }
+        },
+        {
+          "id": "meli-m00a-en",
+          "pcm_sha256": "5e3e56d11815dc8c2205f61f5543a95a1b267f057037f0ac3b38a18ba7d7efcc",
+          "reference_sha256": "6296837a80963295cab83faf31fac2a2867fe449b0ff0408584be7747d47cb67",
+          "score": {
+            "reference_character_count": 425,
+            "hypothesis_character_count": 384,
+            "character_errors": 59,
+            "cer": 0.1388235294117647,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "word_errors": 23,
+            "reference_word_count": 103,
+            "wer": 0.22330097087378642,
+            "punctuation": {
+              "evaluated": false,
+              "reason": "MELI references omit ordinary sentence punctuation."
+            }
+          },
+          "seconds": 122.334601155,
+          "output": {
+            "type": "result",
+            "id": "meli-m00a-en",
+            "text": "But later on as my vocabulary and my years grow older, I find my understanding about the English in this language much better. So I find beyond from the grammar rules, I find the English language, how it's developed, how it's from its language, also the language trees amongst the European language family, I find it so interesting about its history, how it's developed, how it they spread all over the world with English colony. So, from now on, I think English is still interesting.",
+            "segments": [
+              {
+                "start": 0,
+                "end": 6.36,
+                "text": "But later on as my vocabulary and my years grow older,"
+              },
+              {
+                "start": 6.36,
+                "end": 10.72,
+                "text": "I find my understanding about the English in this language much better."
+              },
+              {
+                "start": 10.72,
+                "end": 15.84,
+                "text": "So I find beyond from the grammar rules,"
+              },
+              {
+                "start": 15.84,
+                "end": 19.28,
+                "text": "I find the English language, how it's developed, how it's from"
+              },
+              {
+                "start": 19.28,
+                "end": 25.92,
+                "text": "its language, also the language trees amongst the European language family, I find it so"
+              },
+              {
+                "start": 25.92,
+                "end": 31.72,
+                "text": "interesting about its history, how it's developed, how it they spread all over the world"
+              },
+              {
+                "start": 31.72,
+                "end": 33.32,
+                "text": "with English colony."
+              },
+              {
+                "start": 33.32,
+                "end": 37.18,
+                "text": "So, from now on, I think English is still interesting."
+              }
+            ],
+            "duration": 38.8804375,
+            "decoding": "timestamps",
+            "warnings": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "en-new-retry",
+      "local_run_sha256": "e974fe4c94ea57b37e6267f786b56a557a1d54fb311c80395a11886259a30daa",
+      "decoding": "text",
+      "model": "Xenova/whisper-small",
+      "fingerprints": {
+        "wasm_sha256": "f061472c6e77d6d50d079aacdc0ff9b63fee287ddd2cbf46cf62438d3891de2b",
+        "browser_bundle_sha256": "6886f55555f4c913ebec1841c5107b4ad4046bb0e7fbd4ef2a918b10eaf5943b",
+        "source_sha256": {
+          "transcriber.worker.js": "3030aa41198491c70510723a6389c6dc5c45b1446b04e8183a5e9f04b29b2609",
+          "model-assets.js": "01c3bf5c61326267304cf23170d41027a4c45f871a65c670521f55cae6285722",
+          "audio-segments.js": "8c6dbfaf7faeed742a88823167b631b0353c65c94880f384fd6ea11515b8c362"
+        },
+        "num_threads": 1,
+        "host": "linux x64",
+        "node": "v24.19.0"
+      },
+      "completed": true,
+      "cases": [
+        {
+          "id": "meli-f00a-en",
+          "pcm_sha256": "851649f5812e85129633774e3ed12cd142845d587cad389cd839e61cf6ef36f8",
+          "reference_sha256": "80bbaf01da53d7f7b1529ac8ecc2e14069951aeae01af641683e2bcb0b7addf3",
+          "score": {
+            "reference_character_count": 196,
+            "hypothesis_character_count": 192,
+            "character_errors": 18,
+            "cer": 0.09183673469387756,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "word_errors": 5,
+            "reference_word_count": 52,
+            "wer": 0.09615384615384616,
+            "punctuation": {
+              "evaluated": false,
+              "reason": "MELI references omit ordinary sentence punctuation."
+            }
+          },
+          "seconds": 94.109261632,
+          "output": {
+            "type": "result",
+            "id": "meli-f00a-en",
+            "text": "Actually, I think learning English is not that hard for me because I just feel like I'm okay with reading and writing kind of like more arts skill? Yes, and I think my pronunciation is not so good, but it's like at the stand okay stage like yeah",
+            "segments": [
+              {
+                "start": 0,
+                "end": 34.6899375,
+                "text": "Actually, I think learning English is not that hard for me because I just feel like I'm okay with reading and writing kind of like more arts skill? Yes, and I think my pronunciation is not so good, but it's like at the stand okay stage like yeah"
+              }
+            ],
+            "duration": 34.6899375,
+            "decoding": "text",
+            "timing": "approximate",
+            "warnings": [
+              "本次采用另一种正文解码尝试；字幕时间仅为音频段的粗略范围，需要对照原音核对。"
+            ]
+          }
+        },
+        {
+          "id": "meli-m00a-en",
+          "pcm_sha256": "5e3e56d11815dc8c2205f61f5543a95a1b267f057037f0ac3b38a18ba7d7efcc",
+          "reference_sha256": "6296837a80963295cab83faf31fac2a2867fe449b0ff0408584be7747d47cb67",
+          "score": {
+            "reference_character_count": 425,
+            "hypothesis_character_count": 384,
+            "character_errors": 66,
+            "cer": 0.15529411764705883,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "word_errors": 28,
+            "reference_word_count": 103,
+            "wer": 0.27184466019417475,
+            "punctuation": {
+              "evaluated": false,
+              "reason": "MELI references omit ordinary sentence punctuation."
+            }
+          },
+          "seconds": 108.42647943200001,
+          "output": {
+            "type": "result",
+            "id": "meli-m00a-en",
+            "text": "But later on as my vocabulary and my years grow older, I find my understanding about the English in this language much better. So I find beyond from the grammar rules, I find the the English language, how it's developed, how it's from his language, also the language trees amongst the European language family, I find it so interesting about his history, how he's developed, how he's spread all over the world with English colony. So, from now on, I think English is still interesting.",
+            "segments": [
+              {
+                "start": 0,
+                "end": 38.8804375,
+                "text": "But later on as my vocabulary and my years grow older, I find my understanding about the English in this language much better. So I find beyond from the grammar rules, I find the the English language, how it's developed, how it's from his language, also the language trees amongst the European language family, I find it so interesting about his history, how he's developed, how he's spread all over the world with English colony. So, from now on, I think English is still interesting."
+              }
+            ],
+            "duration": 38.8804375,
+            "decoding": "text",
+            "timing": "approximate",
+            "warnings": [
+              "本次采用另一种正文解码尝试；字幕时间仅为音频段的粗略范围，需要对照原音核对。"
+            ]
+          }
+        },
+        {
+          "id": "en-jfk",
+          "pcm_sha256": "16ba6e5258b459b41344a5542cf71429dfe446acf32c6a9dbdce02258c1f77e7",
+          "reference_sha256": "37d003a932256f11d07e00d0c1478443140ea5e87d817b0f8bc577c1d2aa2e1b",
+          "score": {
+            "reference_character_count": 83,
+            "hypothesis_character_count": 83,
+            "character_errors": 0,
+            "cer": 0,
+            "exact_lexical_match": true,
+            "false_positive_for_empty_reference": null,
+            "word_errors": 0,
+            "reference_word_count": 22,
+            "wer": 0,
+            "punctuation": {
+              "reference_count": 4,
+              "hypothesis_count": 3,
+              "has_sentence_punctuation": true,
+              "sequence_errors": 1,
+              "boundary_exact_when_lexical_exact": false
+            }
+          },
+          "seconds": 29.532949158000005,
+          "output_sha256": "6f67d044d3542b725dde6cb9b897fb85f9dfb0ead29758a56f1708a2c0ad4a08",
+          "audioGain": null,
+          "deferred": null
+        },
+        {
+          "id": "en-noisy-dialogue",
+          "pcm_sha256": "6fbaf85e93aea0be14b8934df691e518e441b0cc7e76012e22a45b2d98cd369f",
+          "reference_sha256": "d380d37cf77de6d848c86f8745fd03238d4f59557794f6580dddd8ed645e026f",
+          "score": {
+            "reference_character_count": 131,
+            "hypothesis_character_count": 139,
+            "character_errors": 14,
+            "cer": 0.10687022900763359,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "word_errors": 6,
+            "reference_word_count": 31,
+            "wer": 0.1935483870967742,
+            "punctuation": {
+              "reference_count": 11,
+              "hypothesis_count": 9,
+              "has_sentence_punctuation": true,
+              "sequence_errors": 2,
+              "boundary_exact_when_lexical_exact": null
+            }
+          },
+          "seconds": 36.16453806800002,
+          "output_sha256": "ab9bfabd323e49a4806474e3b6ba357870edbb4bfc4bc4a55f7c3d188fa544fe",
+          "audioGain": null,
+          "deferred": null
+        }
+      ]
+    },
+    {
+      "id": "zh-gain",
+      "local_run_sha256": "c0ff9382419e21775daa8c1601aae5da90108aeabe2d7c435bffaaba52eb3487",
+      "decoding": "timestamps",
+      "model": "c71f0ce00bec95b07744e116345e33d8cbbe08cef896382cf907bf4b51a2cd51",
+      "fingerprints": {
+        "vad.worker-C9h8-FgH.js": "e19bc613db3bdaa1e87f1fa91a6a4722613a83a4204c2b8d1bdb4ecabef04ebe",
+        "punctuation.worker-Ch2hTEJS.js": "178ac8d7ab9e4f7fd13a75d37763eafa1d276ac9c388771dcf7be98642620209",
+        "sensevoice.worker-Cn5ru_ze.js": "35b2c716ec4234c882dd22118df4d7b07b01b783711010c3fd1103c91db1a900",
+        "models-sensevoice/runtime.mjs": "3a7e50f11a449f4b9fd2b9373fbb3f16fd487cce804ae6f51241d72c5f0dbcbe",
+        "models-sensevoice/asr.mjs": "6686bf26631572b161fc2b6532302d8eeda91a774c32f3216eced57ec5769ff2"
+      },
+      "completed": true,
+      "cases": [
+        {
+          "id": "meli-f01b-zh",
+          "pcm_sha256": "c237fd432742f9cfc0fbc4f8db55bed9e991d168809573d869d168d816016ccc",
+          "reference_sha256": "e6933d5e94a02e812eb2d8d1d39976df8d639aca4d1aece0152f711930e0a2f7",
+          "score": {
+            "reference_character_count": 125,
+            "hypothesis_character_count": 121,
+            "character_errors": 5,
+            "cer": 0.04,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.04,
+            "punctuation": {
+              "evaluated": false,
+              "reason": "MELI references omit ordinary sentence punctuation."
+            }
+          },
+          "seconds": 11.770599617,
+          "output": {
+            "type": "result",
+            "id": 1,
+            "text": "有的时候会用方言，有时候会用普通话，因为嗯我感觉比较好一点，是因为我妈妈的普通话说的非常好，但是我爸爸说普通话确实还是会有一定口音。因为他的方言会就是我爸爸方言系统跟我妈妈的可能会有一点不一样。在湖南话有很多不同口音的方言。然后我爸爸家乡话会口音重非常多。嗯。",
+            "segments": [
+              {
+                "start": 0.06,
+                "end": 4.68,
+                "text": "有的时候会用方言，有时候会用普通话，因为嗯"
+              },
+              {
+                "start": 4.68,
+                "end": 10.56,
+                "text": "我感觉比较好一点，是因为我妈妈的普通话说的非常好，但是我爸爸说普通话确实还是会有一定口音。"
+              },
+              {
+                "start": 10.56,
+                "end": 13.74,
+                "text": "因为他的方言会"
+              },
+              {
+                "start": 13.74,
+                "end": 17.16,
+                "text": "就是我爸爸方言系统跟我妈妈的可能会有一点不一样。"
+              },
+              {
+                "start": 17.16,
+                "end": 20.04,
+                "text": "在湖南话有很多不同口音的方言。"
+              },
+              {
+                "start": 20.04,
+                "end": 24.72,
+                "text": "然后我爸爸家乡话会口音重非常多。"
+              },
+              {
+                "start": 24.72,
+                "end": 25.620625,
+                "text": "嗯。"
+              }
+            ],
+            "duration": 25.620625,
+            "decoding": "timestamps",
+            "warnings": [],
+            "speechCheck": {
+              "type": "result",
+              "id": 1,
+              "skipAsr": false,
+              "reason": "voice-possible",
+              "duration": 25.620625,
+              "checkedFrames": 3,
+              "maxProbability": null,
+              "observedMax": 0.25986915826797485,
+              "allProbabilitiesFinite": true,
+              "longestConsecutiveWeakFrames": 2,
+              "hasStrongPeak": false,
+              "analysisComplete": false
+            },
+            "rawText": "有的时候会用方言，有时候会用普通话，因为嗯我感觉比较好一点，是因为我妈妈的普通话说的非常好，但是我爸爸说普通话确实还是会有一定口音。因为他的方言会就是我爸爸方言系统跟我妈妈的可能会有一点不一样。在湖南话有很多不同口音的方言。然后我爸爸家乡话会口音重非常多。嗯。"
+          }
+        },
+        {
+          "id": "meli-m00a-zh",
+          "pcm_sha256": "d8fc54d43d5a6933e0e8bdd95107b5f13730b1751de73eeb31260aaf0fd38c24",
+          "reference_sha256": "7a7d8902d778c9fafeabf419186dc79adc746d83eb7bd4ac27d4a488693881d4",
+          "score": {
+            "reference_character_count": 185,
+            "hypothesis_character_count": 184,
+            "character_errors": 10,
+            "cer": 0.05405405405405406,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.05405405405405406,
+            "punctuation": {
+              "evaluated": false,
+              "reason": "MELI references omit ordinary sentence punctuation."
+            }
+          },
+          "seconds": 7.9158502309999985,
+          "output": {
+            "type": "result",
+            "id": 2,
+            "text": "我觉得川普可能对，会在川普可能会展现在有些词汇上，嗯，他可能变为了普通话发音。但是他的可能就比如说一个词汇，本身普通话是前鼻韵，然后四川话是后鼻韵。那么他把这个前鼻音变成后，他把那后鼻音去变成前鼻音，但是他的音调并没有改变。那你会感觉到明显明显感。但是比如说本身这个是一声，但是你还是用四川话的四声去读它。\n那么那么这个词汇就是你会明显的感觉出来，这个它还是还是一种四川话的发音，并不是普通话的发音。对。",
+            "segments": [
+              {
+                "start": 0.06,
+                "end": 9.24,
+                "text": "我觉得川普可能对，会在川普可能会展现在有些词汇上，嗯，他可能变为了普通话发音。"
+              },
+              {
+                "start": 9.24,
+                "end": 13.26,
+                "text": "但是他的可能就比如说一个词汇，"
+              },
+              {
+                "start": 13.26,
+                "end": 16.44,
+                "text": "本身普通话是前鼻韵，然后四川话是后鼻韵。"
+              },
+              {
+                "start": 16.44,
+                "end": 21.66,
+                "text": "那么他把这个前鼻音变成后，他把那后鼻音去变成前鼻音，但是他的音调并没有改变。"
+              },
+              {
+                "start": 21.66,
+                "end": 28.18,
+                "text": "那你会感觉到明显明显感。但是比如说本身这个是一声，但是你还是用四川话的四声去读它。"
+              },
+              {
+                "start": 28.24,
+                "end": 35.62,
+                "text": "那么那么这个词汇就是你会明显的感觉出来，这个它还是还是一种四川话的发音，并不是普通话的发音。"
+              },
+              {
+                "start": 35.62,
+                "end": 35.973375,
+                "text": "对。"
+              }
+            ],
+            "duration": 35.973375,
+            "decoding": "timestamps",
+            "warnings": [],
+            "speechCheck": {
+              "type": "result",
+              "id": 2,
+              "skipAsr": false,
+              "reason": "voice-possible",
+              "duration": 35.973375,
+              "checkedFrames": 4,
+              "maxProbability": null,
+              "observedMax": 0.8318650722503662,
+              "allProbabilitiesFinite": true,
+              "longestConsecutiveWeakFrames": 2,
+              "hasStrongPeak": true,
+              "analysisComplete": false
+            },
+            "rawText": "我觉得川普可能对，会在川普可能会展现在有些词汇上嗯，他可能变为了普通话发音。但是他的可能就比如说一个词汇本身普通话是前鼻韵，然后四川话是后鼻韵。那么他把这个前鼻音变成后他把那后鼻音去变成前鼻音，但是他的音调并没有改变。那你会感觉到明显明显感但是比如说本身这个是一声，但是你还是用四川话的四声去读它。\n那么那么这个词汇就是你会明显的感觉出来这个它还是还是一种四川话的发音，并不是普通话的发音。对。"
+          }
+        }
+      ]
+    },
+    {
+      "id": "zh-candidate",
+      "local_run_sha256": "e52cfd8b343786479bdeff8cf8658acb851527981d67789c921a024a8334f5b0",
+      "decoding": "timestamps",
+      "model": "c71f0ce00bec95b07744e116345e33d8cbbe08cef896382cf907bf4b51a2cd51",
+      "fingerprints": {
+        "vad.worker-C9h8-FgH.js": "e19bc613db3bdaa1e87f1fa91a6a4722613a83a4204c2b8d1bdb4ecabef04ebe",
+        "punctuation.worker-Ch2hTEJS.js": "178ac8d7ab9e4f7fd13a75d37763eafa1d276ac9c388771dcf7be98642620209",
+        "sensevoice.worker-CNq6uDF8.js": "52cc5408c1b111a94dba198a78929f9704c1b4f53ccceed284d06dc8464d4778",
+        "models-sensevoice/runtime.mjs": "3a7e50f11a449f4b9fd2b9373fbb3f16fd487cce804ae6f51241d72c5f0dbcbe",
+        "models-sensevoice/asr.mjs": "6686bf26631572b161fc2b6532302d8eeda91a774c32f3216eced57ec5769ff2"
+      },
+      "completed": true,
+      "cases": [
+        {
+          "id": "meli-f01b-zh",
+          "pcm_sha256": "b575ec11b47e8f77e2f93c9b70e34f86f76e81098cff87d979ad2c34eff63c56",
+          "reference_sha256": "e6933d5e94a02e812eb2d8d1d39976df8d639aca4d1aece0152f711930e0a2f7",
+          "score": {
+            "reference_character_count": 125,
+            "hypothesis_character_count": 121,
+            "character_errors": 6,
+            "cer": 0.048,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.048,
+            "punctuation": {
+              "evaluated": false,
+              "reason": "MELI references omit ordinary sentence punctuation."
+            }
+          },
+          "seconds": 10.415418281000001,
+          "output": {
+            "type": "result",
+            "id": 1,
+            "text": "有的时候会用方言，有时候会用普通话，因为嗯我感觉比较好一点，是因为我妈妈的普通话说的非常好，但是我爸爸说普通话确实还是会有一定口音。因为他的方言会就是我爸爸方言喜统跟我妈妈的可能会有一点不一样。在湖南话有很多不同口音的方言。然后我爸爸家乡话会口音重非常多。嗯。",
+            "segments": [
+              {
+                "start": 0.06,
+                "end": 4.68,
+                "text": "有的时候会用方言，有时候会用普通话，因为嗯"
+              },
+              {
+                "start": 4.68,
+                "end": 10.56,
+                "text": "我感觉比较好一点，是因为我妈妈的普通话说的非常好，但是我爸爸说普通话确实还是会有一定口音。"
+              },
+              {
+                "start": 10.56,
+                "end": 13.74,
+                "text": "因为他的方言会"
+              },
+              {
+                "start": 13.74,
+                "end": 17.16,
+                "text": "就是我爸爸方言喜统跟我妈妈的可能会有一点不一样。"
+              },
+              {
+                "start": 17.16,
+                "end": 20.04,
+                "text": "在湖南话有很多不同口音的方言。"
+              },
+              {
+                "start": 20.04,
+                "end": 24.72,
+                "text": "然后我爸爸家乡话会口音重非常多。"
+              },
+              {
+                "start": 24.72,
+                "end": 25.620625,
+                "text": "嗯。"
+              }
+            ],
+            "duration": 25.620625,
+            "decoding": "timestamps",
+            "audioGain": 5.8590949408721675,
+            "warnings": [],
+            "speechCheck": {
+              "type": "result",
+              "id": 1,
+              "skipAsr": false,
+              "reason": "voice-possible",
+              "duration": 25.620625,
+              "checkedFrames": 4,
+              "maxProbability": null,
+              "observedMax": 0.5911469459533691,
+              "allProbabilitiesFinite": true,
+              "longestConsecutiveWeakFrames": 2,
+              "hasStrongPeak": true,
+              "analysisComplete": false
+            },
+            "rawText": "有的时候会用方言，有时候会用普通话，因为嗯我感觉比较好一点，是因为我妈妈的普通话说的非常好，但是我爸爸说普通话确实还是会有一定口音。因为他的方言会就是我爸爸方言喜统跟我妈妈的可能会有一点不一样。在湖南话有很多不同口音的方言。然后我爸爸家乡话会口音重非常多。嗯。"
+          }
+        },
+        {
+          "id": "meli-m00a-zh",
+          "pcm_sha256": "973a08588a7784906d4b2c3101bbeff516964d9378ae52f81a2bd22f528bb33d",
+          "reference_sha256": "7a7d8902d778c9fafeabf419186dc79adc746d83eb7bd4ac27d4a488693881d4",
+          "score": {
+            "reference_character_count": 185,
+            "hypothesis_character_count": 184,
+            "character_errors": 10,
+            "cer": 0.05405405405405406,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.05405405405405406,
+            "punctuation": {
+              "evaluated": false,
+              "reason": "MELI references omit ordinary sentence punctuation."
+            }
+          },
+          "seconds": 7.4890586820000005,
+          "output": {
+            "type": "result",
+            "id": 2,
+            "text": "我觉得川普可能对会在川普可能会展现在有些词汇上，嗯，他可能变为了普通话发音。但是他的可能就比如说一个词汇，本身普通话是前鼻韵，然后四川话是后鼻韵。那么他把这个前鼻音变成后，他把那后鼻音去变成前鼻音，但是他的音调并没有改变。那你会感觉到明显明显感，但是比如说本身这个是一声，但是你还是用四川话的四声去读它。\n那么那么这个词汇就是你会明显的感觉出来，这个它还是还是一种四川话的发音，并不是普通话的发音。对。",
+            "segments": [
+              {
+                "start": 0.06,
+                "end": 9.24,
+                "text": "我觉得川普可能对会在川普可能会展现在有些词汇上，嗯，他可能变为了普通话发音。"
+              },
+              {
+                "start": 9.24,
+                "end": 13.26,
+                "text": "但是他的可能就比如说一个词汇，"
+              },
+              {
+                "start": 13.26,
+                "end": 16.44,
+                "text": "本身普通话是前鼻韵，然后四川话是后鼻韵。"
+              },
+              {
+                "start": 16.44,
+                "end": 21.66,
+                "text": "那么他把这个前鼻音变成后，他把那后鼻音去变成前鼻音，但是他的音调并没有改变。"
+              },
+              {
+                "start": 21.66,
+                "end": 28.18,
+                "text": "那你会感觉到明显明显感，但是比如说本身这个是一声，但是你还是用四川话的四声去读它。"
+              },
+              {
+                "start": 28.24,
+                "end": 35.62,
+                "text": "那么那么这个词汇就是你会明显的感觉出来，这个它还是还是一种四川话的发音，并不是普通话的发音。"
+              },
+              {
+                "start": 35.62,
+                "end": 35.973375,
+                "text": "对。"
+              }
+            ],
+            "duration": 35.973375,
+            "decoding": "timestamps",
+            "warnings": [],
+            "speechCheck": {
+              "type": "result",
+              "id": 2,
+              "skipAsr": false,
+              "reason": "voice-possible",
+              "duration": 35.973375,
+              "checkedFrames": 4,
+              "maxProbability": null,
+              "observedMax": 0.819344162940979,
+              "allProbabilitiesFinite": true,
+              "longestConsecutiveWeakFrames": 2,
+              "hasStrongPeak": true,
+              "analysisComplete": false
+            },
+            "rawText": "我觉得川普可能对会在川普可能会展现在有些词汇上嗯，他可能变为了普通话发音。但是他的可能就比如说一个词汇本身普通话是前鼻韵，然后四川话是后鼻韵。那么他把这个前鼻音变成后他把那后鼻音去变成前鼻音，但是他的音调并没有改变。那你会感觉到明显明显感，但是比如说本身这个是一声，但是你还是用四川话的四声去读它。\n那么那么这个词汇就是你会明显的感觉出来这个它还是还是一种四川话的发音，并不是普通话的发音。对。"
+          }
+        }
+      ]
+    },
+    {
+      "id": "zh-quiet-context",
+      "local_run_sha256": "149a99bbdacc3e18e2c9ab0eeb396c697f5367d09d9b13676b9d4ae4fb0e2af9",
+      "decoding": "timestamps",
+      "model": "c71f0ce00bec95b07744e116345e33d8cbbe08cef896382cf907bf4b51a2cd51",
+      "fingerprints": {
+        "vad.worker-C9h8-FgH.js": "e19bc613db3bdaa1e87f1fa91a6a4722613a83a4204c2b8d1bdb4ecabef04ebe",
+        "punctuation.worker-Ch2hTEJS.js": "178ac8d7ab9e4f7fd13a75d37763eafa1d276ac9c388771dcf7be98642620209",
+        "sensevoice.worker-DSwGv8Xa.js": "c716dc2f8d6a490294e0458792bbb87821c0f4a60db091d9c3b08b675e7f09fa",
+        "models-sensevoice/runtime.mjs": "3a7e50f11a449f4b9fd2b9373fbb3f16fd487cce804ae6f51241d72c5f0dbcbe",
+        "models-sensevoice/asr.mjs": "6686bf26631572b161fc2b6532302d8eeda91a774c32f3216eced57ec5769ff2"
+      },
+      "completed": true,
+      "cases": [
+        {
+          "id": "meli-f01b-zh",
+          "pcm_sha256": "b575ec11b47e8f77e2f93c9b70e34f86f76e81098cff87d979ad2c34eff63c56",
+          "reference_sha256": "e6933d5e94a02e812eb2d8d1d39976df8d639aca4d1aece0152f711930e0a2f7",
+          "score": {
+            "reference_character_count": 125,
+            "hypothesis_character_count": 120,
+            "character_errors": 7,
+            "cer": 0.056,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.056,
+            "punctuation": {
+              "evaluated": false,
+              "reason": "MELI references omit ordinary sentence punctuation."
+            }
+          },
+          "seconds": 11.257409495,
+          "output": {
+            "type": "result",
+            "id": 1,
+            "text": "有的时候会用方言，有时候会用普通话，因为嗯我感觉比较好一点，是因为我妈妈的普通话说的非常好，但是我爸爸说普通话确实还是会有一定口音。因为他的方言会就是我爸爸方言喜跟我妈妈的可能会有一点不一样。在湖南话有很多不同口音的方言。然后我爸爸家乡话会口音重非常多。嗯。",
+            "segments": [
+              {
+                "start": 0.06,
+                "end": 4.68,
+                "text": "有的时候会用方言，有时候会用普通话，因为嗯"
+              },
+              {
+                "start": 4.68,
+                "end": 10.56,
+                "text": "我感觉比较好一点，是因为我妈妈的普通话说的非常好，但是我爸爸说普通话确实还是会有一定口音。"
+              },
+              {
+                "start": 10.56,
+                "end": 13.74,
+                "text": "因为他的方言会"
+              },
+              {
+                "start": 13.74,
+                "end": 17.16,
+                "text": "就是我爸爸方言喜跟我妈妈的可能会有一点不一样。"
+              },
+              {
+                "start": 17.16,
+                "end": 20.04,
+                "text": "在湖南话有很多不同口音的方言。"
+              },
+              {
+                "start": 20.04,
+                "end": 24.72,
+                "text": "然后我爸爸家乡话会口音重非常多。"
+              },
+              {
+                "start": 24.72,
+                "end": 25.620625,
+                "text": "嗯。"
+              }
+            ],
+            "duration": 25.620625,
+            "decoding": "timestamps",
+            "warnings": [],
+            "speechCheck": {
+              "type": "result",
+              "id": 1,
+              "skipAsr": false,
+              "reason": "voice-possible",
+              "duration": 25.620625,
+              "checkedFrames": 4,
+              "maxProbability": null,
+              "observedMax": 0.5911469459533691,
+              "allProbabilitiesFinite": true,
+              "longestConsecutiveWeakFrames": 2,
+              "hasStrongPeak": true,
+              "analysisComplete": false
+            },
+            "rawText": "有的时候会用方言，有时候会用普通话，因为嗯我感觉比较好一点，是因为我妈妈的普通话说的非常好，但是我爸爸说普通话确实还是会有一定口音。因为他的方言会就是我爸爸方言喜跟我妈妈的可能会有一点不一样。在湖南话有很多不同口音的方言。然后我爸爸家乡话会口音重非常多。嗯。"
+          }
+        },
+        {
+          "id": "meli-m00a-zh",
+          "pcm_sha256": "973a08588a7784906d4b2c3101bbeff516964d9378ae52f81a2bd22f528bb33d",
+          "reference_sha256": "7a7d8902d778c9fafeabf419186dc79adc746d83eb7bd4ac27d4a488693881d4",
+          "score": {
+            "reference_character_count": 185,
+            "hypothesis_character_count": 184,
+            "character_errors": 10,
+            "cer": 0.05405405405405406,
+            "exact_lexical_match": false,
+            "false_positive_for_empty_reference": null,
+            "digit_equivalent_cer": 0.05405405405405406,
+            "punctuation": {
+              "evaluated": false,
+              "reason": "MELI references omit ordinary sentence punctuation."
+            }
+          },
+          "seconds": 8.006480394000002,
+          "output": {
+            "type": "result",
+            "id": 2,
+            "text": "我觉得川普可能对会在川普可能会展现在有些词汇上，嗯，他可能变为了普通话发音。但是他的可能就比如说一个词汇，本身普通话是前鼻韵，然后四川话是后鼻韵。那么他把这个前鼻音变成后，他把那后鼻音去变成前鼻音，但是他的音调并没有改变。那你会感觉到明显明显感，但是比如说本身这个是一声，但是你还是用四川话的四声去读它。\n那么那么这个词汇就是你会明显的感觉出来，这个它还是还是一种四川话的发音，并不是普通话的发音。对。",
+            "segments": [
+              {
+                "start": 0.06,
+                "end": 9.24,
+                "text": "我觉得川普可能对会在川普可能会展现在有些词汇上，嗯，他可能变为了普通话发音。"
+              },
+              {
+                "start": 9.24,
+                "end": 13.26,
+                "text": "但是他的可能就比如说一个词汇，"
+              },
+              {
+                "start": 13.26,
+                "end": 16.44,
+                "text": "本身普通话是前鼻韵，然后四川话是后鼻韵。"
+              },
+              {
+                "start": 16.44,
+                "end": 21.66,
+                "text": "那么他把这个前鼻音变成后，他把那后鼻音去变成前鼻音，但是他的音调并没有改变。"
+              },
+              {
+                "start": 21.66,
+                "end": 27.8,
+                "text": "那你会感觉到明显明显感，但是比如说本身这个是一声，但是你还是用四川话的四声去读它。"
+              },
+              {
+                "start": 28.16,
+                "end": 35.660000000000004,
+                "text": "那么那么这个词汇就是你会明显的感觉出来，这个它还是还是一种四川话的发音，并不是普通话的发音。"
+              },
+              {
+                "start": 35.660000000000004,
+                "end": 35.96,
+                "text": "对。"
+              }
+            ],
+            "duration": 35.973375,
+            "decoding": "timestamps",
+            "warnings": [],
+            "speechCheck": {
+              "type": "result",
+              "id": 2,
+              "skipAsr": false,
+              "reason": "voice-possible",
+              "duration": 35.973375,
+              "checkedFrames": 4,
+              "maxProbability": null,
+              "observedMax": 0.819344162940979,
+              "allProbabilitiesFinite": true,
+              "longestConsecutiveWeakFrames": 2,
+              "hasStrongPeak": true,
+              "analysisComplete": false
+            },
+            "rawText": "我觉得川普可能对会在川普可能会展现在有些词汇上嗯，他可能变为了普通话发音。但是他的可能就比如说一个词汇本身普通话是前鼻韵，然后四川话是后鼻韵。那么他把这个前鼻音变成后他把那后鼻音去变成前鼻音，但是他的音调并没有改变。那你会感觉到明显明显感，但是比如说本身这个是一声，但是你还是用四川话的四声去读它。\n那么那么这个词汇就是你会明显的感觉出来这个它还是还是一种四川话的发音，并不是普通话的发音。对。"
+          }
+        }
+      ]
+    }
+  ],
+  "final_default_verification": {
+    "run_sha256": "9f4ee23fd376ed3b120ff4ce663566c184329bb1a4579c91be9f2045f4e299c1",
+    "fingerprints": {
+      "vad.worker-C9h8-FgH.js": "e19bc613db3bdaa1e87f1fa91a6a4722613a83a4204c2b8d1bdb4ecabef04ebe",
+      "punctuation.worker-Ch2hTEJS.js": "178ac8d7ab9e4f7fd13a75d37763eafa1d276ac9c388771dcf7be98642620209",
+      "sensevoice.worker-BssZ2wUc.js": "f6c708dcc3cf10a92dd35d95611a7ce222f7a478e8d286767b9901139dfe624f",
+      "models-sensevoice/runtime.mjs": "3a7e50f11a449f4b9fd2b9373fbb3f16fd487cce804ae6f51241d72c5f0dbcbe",
+      "models-sensevoice/asr.mjs": "6686bf26631572b161fc2b6532302d8eeda91a774c32f3216eced57ec5769ff2"
+    },
+    "cases": 14,
+    "transcripts_and_scores_equal_to_baseline": true,
+    "note": "Every default transcript and complete score object compared for equality, not only aggregate CER."
+  }
+}
