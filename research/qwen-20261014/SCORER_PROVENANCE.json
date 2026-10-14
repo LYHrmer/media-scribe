@@ -1,0 +1,32 @@
+[
+  {
+    "file": "scripts/score-next-accuracy.mjs",
+    "experimental_sha256": "dd1e2cc54b1ca79367a4b6de0a9af1d2ef3316b8b95ec6f215a7169fcae5290c",
+    "published_sha256": "baa0052df98c2afc2fd5a12048808a264e7495889dd7448b2a79e518f82094a8",
+    "adaptation": "Only repository-relative legacy scorer paths; scoring logic unchanged."
+  },
+  {
+    "file": "scripts/score-next-accuracy.test.mjs",
+    "experimental_sha256": "26ad714aff73a3b81bbfb933458e597f4fd45b82979ba91901fde8e5ffc4639b",
+    "published_sha256": "26ad714aff73a3b81bbfb933458e597f4fd45b82979ba91901fde8e5ffc4639b",
+    "adaptation": "Unchanged copy"
+  },
+  {
+    "file": "scripts/score-controls-only.mjs",
+    "experimental_sha256": "d813b950d2d015ded502daa31231d2e54f1065aec21073bf44e50f29daa007ac",
+    "published_sha256": "47c3bf39532d3f932217bd610c987f6a9d7754d5af6d6c54f430e7809307d737",
+    "adaptation": "Only repository-relative legacy scorer paths; scoring logic unchanged."
+  },
+  {
+    "file": "scripts/score-controls-only.test.mjs",
+    "experimental_sha256": "43b90541d6dc301e0ba8701a0f41857f5747679508aad9f3020a2af3a8640f90",
+    "published_sha256": "43b90541d6dc301e0ba8701a0f41857f5747679508aad9f3020a2af3a8640f90",
+    "adaptation": "Unchanged copy"
+  },
+  {
+    "file": "scripts/select-meli-result-subset.py",
+    "experimental_sha256": "46de83109f998d1730b97a37bf68f44127c0652e1294b927a924deb5df7af45f",
+    "published_sha256": "46de83109f998d1730b97a37bf68f44127c0652e1294b927a924deb5df7af45f",
+    "adaptation": "Unchanged copy"
+  }
+]
