@@ -74,4 +74,4 @@ python scripts/benchmarks/prepare-meli-interviews.py --output-dir /absolute/outs
 SKIP_CACHE_CHECK=1 BENCHMARK_DECODING=text node --experimental-vm-modules scripts/benchmarks/run-sensevoice-production.mjs dist /absolute/outside-repo/meli/cases.local.json /absolute/outside-repo/meli/retry.json
 ```
 
-默认识别省略 BENCHMARK_DECODING；中文/英文应分别选择产品对应模型。现有 Whisper 运行器通过 BENCHMARK_DECODING=text 调用真实英文重试（20秒/3秒）；timestamps保留30秒/5秒。媒体和参考清单不要提交；公开结果记录参考SHA、实际输出、模式和模型指纹，MELI标点不评分。顺序运行大模型以避免测试容器并行内存耗尽，不把退出137记为识别错字。
+默认识别省略 BENCHMARK_DECODING；中文/英文应分别选择产品对应模型。现有 Whisper 运行器通过 BENCHMARK_DECODING=text 调用真实英文重试；text和timestamps均保留30秒/5秒，20秒/3秒候选因一段采访退化而未采用。媒体和参考清单不要提交；公开结果记录参考SHA、实际输出、模式和模型指纹，MELI标点不评分。顺序运行大模型以避免测试容器并行内存耗尽，不把退出137记为识别错字。
