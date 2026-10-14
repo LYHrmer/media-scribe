@@ -1,4 +1,4 @@
-const CACHE = 'tingxie-static-v0.5.2';
+const CACHE = 'tingxie-static-v0.5.3';
 function usableAsset(response) {
   // Static hosts and security checks can return an HTML page at an asset URL.
   // Never retain that page as JavaScript, CSS, an image, or the WASM runtime.
