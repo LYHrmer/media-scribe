@@ -2,7 +2,18 @@
 
 打开网页，选择音频或视频，点击「开始转写」。不需要安装软件、账号或 API Key，也不按识别次数收费。音视频、视频画面和识别结果在浏览器本机处理；网络只用于下载网页、运行库和开源模型。
 
-[在线使用](https://lyhrmer.github.io/media-scribe/) · [源码](https://github.com/LYHrmer/media-scribe)
+[在线使用（转写）](https://lyhrmer.github.io/media-scribe/transcribe.html) · [工具箱首页](https://lyhrmer.github.io/media-scribe/) · [源码](https://github.com/LYHrmer/media-scribe)
+
+## 工具箱
+
+站点首页同时是一个浏览器本地小工具合集，全部免费、无需账号、数据不上传：
+
+- [字幕工具箱](https://lyhrmer.github.io/media-scribe/subtitle.html)：SRT 与 VTT 互转、时间轴整体平移、两段合并、按时间拆分
+- [JSON 格式化](https://lyhrmer.github.io/media-scribe/json-format.html)：格式化、压缩、校验并定位错误行列，支持递归按键排序
+- [文本对比](https://lyhrmer.github.io/media-scribe/text-diff.html)：两段文本逐行对比，标出新增与删除
+- [编解码与时间戳](https://lyhrmer.github.io/media-scribe/codec-time.html)：Base64、URL 编解码，Unix 时间戳与本地日期时间互转
+
+注意：根 URL `…/media-scribe/` 现在是工具箱首页，转写功能在 `…/media-scribe/transcribe.html`；转写页「更多设置」里的「复制网址」帮助项复制的仍是工具箱首页地址。
 
 ## 使用方式
 
