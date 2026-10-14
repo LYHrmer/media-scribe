@@ -35,7 +35,7 @@ const self={constructor:{name:'DedicatedWorkerGlobalScope'},location:{origin:sit
 let listener,resolveResult,rejectResult;let lastEvents=[];
 self.addEventListener=(type,fn)=>{if(type==='message')listener=fn;};
 self.postMessage=event=>{lastEvents.push(event);if(event.type==='status')console.log(event.id,event.message);if(event.type==='result')resolveResult(event);if(event.type==='error')rejectResult(Error(event.message));};
-const context=vm.createContext({self,location:self.location,crypto:webcrypto,navigator:{hardwareConcurrency:1},console,fetch:assetFetch,caches:self.caches,Response,Request,Headers,URL,Blob,TextEncoder,TextDecoder,WebAssembly,atob,btoa,setTimeout,clearTimeout,setInterval,clearInterval,performance,ReadableStream,Float32Array,Float64Array,Int8Array,Uint8Array,Uint8ClampedArray,Int16Array,Uint16Array,Int32Array,Uint32Array,BigInt64Array,BigUint64Array,ArrayBuffer,SharedArrayBuffer,DataView});
+const context=vm.createContext({self,location:self.location,crypto:webcrypto,navigator:{hardwareConcurrency:1},console,fetch:assetFetch,caches:self.caches,Response,Request,Headers,URL,Blob,TextEncoder,TextDecoder,WebAssembly,AbortController,AbortSignal,DOMException,atob,btoa,setTimeout,clearTimeout,setInterval,clearInterval,performance,ReadableStream,Float32Array,Float64Array,Int8Array,Uint8Array,Uint8ClampedArray,Int16Array,Uint16Array,Int32Array,Uint32Array,BigInt64Array,BigUint64Array,ArrayBuffer,SharedArrayBuffer,DataView});
 const assets=await fs.readdir(root+'/dist/assets');
 const libraryPath=path.join(root,'dist/assets',assets.find(name=>/^transformers\.web-.*\.js$/.test(name))||'MISSING');
 let library;
