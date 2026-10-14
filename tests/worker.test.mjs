@@ -29,7 +29,7 @@ function deferred() {
   return { promise, resolve, reject };
 }
 
-function harness({ infer = async () => ({ text: '  你好，世界。  ', chunks: [] }), loadLibrary, loadPipeline, dispose } = {}) {
+function harness({ infer = async audio => ({ text: '  你好，世界。  ', chunks: [{ text: '你好，世界。', timestamp: [0, audio.length / 16000] }] }), loadLibrary, loadPipeline, dispose } = {}) {
   const messages = [];
   const calls = [];
   let listener;
@@ -156,8 +156,8 @@ test('text decoding is a separate generation attempt with one approximate range 
   assert.match(result.warnings[0], /字幕时间.*粗略范围/);
   const options = h.calls.find(call => call.audio).options;
   assert.equal(options.return_timestamps, false);
-  assert.equal(options.chunk_length_s, 30);
-  assert.equal(options.stride_length_s, 5);
+  assert.equal(options.chunk_length_s, 20);
+  assert.equal(options.stride_length_s, 3);
   assert.equal(options.task, 'transcribe');
   assert.equal(options.language, 'english');
   assert.equal(h.fetches, 0);
@@ -411,31 +411,67 @@ test('download progress retains genuine zero values and bounds invalid provider 
   assert.equal(progress[3].progress, null);
 });
 
-test('partial, null, out-of-range and backward timestamps become bounded exportable segments', async () => {
-  const h = harness({ infer: async () => ({
-    text: '第一句 第二句 第三句',
-    chunks: [
-      { text: ' 第一段 ', timestamp: [-3, 1] },
-      { text: ' ', timestamp: [1, 2] },
-      { text: '第二段', timestamp: [1, null] },
-      { text: '第三段', timestamp: [null, 3] },
-      { text: '超出音频', timestamp: [20, 30] },
-      { text: '反向', timestamp: [3, 2] },
-      { text: '太短', timestamp: [4, 4.0001] },
-    ],
-  }) });
-  await h.send(job('timing', { audio: signal(5) }));
-  const result = h.results('result', 'timing')[0];
-  assert.equal(result.segments.length, 3);
-  assert.equal(result.segments[0].text, '第一段');
-  assert.equal(result.segments[0].start, 0);
-  assert.equal(result.segments[0].end, 1);
-  assert.equal(result.segments[1].end, 5);
-  assert.equal(result.segments[2].start, 1);
-  assert.equal(result.segments[2].end, 3);
+test('invalid timestamps retain every spoken word in one honest approximate subtitle range', async () => {
   const { renderSrt, renderVtt } = await import('../src/exports.js');
-  assert.doesNotThrow(() => renderSrt(result.segments));
-  assert.doesNotThrow(() => renderVtt(result.segments));
+  const text = 'Hello there. Thank you.';
+  for (const timestamp of [[1, 1], [5, 6], [3, 2], [2, 2.0001], [-1, 3], [1, null], [null, 3], [NaN, 3], [1, Infinity], [0.2, 3]]) {
+    const h = harness({ infer: async () => ({ text, chunks: [
+      { text: 'Hello there.', timestamp: [0.5, 1] }, { text: 'Thank you.', timestamp },
+    ] }) });
+    await h.send(job('timing', { audio: signal(5), language: 'english' }));
+    const result = h.results('result', 'timing')[0];
+    assert.equal(result.text, text);
+    assert.equal(result.timing, 'approximate');
+    assert.deepEqual(Array.from(result.segments, segment => ({ ...segment })), [{ start: 0, end: 5, text }]);
+    assert.equal(result.warnings.length, 1);
+    assert.match(result.warnings[0], /时间戳无效或与正文不一致/);
+    assert.match(renderSrt(result.segments), /Hello there\. Thank you\./);
+    assert.match(renderVtt(result.segments), /Hello there\. Thank you\./);
+  }
+});
+
+test('timestamped subtitles must cover the exact transcript, ignoring whitespace only', async () => {
+  const text = 'Yes. Yes. It costs 2.5.';
+  for (const parts of [
+    ['Yes.', 'It costs 2.5.'], // A real repeated answer must not be deduplicated.
+    ['Yes. Yes.', 'It costs 25.'],
+    ['Yes. Yes.', 'It costs 2.5!'],
+    ['Yes. Yes.', 'It costs 2.5. Extra.'],
+  ]) {
+    const h = harness({ infer: async () => ({ text, chunks: parts.map((part, i) => ({ text: part, timestamp: [i, i + 1] })) }) });
+    await h.send(job('coverage', { audio: signal(3), language: 'english' }));
+    const result = h.results('result', 'coverage')[0];
+    assert.equal(result.timing, 'approximate');
+    assert.equal(result.segments.length, 1);
+    assert.equal(result.segments[0].text, text);
+  }
+  const h = harness({ infer: async () => ({ text: 'Yes.\nYes. It costs 2.5.', chunks: [
+    { text: ' Yes. Yes. ', timestamp: [0, 1] }, { text: 'It costs 2.5.', timestamp: [1, 3] },
+  ] }) });
+  await h.send(job('whitespace', { audio: signal(3), language: 'english' }));
+  const result = h.results('result', 'whitespace')[0];
+  assert.equal(result.segments.length, 2);
+  assert.equal(Object.hasOwn(result, 'timing'), false);
+  assert.equal(result.warnings.length, 0);
+});
+
+test('a malformed later audio range keeps its absolute offset without discarding valid earlier cues', async () => {
+  const audio = new Float32Array(8 * 16000);
+  audio.fill(0.001, 2 * 16000, 3 * 16000);
+  audio.fill(0.001, 5 * 16000, 6 * 16000);
+  let count = 0;
+  const h = harness({ infer: async () => ++count === 1
+    ? { text: 'First answer.', chunks: [{ text: 'First answer.', timestamp: [0.3, 0.8] }] }
+    : { text: 'Second answer. Thank you.', chunks: [{ text: 'Second answer.', timestamp: [0.3, 0.8] }, { text: 'Thank you.', timestamp: [0.8, 0.8] }] } });
+  await h.send(job('mixed-ranges', { audio, language: 'english' }));
+  const result = h.results('result', 'mixed-ranges')[0];
+  assert.equal(result.text, 'First answer.\nSecond answer. Thank you.');
+  assert.equal(result.timing, 'approximate');
+  assert.equal(result.warnings.length, 1);
+  assert.deepEqual(Array.from(result.segments, segment => ({ ...segment })), [
+    { start: 2, end: 2.5, text: 'First answer.' },
+    { start: 4.7, end: 6.3, text: 'Second answer. Thank you.' },
+  ]);
 });
 
 test('untimestamped text gets a whole-audio cue and silence stays empty', async () => {
@@ -443,9 +479,20 @@ test('untimestamped text gets a whole-audio cue and silence stays empty', async 
   const h = harness({ infer: async () => ++runs === 1 ? { text: ' 无时间戳 ', chunks: [] } : { text: ' ', chunks: [] } });
   await h.send(job('fallback'));
   assert.equal(h.results('result', 'fallback')[0].segments[0].end, 1);
+  assert.equal(h.results('result', 'fallback')[0].timing, 'approximate');
+  assert.match(h.results('result', 'fallback')[0].warnings[0], /粗略范围/);
   await h.send(job('silent'));
   assert.equal(h.results('result', 'silent')[0].text, '');
   assert.equal(h.results('result', 'silent')[0].segments.length, 0);
+});
+
+test('empty timestamped text does not turn stale chunks into subtitle-only speech', async () => {
+  const h = harness({ infer: async () => ({ text: ' ', chunks: [{ text: 'Unexpected old words.', timestamp: [0, 1] }] }) });
+  await h.send(job('empty-timestamped', { language: 'english' }));
+  const result = h.results('result', 'empty-timestamped')[0];
+  assert.equal(result.text, '');
+  assert.equal(result.segments.length, 0);
+  assert.equal(result.warnings.length, 0);
 });
 
 test('obvious repeated Chinese phrases produce a warning while preserving text and original timing', async () => {
@@ -470,7 +517,7 @@ test('normal repeated words and a single repeated chorus do not trigger the repe
     '再见秋天，再见秋天，再见秋天。',
     '',
   ]) {
-    const h = harness({ infer: async () => ({ text, chunks: [] }) });
+    const h = harness({ infer: async () => ({ text, chunks: [{ text, timestamp: [0, 1] }] }) });
     await h.send(job('normal'));
     assert.equal(h.results('result', 'normal')[0].warnings.length, 0, text);
   }
@@ -605,7 +652,7 @@ test('a short phrase or a long file with only a short sounding range avoids the 
   const longWithQuiet = new Float32Array(20 * 16000);
   longWithQuiet.fill(0.001, 5 * 16000, 10 * 16000);
   for (const audio of [signal(5), longWithQuiet]) {
-    const h = harness({ infer: async () => ({ text: '你好', chunks: [] }) });
+    const h = harness({ infer: async samples => ({ text: '你好', chunks: [{ text: '你好', timestamp: [0, samples.length / 16000] }] }) });
     await h.send(job('short-sound', { audio }));
     const result = h.results('result', 'short-sound')[0];
     assert.equal(result.text, '你好');

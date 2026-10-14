@@ -873,7 +873,7 @@ function videoFixture(overrides = {}) {
   };
 }
 
-test('reliable local video captions bypass audio decoding and clearly identify the visual source', async () => {
+test('explicit visual-only mode bypasses audio decoding and clearly identifies the visual source', async () => {
   let decodedAudio = false;
   let disposed = false;
   let recognized = 0;
@@ -884,6 +884,7 @@ test('reliable local video captions bypass audio decoding and clearly identify t
       return { reliable: true, segments: [{ start: 0, end: 1, text: '欢迎收看。' }], candidates: [], warnings: [] };
     },
   }));
+  h.ui['recognition-source'].value = 'video';
   await h.add([{ ...file('silent.mp4'), type: 'video/mp4' }]);
   await h.ui['start-button'].click();
   assert.equal(decodedAudio, false);
@@ -897,6 +898,90 @@ test('reliable local video captions bypass audio decoding and clearly identify t
   h.controlsRestored();
 });
 
+test('an interview name plate never bypasses full audio in auto mode and both OCR evidence classes stay reviewable', async () => {
+  let disposed = false;
+  let decodedAudio = 0;
+  const samples = new Float32Array(16000 * 45);
+  const h = harness(async () => {
+    assert.equal(disposed, true, 'release the OCR model before decoding/loading ASR');
+    decodedAudio++;
+    return { samples, duration: 45 };
+  }, videoFixture({
+    createClient: () => ({ initialize: async () => {}, recognize: async () => ({ texts: [] }), dispose() { disposed = true; } }),
+    fuse: () => ({ reliable: true,
+      segments: [{ start: 0.1, end: 0.6, text: '陈敏 研究员', confidence: 0.99, reliable: true }],
+      candidates: [{ start: 0.8, end: 1.4, text: '背景招牌', reason: 'static_text' }], warnings: [] }),
+  }));
+  await h.add([{ ...file('interview.mp4'), type: 'video/mp4' }]);
+  const run = h.ui['start-button'].click();
+  await flush();
+  assert.equal(decodedAudio, 1);
+  assert.equal(h.workers.length, 1, 'reliable screen text cannot short-circuit ASR');
+  assert.equal(h.workers[0].messages[0].audio.length, samples.length, 'the complete decoded audio is submitted');
+  h.workers[0].result('问：这个实验如何进行？答：我们先记录数据。');
+  await run;
+  assert.equal(h.ui.transcript.value, '问：这个实验如何进行？答：我们先记录数据。');
+  assert.doesNotMatch(h.ui['result-meta'].textContent, /画面字幕/);
+  assert.equal(h.ui['visual-candidate-list'].children.length, 2);
+  assert.match(h.ui['visual-candidate-list'].children[0].textContent, /陈敏 研究员.*尚未与声音核对/);
+  assert.match(h.ui['visual-candidate-list'].children[1].textContent, /背景招牌.*固定文字/);
+  h.ui['export-format'].value = 'json';
+  await h.ui['export-button'].click();
+  const exported = JSON.parse(await h.downloads.at(-1).blob.text());
+  assert.equal(exported.source, 'audio');
+  assert.doesNotMatch(exported.text, /陈敏|背景招牌/);
+  assert.doesNotMatch(exported.segments.map(segment => segment.text).join(''), /陈敏|背景招牌/);
+  h.controlsRestored();
+});
+
+test('an auto video without a readable audio track keeps OCR candidates and can be retried in explicit visual-only mode', async () => {
+  let reads = 0;
+  const h = harness(async () => { reads++; throw new Error('无法读取音轨'); }, videoFixture({
+    fuse: () => ({ reliable: true, segments: [{ start: 0, end: 1, text: '画面歌词。' }], candidates: [], warnings: [] }),
+  }));
+  await h.add([{ ...file('no-audio.mp4'), type: 'video/mp4' }]);
+  await h.ui['start-button'].click();
+  assert.deepEqual(h.states(), ['未完成'], 'audio failure must not silently turn auto into an OCR transcript');
+  assert.equal(h.ui['visual-candidates'].hidden, false);
+  assert.match(h.ui['visual-candidate-list'].children[0].textContent, /画面歌词/);
+  h.ui['recognition-source'].value = 'video';
+  await h.ui['start-button'].click();
+  assert.equal(reads, 1, 'explicit video-only retry does not need an audio track');
+  assert.equal(h.workers.length, 0);
+  assert.equal(h.ui.transcript.value, '画面歌词。');
+  assert.match(h.ui['result-meta'].textContent, /画面字幕/);
+  h.controlsRestored();
+});
+
+test('auto video retries preserve and restore the matching audio draft and visual evidence', async () => {
+  let version = 1;
+  const h = harness(undefined, videoFixture({
+    fuse: () => ({ reliable: true, segments: [{ start: 0, end: 1, text: `标题${version}` }],
+      candidates: [{ start: 1, end: 2, text: `候选${version}`, reason: 'needs_review' }], warnings: [] }),
+  }));
+  await h.add([{ ...file('interview-retry.mp4'), type: 'video/mp4' }]);
+  const initial = h.ui['start-button'].click();
+  await flush();
+  h.workers[0].result('第一次采访识别。');
+  await initial;
+  h.ui.transcript.value = '手动校对的采访。';
+  await h.ui.transcript.emit('input');
+  version = 2;
+  const retry = h.ui['rerun-button'].click();
+  await flush();
+  assert.equal(h.workers[0].terminated, true, 'old ASR heap is released before the next OCR pass');
+  assert.equal(h.workers.length, 2);
+  assert.equal(h.ui.transcript.value, '手动校对的采访。');
+  h.workers[1].result('第二次采访识别。');
+  await retry;
+  assert.match(h.ui['visual-candidate-list'].children[0].textContent, /标题2/);
+  await h.ui['restore-button'].click();
+  assert.equal(h.ui.transcript.value, '手动校对的采访。');
+  assert.match(h.ui['visual-candidate-list'].children[0].textContent, /标题1/);
+  assert.match(h.ui['visual-candidate-list'].children[1].textContent, /候选1/);
+  h.controlsRestored();
+});
+
 test('uncertain video text stays out of the audio transcript and remains separately reviewable', async () => {
   const h = harness(undefined, videoFixture({ fuse: () => ({ reliable: false, segments: [], candidates: [{ start: 0, text: '背景招牌', reason: '固定文字' }], warnings: [] }) }));
   await h.add([{ ...file('uncertain.mp4'), type: 'video/mp4' }]);
@@ -906,7 +991,7 @@ test('uncertain video text stays out of the audio transcript and remains separat
   h.workers[0].result('识别出的声音。');
   await run;
   assert.equal(h.ui.transcript.value, '识别出的声音。');
-  assert.match(h.ui['result-warning'].textContent, /已改用声音识别/);
+  assert.match(h.ui['result-warning'].textContent, /已继续识别声音/);
   assert.equal(h.ui['visual-candidates'].hidden, false);
   assert.match(h.ui['visual-candidate-list'].children[0].textContent, /背景招牌/);
   h.controlsRestored();

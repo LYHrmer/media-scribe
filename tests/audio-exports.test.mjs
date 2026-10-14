@@ -122,3 +122,11 @@ test('JSON export preserves visual source, unpunctuated evidence and review warn
     segments: [{ start: 0, end: 2, text: '会议开始。' }], warnings: ['画面文字尚未与语音核对。'] };
   assert.deepEqual(JSON.parse(renderJson(result)), result);
 });
+
+// Gain is a reproducibility detail, not a model confidence score.
+test('JSON retains bounded retry gain without accepting invalid metadata', () => {
+  for (const audioGain of [1, 0, NaN, Infinity, 9, 6.25]) {
+    const result = JSON.parse(renderJson({ text: '你好。', duration: 1, segments: [], audioGain }));
+    assert.equal(result.audioGain, audioGain === 6.25 ? 6.25 : undefined);
+  }
+});
