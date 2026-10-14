@@ -77,6 +77,7 @@ export async function loadSenseAsset(baseUrl, asset, progress = () => {}) {
         if (produced + value.length > part.bytes) throw new Error('中文模型解压长度无效。');
         output.set(value, offset + produced); produced += value.length;
       }
+      if (produced !== part.bytes) throw new Error('中文模型解压不完整。');
     } catch (error) {
       await reader.cancel().catch(() => {});
       for (const name of [`${asset.name}.manifest.json`, part.file]) {
@@ -85,7 +86,6 @@ export async function loadSenseAsset(baseUrl, asset, progress = () => {}) {
       throw error;
     }
     finally { reader.releaseLock(); }
-    if (produced !== part.bytes) throw new Error('中文模型解压不完整。');
     offset += produced; loaded += part.compressedBytes;
   }
   if (await digest(output) !== asset.sha256) {

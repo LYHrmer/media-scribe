@@ -63,7 +63,16 @@ export function validateMediaFile(file) {
   }
 }
 
-export async function decodeAudio(file, { onStatus = () => {} } = {}) {
+function checkCanceled(signal) {
+  if (signal?.aborted) {
+    const error = new Error('音频处理已停止。');
+    error.name = 'AbortError';
+    throw error;
+  }
+}
+
+export async function decodeAudio(file, { onStatus = () => {}, signal } = {}) {
+  checkCanceled(signal);
   validateMediaFile(file);
   const AudioContextClass = globalThis.AudioContext || globalThis.webkitAudioContext;
   const OfflineContextClass = globalThis.OfflineAudioContext || globalThis.webkitOfflineAudioContext;
@@ -75,13 +84,18 @@ export async function decodeAudio(file, { onStatus = () => {} } = {}) {
   let decoded;
   try {
     onStatus('正在本机读取音视频……');
+    checkCanceled(signal);
     const bytes = await file.arrayBuffer();
+    checkCanceled(signal);
     context = new AudioContextClass();
     onStatus('正在本机提取声音……');
     try {
+      checkCanceled(signal);
       // decodeAudioData requires the complete file; this is not streaming decode.
       decoded = await context.decodeAudioData(bytes);
     } catch (error) {
+      checkCanceled(signal);
+      if (error?.name === 'AbortError') throw error;
       if (/memory|alloc|out of bounds|array buffer/i.test(String(error?.message || error))) {
         throw new Error('浏览器内存不足，未能读取文件。请关闭其他页面，或先把文件剪短后重试。');
       }
@@ -94,6 +108,7 @@ export async function decodeAudio(file, { onStatus = () => {} } = {}) {
     if (context && typeof context.close === 'function') await context.close().catch(() => {});
   }
 
+  checkCanceled(signal);
   if (!Number.isFinite(decoded.duration) || decoded.duration <= 0 || decoded.length < 1) {
     throw new Error('没有读取到有效的音频。请换一个包含声音的文件。');
   }
@@ -102,12 +117,20 @@ export async function decodeAudio(file, { onStatus = () => {} } = {}) {
   }
 
   onStatus('正在本机整理音频……');
-  const channels = Array.from({ length: decoded.numberOfChannels }, (_, index) => decoded.getChannelData(index));
-  let mono = downmixChannels(channels);
+  checkCanceled(signal);
   const duration = decoded.duration;
   const sourceRate = decoded.sampleRate;
-  // Drop the multichannel buffer before model loading; browsers reclaim it by GC.
-  decoded = null;
+  const channels = Array.from({ length: decoded.numberOfChannels }, (_, index) => decoded.getChannelData(index));
+  let mono;
+  try {
+    mono = downmixChannels(channels);
+  } finally {
+    // Release the buffer and channel views before resampling. This permits GC;
+    // it does not force immediate physical memory reclamation.
+    channels.length = 0;
+    decoded = null;
+  }
+  checkCanceled(signal);
 
   if (sourceRate !== TARGET_SAMPLE_RATE) {
     try {
@@ -119,8 +142,13 @@ export async function decodeAudio(file, { onStatus = () => {} } = {}) {
       source.connect(offline.destination);
       source.start(0);
       const resampled = await offline.startRendering();
+      // Native rendering cannot be interrupted by this signal. Do not copy or
+      // submit a stopped run's result after it returns.
+      checkCanceled(signal);
       mono = resampled.getChannelData(0).slice();
     } catch (error) {
+      checkCanceled(signal);
+      if (error?.name === 'AbortError') throw error;
       if (/memory|alloc|out of bounds|array buffer/i.test(String(error?.message || error))) {
         throw new Error('浏览器内存不足，未能处理音频。请先剪短文件，或关闭其他页面后重试。');
       }
@@ -128,5 +156,6 @@ export async function decodeAudio(file, { onStatus = () => {} } = {}) {
     }
   }
 
+  checkCanceled(signal);
   return { samples: mono, sampleRate: TARGET_SAMPLE_RATE, duration };
 }

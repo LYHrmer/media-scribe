@@ -119,17 +119,32 @@ export function installModelAssetFetch(baseUrl, {
       }
       return response;
     }
-    const signal = init?.signal || (input instanceof Request ? input.signal : undefined);
+    const callerSignal = init?.signal || (input instanceof Request ? input.signal : undefined);
+    // The response body has its own lifetime: cancelling its reader must also
+    // stop a part fetch, even when the caller supplied no AbortSignal.
+    const downloadController = new AbortController();
+    const signal = downloadController.signal;
+    const abortFromCaller = () => downloadController.abort(callerSignal.reason);
+    const cleanup = () => callerSignal?.removeEventListener('abort', abortFromCaller);
+    const checkAborted = () => {
+      if (signal.aborted) throw signal.reason || new DOMException('Download aborted', 'AbortError');
+    };
+    if (callerSignal?.aborted) abortFromCaller();
+    else callerSignal?.addEventListener('abort', abortFromCaller, { once: true });
     const filename = relativePath.split('/').at(-1);
-    const manifestResponse = await checkedFetch(new URL(`${relativePath}.manifest.json`, base), signal);
     let manifest;
     try {
+      checkAborted();
+      const manifestResponse = await checkedFetch(new URL(`${relativePath}.manifest.json`, base), signal);
       const manifestText = await manifestResponse.text();
+      checkAborted();
       if (manifestText.length > 64 * 1024 || /text\/html/i.test(manifestResponse.headers.get('content-type') || '')) {
         throw new Error('Invalid manifest response');
       }
       manifest = validateManifest(JSON.parse(manifestText), filename);
     } catch (error) {
+      cleanup();
+      downloadController.abort();
       if (error.message?.startsWith('MODEL_ASSET_FAILED:')) throw error;
       throw assetError('模型目录未能正确下载，请刷新网页后重试。', error);
     }
@@ -139,51 +154,74 @@ export function installModelAssetFetch(baseUrl, {
     let offset = 0;
     // WebCrypto has no incremental hash API. Keep one bounded verification
     // buffer while consumers receive individually verified chunks for progress.
-    let integrityBytes = new Uint8Array(manifest.bytes);
+    let integrityBytes;
+    let body;
     let cancelled = false;
-    const body = new ReadableStream({
-      async pull(controller) {
-        try {
-          const part = manifest.parts[partIndex];
-          const response = await checkedFetch(new URL(part.file, modelDirectory), signal);
-          const bytes = new Uint8Array(await response.arrayBuffer());
-          if (cancelled) return;
-          if (bytes.length !== part.bytes || htmlResponse(response, bytes)) {
-            throw assetError('模型分片下载不完整，请检查网络并重试。');
-          }
-          if ((await digest(bytes)) !== part.sha256.toLowerCase()) {
-            throw assetError('模型分片校验失败，请刷新网页后重试。');
-          }
-          if (cancelled) return;
-          integrityBytes.set(bytes, offset);
-          offset += bytes.length;
-          partIndex += 1;
-          if (partIndex === manifest.parts.length) {
-            if ((await digest(integrityBytes)) !== manifest.sha256.toLowerCase()) {
-              throw assetError('模型文件校验失败，请刷新网页后重试。');
-            }
-            integrityBytes = null;
+    try {
+      integrityBytes = new Uint8Array(manifest.bytes);
+      body = new ReadableStream({
+        async pull(controller) {
+          try {
+            checkAborted();
+            const part = manifest.parts[partIndex];
+            const response = await checkedFetch(new URL(part.file, modelDirectory), signal);
+            const bytes = new Uint8Array(await response.arrayBuffer());
             if (cancelled) return;
-            controller.enqueue(bytes);
-            controller.close();
-          } else {
-            controller.enqueue(bytes);
+            checkAborted();
+            if (bytes.length !== part.bytes || htmlResponse(response, bytes)) {
+              throw assetError('模型分片下载不完整，请检查网络并重试。');
+            }
+            if ((await digest(bytes)) !== part.sha256.toLowerCase()) {
+              throw assetError('模型分片校验失败，请刷新网页后重试。');
+            }
+            if (cancelled) return;
+            checkAborted();
+            integrityBytes.set(bytes, offset);
+            offset += bytes.length;
+            partIndex += 1;
+            if (partIndex === manifest.parts.length) {
+              if ((await digest(integrityBytes)) !== manifest.sha256.toLowerCase()) {
+                throw assetError('模型文件校验失败，请刷新网页后重试。');
+              }
+              integrityBytes = null;
+              if (cancelled) return;
+              checkAborted();
+              cleanup();
+              controller.enqueue(bytes);
+              controller.close();
+            } else {
+              controller.enqueue(bytes);
+            }
+          } catch (error) {
+            integrityBytes = null;
+            cleanup();
+            downloadController.abort();
+            if (!cancelled) controller.error(error.message?.startsWith('MODEL_ASSET_FAILED:')
+              ? error : assetError('模型文件下载中断，请重试。', error));
           }
-        } catch (error) {
+        },
+        cancel(reason) {
+          cancelled = true;
           integrityBytes = null;
-          if (!cancelled) controller.error(error.message?.startsWith('MODEL_ASSET_FAILED:')
-            ? error : assetError('模型文件下载中断，请重试。', error));
-        }
-      },
-      cancel() { cancelled = true; integrityBytes = null; },
-    });
-    return new Response(body, {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/octet-stream',
-        'Content-Length': String(manifest.bytes),
-      },
-    });
+          cleanup();
+          downloadController.abort(reason);
+        },
+      });
+      return new Response(body, {
+        status: 200,
+        headers: {
+          'Content-Type': 'application/octet-stream',
+          'Content-Length': String(manifest.bytes),
+        },
+      });
+    } catch (error) {
+      cancelled = true;
+      integrityBytes = null;
+      cleanup();
+      downloadController.abort();
+      await body?.cancel(error).catch(() => {});
+      throw assetError('模型文件无法初始化，请关闭其他页面后重试。', error);
+    }
   };
   if (install) globalThis.fetch = fetchAssets;
   return {
