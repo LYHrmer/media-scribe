@@ -124,19 +124,19 @@ test('repeated Chinese full stops are cleaned without changing words, decimals o
 });
 
 test('SenseVoice comma-stop artifact is removed across token boundaries with surviving timestamps intact', () => {
-  // The text is a real failed ASR output. Token boundaries/times here are
-  // controlled fixtures, not claimed to be captured model alignment.
-  const text = '不不在无人伤害，。';
+  // Entirely synthetic text and alignment preserve repetition and split
+  // punctuation without publishing a private recording's transcription.
+  const text = '今今天图书开放，。';
   for (const tokens of [
-    ['不不在', '无人伤害', '，', '。'],
-    ['不不在', '无人伤害，', '。'],
-    ['不不在', '无人伤害', '，。'],
+    ['今今天', '图书开放', '，', '。'],
+    ['今今天', '图书开放，', '。'],
+    ['今今天', '图书开放', '，。'],
   ]) {
     const timestamps = tokens.map((_, index) => index * 0.3);
     const original = { text, tokens, timestamps };
     const before = structuredClone(original);
     const cleaned = normalizeSensePunctuation(original);
-    assert.equal(cleaned.text, '不不在无人伤害。');
+    assert.equal(cleaned.text, '今今天图书开放。');
     assert.equal(cleaned.tokens.join(''), cleaned.text);
     assert.deepEqual(original, before);
     const retained = tokens.map((token, index) => ({ token: token.replace(/，/gu, ''), time: timestamps[index] })).filter(item => item.token);
