@@ -2,9 +2,11 @@ import '../styles.css';
 import '../toolbox.css';
 import '../lib/register-sw.js';
 import { formatJson, validateJson } from '../lib/json-tools.js';
+import { wireFilePicker, fileBaseName } from '../lib/file-picker.js';
 import { downloadText } from '../exports.js';
 
 const $ = id => document.getElementById(id);
+let sourceName = '';
 
 function showError(message) {
   const el = $('tool-error');
@@ -65,5 +67,9 @@ $('copy-button').addEventListener('click', async () => {
 });
 $('download-button').addEventListener('click', () => {
   const text = $('json-output').value;
-  if (text) downloadText(text, '格式化.json', 'application/json');
+  if (text) downloadText(text, `${fileBaseName(sourceName, '格式化')}.json`, 'application/json');
+});
+wireFilePicker($('json-file-button'), $('json-file-input'), $('json-input'), {
+  onError: showError,
+  onFile: name => { sourceName = name; },
 });

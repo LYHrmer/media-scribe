@@ -2,12 +2,14 @@ import '../styles.css';
 import '../toolbox.css';
 import '../lib/register-sw.js';
 import { convertSubtitle, shiftSubtitle, mergeSubtitles, splitSubtitle } from '../lib/subtitle-cues.js';
+import { wireFilePicker, fileBaseName } from '../lib/file-picker.js';
 import { downloadText } from '../exports.js';
 
 const $ = id => document.getElementById(id);
 const MODE_PARAMS = { convert: [], shift: ['param-shift'], merge: ['param-merge'], split: ['param-split'] };
 let mode = 'convert';
 let downloads = [];
+const sourceNames = { a: '', b: '' };
 
 document.querySelectorAll('.tool-tabs .tab-button').forEach(button => {
   button.addEventListener('click', () => {
@@ -40,7 +42,7 @@ function showWarnings(list) {
   el.hidden = !list || list.length === 0;
 }
 
-function renderResult(result) {
+function renderResult(result, base) {
   const section = $('result-section');
   section.hidden = false;
   const output = $('sub-output');
@@ -48,8 +50,8 @@ function renderResult(result) {
     output.value = result.part1.text;
     $('result-meta').textContent = ` · 第 1 段 ${result.part1.count} 条，第 2 段 ${result.part2.count} 条`;
     downloads = [
-      { text: result.part1.text, filename: `字幕-第1段.${result.format}` },
-      { text: result.part2.text, filename: `字幕-第2段.${result.format}` },
+      { text: result.part1.text, filename: `${base}-第1段.${result.format}` },
+      { text: result.part2.text, filename: `${base}-第2段.${result.format}` },
     ];
     $('download-button').textContent = '下载第一段';
     $('download-button-2').hidden = false;
@@ -57,7 +59,7 @@ function renderResult(result) {
     output.value = result.text;
     $('result-meta').textContent = ` · ${result.count} 条`;
     const format = result.to || result.format;
-    downloads = [{ text: result.text, filename: `字幕.${format}` }];
+    downloads = [{ text: result.text, filename: `${base}.${format}` }];
     $('download-button').textContent = '下载结果';
     $('download-button-2').hidden = true;
   }
@@ -74,11 +76,23 @@ $('run-button').addEventListener('click', () => {
     else if (mode === 'merge') result = mergeSubtitles(input, $('sub-input-b').value);
     else result = splitSubtitle(input, Number($('split-at').value));
     showWarnings(result.warnings);
-    renderResult(result);
+    const base = mode === 'merge'
+      ? fileBaseName(sourceNames.a, '合并字幕')
+      : fileBaseName(sourceNames.a, '字幕');
+    renderResult(result, base);
   } catch (error) {
     $('result-section').hidden = true;
     showError(error.message);
   }
+});
+
+wireFilePicker($('a-file-button'), $('a-file-input'), $('sub-input-a'), {
+  onError: showError,
+  onFile: name => { sourceNames.a = name; },
+});
+wireFilePicker($('b-file-button'), $('b-file-input'), $('sub-input-b'), {
+  onError: showError,
+  onFile: name => { sourceNames.b = name; },
 });
 
 $('download-button').addEventListener('click', () => {

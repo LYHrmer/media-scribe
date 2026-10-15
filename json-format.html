@@ -26,7 +26,11 @@
 
         <section class="panel tool-panel">
           <div class="tool-section">
-            <label class="tool-label" for="json-input">JSON 内容</label>
+            <div class="tool-file-row">
+              <label class="tool-label" for="json-input">JSON 内容（粘贴或选择 .json 文件）</label>
+              <button id="json-file-button" class="text-button" type="button">选择文件</button>
+              <input id="json-file-input" type="file" accept=".json,application/json" hidden />
+            </div>
             <textarea id="json-input" class="tool-textarea" spellcheck="false" placeholder='{"在这里粘贴 JSON": true}'></textarea>
           </div>
 

@@ -2,6 +2,7 @@ import '../styles.css';
 import '../toolbox.css';
 import '../lib/register-sw.js';
 import { diffLines } from '../lib/line-diff.js';
+import { wireFilePicker } from '../lib/file-picker.js';
 
 const $ = id => document.getElementById(id);
 const ROW_CLASS = { add: 'diff-add', del: 'diff-del', same: 'diff-same' };
@@ -36,3 +37,6 @@ $('run-button').addEventListener('click', () => {
   $('diff-stats').innerHTML = `新增 <span class="stat-add">${result.added}</span> 行 · 删除 <span class="stat-del">${result.removed}</span> 行`;
   if (result.coarse) $('coarse-hint').hidden = false;
 });
+
+wireFilePicker($('diff-a-file-button'), $('diff-a-file-input'), $('diff-a'), { onError: showError });
+wireFilePicker($('diff-b-file-button'), $('diff-b-file-input'), $('diff-b'), { onError: showError });

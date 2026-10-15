@@ -27,11 +27,19 @@
         <section class="panel tool-panel">
           <div class="diff-inputs">
             <div class="tool-section">
-              <label class="tool-label" for="diff-a">原文</label>
+              <div class="tool-file-row">
+                <label class="tool-label" for="diff-a">原文</label>
+                <button id="diff-a-file-button" class="text-button" type="button">选择文件</button>
+                <input id="diff-a-file-input" type="file" accept=".txt,.md,.srt,.vtt,.json,.csv,.log" hidden />
+              </div>
               <textarea id="diff-a" class="tool-textarea" spellcheck="false" placeholder="旧版本…"></textarea>
             </div>
             <div class="tool-section">
-              <label class="tool-label" for="diff-b">新文本</label>
+              <div class="tool-file-row">
+                <label class="tool-label" for="diff-b">新文本</label>
+                <button id="diff-b-file-button" class="text-button" type="button">选择文件</button>
+                <input id="diff-b-file-input" type="file" accept=".txt,.md,.srt,.vtt,.json,.csv,.log" hidden />
+              </div>
               <textarea id="diff-b" class="tool-textarea" spellcheck="false" placeholder="新版本…"></textarea>
             </div>
           </div>

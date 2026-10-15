@@ -33,7 +33,11 @@
           </div>
 
           <div class="tool-section">
-            <label class="tool-label" for="sub-input-a">字幕内容 A（粘贴 SRT 或 VTT，自动识别格式）</label>
+            <div class="tool-file-row">
+              <label class="tool-label" for="sub-input-a">字幕内容 A（粘贴或选择 SRT / VTT，自动识别格式）</label>
+              <button id="a-file-button" class="text-button" type="button">选择文件</button>
+              <input id="a-file-input" type="file" accept=".srt,.vtt" hidden />
+            </div>
             <textarea id="sub-input-a" class="tool-textarea" spellcheck="false" placeholder="1&#10;00:00:01,000 --> 00:00:03,000&#10;在这里粘贴字幕…"></textarea>
           </div>
 
@@ -43,7 +47,11 @@
           </div>
 
           <div class="tool-section" id="param-merge" hidden>
-            <label class="tool-label" for="sub-input-b">字幕内容 B（自动平移，接在 A 之后）</label>
+            <div class="tool-file-row">
+              <label class="tool-label" for="sub-input-b">字幕内容 B（自动平移，接在 A 之后）</label>
+              <button id="b-file-button" class="text-button" type="button">选择文件</button>
+              <input id="b-file-input" type="file" accept=".srt,.vtt" hidden />
+            </div>
             <textarea id="sub-input-b" class="tool-textarea" spellcheck="false" placeholder="第二段字幕…"></textarea>
           </div>
 
