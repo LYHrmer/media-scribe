@@ -13,9 +13,29 @@ test('share text accepts one HTTPS link and preserves signed query characters', 
 });
 
 test('platform pages and segmented streams are rejected before network access', async () => {
-  for (const input of ['https://www.bilibili.com/video/BV123', 'https://v.douyin.com/abc', 'https://example.com/a.m3u8', 'https://example.com/watch.html']) {
+  for (const input of ['https://v.douyin.com/abc', 'https://example.com/a.m3u8', 'https://example.com/watch.html']) {
     await assert.rejects(importMediaUrl(input, { fetchImpl: () => { assert.fail('must not fetch a known unsupported page'); } }), /网页|分段/);
   }
+});
+
+test('Bilibili share text is normalized and only sent to the configured service without user credentials',async()=>{
+  const mp4=new Uint8Array(24);mp4.set(new TextEncoder().encode('ftyp'),4);const progress=[];
+  const file=await importMediaUrl('分享 https://www.bilibili.com/video/BV13x41117TL?p=2&share_source=copy',{
+    bilibiliService:'https://service.test/api/bilibili',onProgress:p=>progress.push(p),
+    fetchImpl:async(url,options)=>{assert.equal(url,'https://service.test/api/bilibili');assert.equal(options.method,'POST');assert.equal(options.credentials,'omit');
+      assert.deepEqual(JSON.parse(options.body),{url:'https://www.bilibili.com/video/BV13x41117TL?p=2'});
+      return response(mp4,{'content-type':'audio/mp4','content-length':'24','x-media-name':encodeURIComponent('采访 · P2.m4a')});}
+  });
+  assert.equal(file.name,'采访 · P2.m4a');assert.equal(file.type,'audio/mp4');assert.equal(file.size,24);assert.equal(progress[0].stage,'resolve');
+});
+test('Bilibili service errors are specific, while unconfigured forks never send the URL elsewhere',async()=>{
+  const url='https://b23.tv/Abc123';
+  await assert.rejects(importMediaUrl(url,{fetchImpl:()=>assert.fail('unconfigured host must not send URLs')}),/配置/);
+  await assert.rejects(importMediaUrl(url,{bilibiliService:'https://service.test/api/bilibili',fetchImpl:async()=>Response.json({error:'该视频需要登录'},{status:422})}),/需要登录/);
+  await assert.rejects(importMediaUrl(url,{bilibiliService:'https://service.test/api/bilibili',fetchImpl:async()=>new Response('<html>proxy',{status:403})}),/服务暂不可用/);
+});
+test('an incomplete declared media length does not create a File',async()=>{
+  await assert.rejects(importMediaUrl('https://example.com/a.wav',{fetchImpl:async()=>response(wav,{'content-length':'50'})}),/不完整/);
 });
 
 test('streamed media imports into a File with progress and no credentials or referrer', async () => {
