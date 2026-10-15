@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 
 const source = await readFile(new URL('../public/sw.js', import.meta.url), 'utf8');
-const CACHE_NAME = 'tingxie-static-v0.5.4';
+const CACHE_NAME = 'tingxie-static-v0.5.5';
 const ORIGIN = 'https://example.test';
 
 // Execute the shipped event handlers. Cache storage and network are isolated;
@@ -44,7 +44,7 @@ function harness({ reply, failOpen = false, failPut = false, failDelete = false 
         if (failOpen) throw new Error('Storage unavailable');
         return cache;
       },
-      async keys() { return ['unrelated-cache', 'tingxie-static-v0.3.1', CACHE_NAME]; },
+      async keys() { return ['unrelated-cache', 'tingxie-static-v0.3.1', 'tingxie-static-v0.5.4', CACHE_NAME]; },
       async delete(name) { calls.removedCaches.push(name); return true; },
     },
     async fetch(request) {
@@ -166,5 +166,5 @@ test('activation removes only obsolete app caches and claims clients', async () 
   await h.lifecycle('activate');
   assert.equal(h.calls.skipWaiting, true);
   assert.equal(h.calls.claim, true);
-  assert.deepEqual(h.calls.removedCaches, ['tingxie-static-v0.3.1']);
+  assert.deepEqual(h.calls.removedCaches, ['tingxie-static-v0.3.1', 'tingxie-static-v0.5.4']);
 });
