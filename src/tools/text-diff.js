@@ -2,7 +2,7 @@ import '../styles.css';
 import '../toolbox.css';
 import '../lib/register-sw.js';
 import { diffLines } from '../lib/line-diff.js';
-import { wireFilePicker } from '../lib/file-picker.js';
+import { wireFilePicker, wireFileDrop } from '../lib/file-picker.js';
 
 const $ = id => document.getElementById(id);
 const ROW_CLASS = { add: 'diff-add', del: 'diff-del', same: 'diff-same' };
@@ -38,5 +38,13 @@ $('run-button').addEventListener('click', () => {
   if (result.coarse) $('coarse-hint').hidden = false;
 });
 
+$('swap-button').addEventListener('click', () => {
+  const a = $('diff-a').value;
+  $('diff-a').value = $('diff-b').value;
+  $('diff-b').value = a;
+});
+
 wireFilePicker($('diff-a-file-button'), $('diff-a-file-input'), $('diff-a'), { onError: showError });
 wireFilePicker($('diff-b-file-button'), $('diff-b-file-input'), $('diff-b'), { onError: showError });
+wireFileDrop($('diff-a'), { onError: showError });
+wireFileDrop($('diff-b'), { onError: showError });

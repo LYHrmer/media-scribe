@@ -35,6 +35,14 @@ $('url-decode').addEventListener('click', () => guard(() => {
 $('ts-to-date').addEventListener('click', () => guard(() => {
   $('ts-output').value = timestampToDate($('ts-input').value.trim()).text;
 }));
+$('ts-now').addEventListener('click', () => {
+  $('ts-input').value = String(Math.floor(Date.now() / 1000));
+  $('ts-to-date').click();
+});
+$('date-now').addEventListener('click', () => {
+  $('date-input').value = timestampToDate(Math.floor(Date.now() / 1000)).text;
+  $('date-to-ts').click();
+});
 $('date-to-ts').addEventListener('click', () => guard(() => {
   const { seconds, milliseconds } = dateToTimestamp($('date-input').value);
   $('date-output').value = `${seconds} 秒 · ${milliseconds} 毫秒`;

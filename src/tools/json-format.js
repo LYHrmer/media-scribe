@@ -2,7 +2,7 @@ import '../styles.css';
 import '../toolbox.css';
 import '../lib/register-sw.js';
 import { formatJson, validateJson } from '../lib/json-tools.js';
-import { wireFilePicker, fileBaseName } from '../lib/file-picker.js';
+import { wireFilePicker, wireFileDrop, fileBaseName } from '../lib/file-picker.js';
 import { downloadText } from '../exports.js';
 
 const $ = id => document.getElementById(id);
@@ -27,6 +27,25 @@ function describeError(result) {
   return result.message;
 }
 
+function offsetFromLineColumn(text, line, column) {
+  let offset = 0;
+  for (let i = 1; i < line; i += 1) {
+    const next = text.indexOf('\n', offset);
+    if (next < 0) return text.length;
+    offset = next + 1;
+  }
+  return Math.min(offset + column - 1, text.length);
+}
+
+// Put the caret on the parse error so the user sees where to fix.
+function revealError(text, result) {
+  if (!Number.isInteger(result.line) || !Number.isInteger(result.column)) return;
+  const offset = offsetFromLineColumn(text, result.line, result.column);
+  const input = $('json-input');
+  input.focus();
+  input.setSelectionRange(offset, Math.min(offset + 1, text.length));
+}
+
 function run(action) {
   showError('');
   showStatus('');
@@ -39,7 +58,7 @@ function run(action) {
   if (action === 'validate') {
     const result = validateJson(text);
     if (result.ok) showStatus('JSON 有效 ✓');
-    else showError(describeError(result));
+    else { showError(describeError(result)); revealError(text, result); }
     return;
   }
   const result = formatJson(text, {
@@ -48,6 +67,7 @@ function run(action) {
   });
   if (!result.ok) {
     showError(describeError(result));
+    revealError(text, result);
     return;
   }
   $('json-output').value = result.result;
@@ -73,3 +93,4 @@ wireFilePicker($('json-file-button'), $('json-file-input'), $('json-input'), {
   onError: showError,
   onFile: name => { sourceName = name; },
 });
+wireFileDrop($('json-input'), { onError: showError, onFile: name => { sourceName = name; } });

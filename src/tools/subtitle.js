@@ -2,7 +2,7 @@ import '../styles.css';
 import '../toolbox.css';
 import '../lib/register-sw.js';
 import { convertSubtitle, shiftSubtitle, mergeSubtitles, splitSubtitle } from '../lib/subtitle-cues.js';
-import { wireFilePicker, fileBaseName } from '../lib/file-picker.js';
+import { wireFilePicker, wireFileDrop, fileBaseName } from '../lib/file-picker.js';
 import { downloadText } from '../exports.js';
 
 const $ = id => document.getElementById(id);
@@ -112,6 +112,8 @@ wireFilePicker($('b-file-button'), $('b-file-input'), $('sub-input-b'), {
   onError: showError,
   onFile: name => { sourceNames.b = name; },
 });
+wireFileDrop($('sub-input-a'), { onError: showError, onFile: name => { sourceNames.a = name; } });
+wireFileDrop($('sub-input-b'), { onError: showError, onFile: name => { sourceNames.b = name; } });
 
 $('download-button').addEventListener('click', () => {
   if (downloads[0]) downloadText(downloads[0].text, downloads[0].filename);
