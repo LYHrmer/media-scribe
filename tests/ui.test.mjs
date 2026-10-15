@@ -119,6 +119,7 @@ function harness(decode = async () => decoded(), vision = {}) {
     decodeAudio: decode, MAX_FILE_BYTES: 300 * 1024 * 1024,
     Worker: WorkerDouble, URL: BrowserURL, Blob, Float32Array, AbortController,
     isVideoFile, reviewCaptionEvidence, captionLabel,
+    importMediaUrl: vision.importUrl || (async () => { throw new Error('模拟链接不可用'); }),
     punctuateResult: vision.punctuate || (async result => result),
     evaluateSpeechPresence: vision.speechCheck || (async () => ({ reject: false })),
     readVideoFrames: vision.readFrames || (async () => { throw new Error('模拟浏览器不能读取画面'); }),
@@ -156,6 +157,43 @@ test('generic and visible single-file pickers avoid restrictive native filters',
   assert.ok(html.indexOf('id="single-file-input"') < html.indexOf('id="picker-help"'), 'native single-file chooser must be visible before collapsed help');
   assert.match(inputs['audio-input'], /accept="audio\/\*"/);
   assert.match(inputs['video-input'], /accept="video\/\*"/);
+});
+
+test('URL import joins the normal queue without opening a download or changing an old draft', async () => {
+  const ready = deferred();
+  const h = harness(undefined, { importUrl: async (_, options) => { options.onProgress({ loaded: 10, total: 64 }); return ready.promise; } });
+  await h.add([file('original.wav')]);
+  const run = h.ui['start-button'].click(); await flush(); h.workers.at(-1).result('原稿。'); await run;
+  h.ui.transcript.value = '我的修改。'; await h.ui.transcript.emit('input');
+  h.ui['media-url'].value = 'https://example.com/new.wav';
+  const loading = h.ui['import-url'].click(); await flush();
+  assert.equal(h.ui['start-button'].disabled, true); assert.equal(h.ui['rerun-button'].disabled, true);
+  assert.equal(h.ui['cancel-url'].hidden, false); assert.match(h.ui['media-url-status'].textContent, /正在读取/);
+  ready.resolve(file('new.wav')); await loading;
+  assert.deepEqual(h.states(), ['已完成', '待转写']); assert.equal(h.ui['media-url'].value, '');
+  assert.equal(h.downloads.length, 0); await h.select(0); assert.equal(h.ui.transcript.value, '我的修改。');
+  h.controlsRestored(); assert.equal(h.ui['import-url'].disabled, false);
+});
+
+test('canceled URL import cannot enqueue a late response or overwrite a newer import status', async () => {
+  const first = deferred(), second = deferred(); let count = 0, firstSignal;
+  const h = harness(undefined, { importUrl: async (_, { signal }) => { if (!count++) { firstSignal = signal; return first.promise; } return second.promise; } });
+  h.ui['media-url'].value = 'https://example.com/first.wav';
+  const old = h.ui['import-url'].click(); await h.ui['cancel-url'].click(); assert.equal(firstSignal.aborted, true);
+  h.ui['media-url'].value = 'https://example.com/second.wav';
+  const next = h.ui['import-url'].click();
+  first.resolve(file('late.wav')); await old;
+  assert.deepEqual(h.states(), []); assert.equal(h.ui['import-url'].disabled, true);
+  second.resolve(file('second.wav')); await next;
+  assert.deepEqual(h.states(), ['待转写']); assert.match(h.ui['media-url-status'].textContent, /读取完成/);
+  assert.equal(h.ui['import-url'].disabled, false);
+});
+
+test('failed URL import preserves queue and unlocks controls for retry', async () => {
+  const h = harness(); await h.add([file('kept.wav')]);
+  h.ui['media-url'].value = 'https://example.com/page'; await h.ui['media-url'].emit('keydown', { key: 'Enter' });
+  assert.deepEqual(h.states(), ['待转写']); assert.match(h.ui['inline-error'].textContent, /模拟链接不可用/);
+  h.controlsRestored(); assert.equal(h.ui['import-url'].disabled, false); assert.equal(h.ui['cancel-url'].hidden, true);
 });
 
 test('a low-voice candidate avoids ASR and offers a force retry without losing the file', async () => {
