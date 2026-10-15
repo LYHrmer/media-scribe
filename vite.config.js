@@ -18,6 +18,7 @@ export default defineConfig({
         'text-diff': entry('text-diff.html'),
         'codec-time': entry('codec-time.html'),
         regex: entry('regex.html'),
+        'file-hash': entry('file-hash.html'),
       },
     },
   },

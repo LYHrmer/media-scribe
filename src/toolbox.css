@@ -36,6 +36,15 @@
 .regex-view mark { background: #f3e3b3; color: #6b5518; border-radius: 3px; padding: 0 1px; }
 .match-list { margin-top: 12px; max-height: 240px; overflow-y: auto; font-family: ui-monospace, SFMono-Regular, Consolas, "Microsoft YaHei", monospace; font-size: 11px; line-height: 1.8; color: #6b7a70; scrollbar-width: thin; }
 .match-row { padding: 1px 0; overflow-wrap: anywhere; }
+.hash-drop { display: flex; align-items: center; justify-content: center; min-height: 110px; padding: 16px; border: 1.5px dashed #d7ded4; border-radius: 12px; background: #fafbf8; color: #718076; font-size: 13px; text-align: center; cursor: pointer; }
+.hash-drop:hover, .hash-drop:focus-visible { border-color: #57947b; outline: none; }
+.hash-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+.hash-algo { flex-shrink: 0; width: 62px; font-size: 11px; color: #718076; }
+.hash-value { flex: 1; min-width: 0; padding: 7px 10px; border: 1px solid #e1e6df; border-radius: 7px; background: #fafbf8; font-family: ui-monospace, SFMono-Regular, Consolas, "Microsoft YaHei", monospace; font-size: 11px; color: #455d51; }
+.hash-cmp { flex-shrink: 0; min-width: 96px; font-size: 11px; }
+.hash-cmp-match { color: #408166; }
+.hash-cmp-mismatch { color: #b86c49; }
+.hash-cmp-invalid { color: #8d7046; }
 @media (max-width: 760px) {
   .tool-panel { padding: 21px; }
   .diff-inputs { grid-template-columns: 1fr; }
