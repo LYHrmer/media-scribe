@@ -40,3 +40,15 @@ GitHub 返回 `Resource not accessible by integration` 时，应检查连接的 
 - [configure-pages 输入与路径输出](https://github.com/actions/configure-pages/blob/v5/action.yml)
 - [GitHub REST API 权限错误排查](https://docs.github.com/en/rest/using-the-rest-api/troubleshooting-the-rest-api#resource-not-accessible)
 - [Cloudflare Ray ID 与安全事件查询](https://developers.cloudflare.com/fundamentals/reference/cloudflare-ray-id/)
+
+## v0.5.7 B站读取服务（未通过上线验证）
+
+当前托管服务器的 B站视频信息请求返回 412 / -412 `request was banned`。代码保留在未合并的开发分支，线上恢复稳定版 v0.5.6。以下是已实现的待发布部署方式，不表示现有服务可用。
+
+GitHub Pages 仍是静态页面。B站按钮将公开页面地址发送到 `https://tingxie-local.mossy-loach-2602.chatgpt.site/api/bilibili`，本站 Worker 读取完整音轨并流式返回；随后浏览器本机转写。没有用户平台登录、模型 API 或服务端转码。当前官方服务不可用；后续受支持的部署和 fork / 自定义域名需显式配置 `VITE_BILIBILI_ENDPOINT`，否则显示未配置提示。
+
+Worker 构建：`VITE_COMPACT_BUILD=1 SITES_LINK_SERVICE=1 npm run build`。输出 `dist/server/index.js`、`dist/client/` 与 `dist/server/wrangler.json`，`ASSETS` 绑定提供同一份页面和模型。Sites 的 `.openai/hosting.json` 保留项目 ID、去掉静态标记；普通 GitHub Actions 构建不设置 `SITES_LINK_SERVICE`，仍发布静态 `dist/`。
+
+服务仅接受来自本站和官方 Pages 的 JSON POST；CORS 是浏览器访问限制，不是身份认证。只接受普通 B站视频/分P及平台短链，逐跳校验，媒体仅取平台响应中的固定 CDN HTTPS 地址；不提供任意 URL 代理。请求不附带访客 Cookie 或 Authorization，不处理登录、试看、付费或 DRM 资源。单音轨最多 64 MiB / 30 分钟，连续 45 秒无响应终止，取消和异常释放上游流。每个 Worker 实例按来源 IP 做每分钟 20 次的短时限制；这是基础防突发措施，不是跨实例计费限额。
+
+本站服务能看到用户提交的公开视频链接并中转音轨；应用不保存链接、音轨或转写结果。托管平台仍有基础请求日志。若用户网络无法访问这个域名，B站导入会失败；本地文件转写继续可用。上线需额外核对匿名 POST、Pages 的 CORS 预检、完整字节数及模型资源。API 抓到音频、FFmpeg 可解码和 Node WASM 能推理，不等同于华为/鸿蒙真机全流程验证。
