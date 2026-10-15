@@ -11,18 +11,36 @@ let mode = 'convert';
 let downloads = [];
 const sourceNames = { a: '', b: '' };
 
-document.querySelectorAll('.tool-tabs .tab-button').forEach(button => {
+const tabList = document.querySelector('.tool-tabs');
+tabList.querySelectorAll('.tab-button').forEach(button => {
   button.addEventListener('click', () => {
     mode = button.dataset.mode;
-    document.querySelectorAll('.tool-tabs .tab-button').forEach(other => {
+    tabList.querySelectorAll('.tab-button').forEach(other => {
       const active = other === button;
       other.classList.toggle('active', active);
       other.setAttribute('aria-selected', String(active));
+      other.tabIndex = active ? 0 : -1;
     });
     for (const [name, ids] of Object.entries(MODE_PARAMS)) {
       ids.forEach(id => { $(id).hidden = name !== mode; });
     }
   });
+});
+
+// ARIA tabs keyboard pattern: arrows/Home/End move focus and activate.
+tabList.addEventListener('keydown', event => {
+  const keys = ['ArrowLeft', 'ArrowRight', 'Home', 'End'];
+  if (!keys.includes(event.key)) return;
+  const tabs = [...tabList.querySelectorAll('.tab-button')];
+  const current = tabs.indexOf(document.activeElement);
+  if (current < 0) return;
+  event.preventDefault();
+  let next;
+  if (event.key === 'Home') next = tabs[0];
+  else if (event.key === 'End') next = tabs[tabs.length - 1];
+  else next = tabs[(current + (event.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+  next.focus();
+  next.click();
 });
 
 function showError(message) {
