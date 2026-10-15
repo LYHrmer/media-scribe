@@ -50,7 +50,8 @@ function run(action) {
   showError('');
   showStatus('');
   $('result-section').hidden = true;
-  const text = $('json-input').value;
+  const text = $('json-input').value.replace(/^﻿/, '');
+  if (text !== $('json-input').value) $('json-input').value = text; // keep caret math aligned with what was parsed
   if (!text.trim()) {
     showError('请先粘贴 JSON 内容');
     return;

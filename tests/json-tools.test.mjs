@@ -26,6 +26,16 @@ test('reports parse errors with a message', () => {
   assert.ok(result.message.length > 0);
 });
 
+test('a leading BOM is tolerated and error lines stay aligned', () => {
+  const ok = formatJson('﻿{"a":1}');
+  assert.equal(ok.ok, true);
+  assert.equal(ok.result, '{\n  "a": 1\n}');
+  const bad = formatJson('﻿{\n  bad\n}');
+  assert.equal(bad.ok, false);
+  assert.equal(bad.line, 2);
+  assert.equal(validateJson('﻿{"ok":true}').ok, true);
+});
+
 test('locateJsonError extracts position-based locations (V8)', () => {
   const text = '{\n  "a": 1,\n  bad\n}';
   const loc = locateJsonError(text, 'Unexpected token b in JSON at position 14');

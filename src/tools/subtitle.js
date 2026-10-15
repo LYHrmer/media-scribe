@@ -24,6 +24,10 @@ tabList.querySelectorAll('.tab-button').forEach(button => {
     for (const [name, ids] of Object.entries(MODE_PARAMS)) {
       ids.forEach(id => { $(id).hidden = name !== mode; });
     }
+    // A stale result from the previous mode reads as if it belongs to this one.
+    $('result-section').hidden = true;
+    showError('');
+    showWarnings([]);
   });
 });
 

@@ -33,10 +33,14 @@ export function locateJsonError(text, message) {
 }
 
 function parseOrReport(text) {
+  // A leading BOM (Windows Notepad's UTF-8 default) breaks JSON.parse with a
+  // confusing message; strip it before parsing so error positions still
+  // refer to the string the user sees.
+  const clean = String(text).replace(/^﻿/, '');
   try {
-    return { ok: true, value: JSON.parse(text) };
+    return { ok: true, value: JSON.parse(clean) };
   } catch (error) {
-    return { ok: false, message: error.message, ...locateJsonError(String(text), error.message) };
+    return { ok: false, message: error.message, ...locateJsonError(clean, error.message) };
   }
 }
 
