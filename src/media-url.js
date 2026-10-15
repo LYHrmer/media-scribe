@@ -1,8 +1,9 @@
 import { MAX_FILE_BYTES } from './audio.js';
+import { parseBilibiliUrl } from './bilibili-url.js';
 
 const extensions = /\.(mp4|m4v|mov|webm|mkv|avi|mp3|wav|m4a|aac|ogg|opus|flac|aiff?|wma)$/i;
 const pageHosts = /(^|\.)(bilibili\.com|b23\.tv|douyin\.com|iesdouyin\.com|youtube\.com|youtu\.be|youku\.com|iqiyi\.com|v\.qq\.com|tv\.cctv\.com)$/i;
-const pageMessage = '这是视频播放网页，不是可直接读取的音视频文件。本地版暂不解析抖音、B站等平台分享页；请使用平台提供的 MP4 / MP3 等文件直链，或选择本地文件。';
+const pageMessage = '这是视频播放网页，不是可直接读取的音视频文件。当前仅接入 B站普通视频；抖音、YouTube 等分享页暂不支持，请使用文件直链或选择本地文件。';
 const streamMessage = '这个链接是分段播放列表（M3U8 / DASH），本地版暂不支持。请使用完整的 MP4 / MP3 等文件链接。';
 const mimeExtensions = { 'video/mp4': 'mp4', 'video/webm': 'webm', 'video/quicktime': 'mov', 'audio/mpeg': 'mp3', 'audio/mp4': 'm4a', 'audio/wav': 'wav', 'audio/x-wav': 'wav', 'audio/ogg': 'ogg', 'audio/flac': 'flac', 'audio/aac': 'aac' };
 
@@ -16,7 +17,11 @@ export function parseMediaUrl(value) {
   catch { throw new Error('链接格式不完整，请重新复制。'); }
   if (url.protocol !== 'https:') throw new Error('请使用 HTTPS 链接；安全网页无法读取普通 HTTP 音视频。');
   if (url.username || url.password) throw new Error('不支持含用户名或密码的链接。请使用无需登录的公开文件链接。');
-  if (pageHosts.test(url.hostname)) throw new Error(pageMessage);
+  if (pageHosts.test(url.hostname)) {
+    const page = parseBilibiliUrl(url.href);
+    if (!page) throw new Error(pageMessage);
+    return new URL(page.url);
+  }
   if (/\.(m3u8|mpd)$/i.test(url.pathname)) throw new Error(streamMessage);
   if (/\.(?:html?|shtml|php|aspx)$/i.test(url.pathname)) throw new Error(pageMessage);
   url.hash = '';
@@ -47,10 +52,12 @@ function mediaName(url, type) {
   return name;
 }
 
-/** GET directly from the supplied host; no proxy, credentials, uploads or URL persistence. */
+/** Files load directly; supported Bilibili pages use our anonymous audio relay. */
 export async function importMediaUrl(value, { signal, onProgress = () => {}, fetchImpl = fetch,
-  maxBytes = MAX_FILE_BYTES, idleTimeoutMs = 45000 } = {}) {
+  maxBytes = MAX_FILE_BYTES, idleTimeoutMs = 45000, bilibiliService = '' } = {}) {
   const url = parseMediaUrl(value);
+  const bili = parseBilibiliUrl(url.href);
+  if (bili && !bilibiliService) throw new Error('此部署尚未配置 B站读取服务，请使用官方在线版或选择本地文件。');
   const controller = new AbortController();
   const abort = () => controller.abort();
   if (signal?.aborted) abort();
@@ -66,9 +73,18 @@ export async function importMediaUrl(value, { signal, onProgress = () => {}, fet
   try {
     checkpoint();
     armTimer();
-    const response = await fetchImpl(url.href, { method: 'GET', mode: 'cors', credentials: 'omit',
+    onProgress({ loaded: 0, total: null, stage: bili ? 'resolve' : 'connect', platform: bili ? 'bilibili' : null });
+    const response = await fetchImpl(bili ? bilibiliService : url.href, { method: bili ? 'POST' : 'GET', mode: 'cors', credentials: 'omit',
+      ...(bili ? { headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({url:bili.url}) } : {}),
       referrerPolicy: 'no-referrer', cache: 'no-store', signal: controller.signal });
     checkpoint();
+    if (bili && !response.ok) {
+      // Do not render a hosting/login HTML page or arbitrary upstream details.
+      const jsonType = /application\/json/i.test(response.headers.get('content-type') || '');
+      let message = '';
+      if (jsonType) { try { const data = await response.json(); if (typeof data.error === 'string') message = data.error.slice(0, 240); } catch {} }
+      throw new Error(message || (response.status === 429 ? '读取过于频繁，请稍后重试。' : 'B站读取服务暂不可用，请稍后重试或选择本地文件。'));
+    }
     if (!response.ok) throw new Error(response.status === 401 || response.status === 403
       ? '视频来源拒绝读取，可能需要登录、链接已过期或禁止外站访问。请换一个公开文件链接。'
       : response.status === 404 ? '这个链接的文件不存在或已失效，请重新复制。' : `视频来源返回 ${response.status}，请稍后重试或更换链接。`);
@@ -84,7 +100,7 @@ export async function importMediaUrl(value, { signal, onProgress = () => {}, fet
     const chunks = [];
     const prefix = new Uint8Array(256);
     let prefixLength = 0, loaded = 0;
-    onProgress({ loaded, total });
+    onProgress({ loaded, total, platform: bili ? 'bilibili' : null });
     while (true) {
       checkpoint(); armTimer();
       const { done, value: chunk } = await reader.read();
@@ -98,21 +114,28 @@ export async function importMediaUrl(value, { signal, onProgress = () => {}, fet
       if (signature === 'page') throw new Error(pageMessage);
       if (signature === 'playlist') throw new Error(streamMessage);
       chunks.push(chunk);
-      onProgress({ loaded, total });
+      onProgress({ loaded, total, platform: bili ? 'bilibili' : null });
     }
     if (!loaded) throw new Error('链接返回了空文件，请更换链接。');
+    if (total && loaded !== total) throw new Error('音视频传输不完整，请重新读取链接。');
     const signature = sniff(prefix.subarray(0, prefixLength));
     const audioExtension = /\.(m4a|aac|mp3|wav|ogg|opus|flac)$/i.exec(url.pathname)?.[1].toLowerCase();
     const inferred = audioExtension ? ({ m4a: 'audio/mp4', aac: 'audio/aac', mp3: 'audio/mpeg', wav: 'audio/wav', ogg: 'audio/ogg', opus: 'audio/ogg', flac: 'audio/flac' })[audioExtension] : signature;
     const mediaType = /^(audio|video)\//.test(type) ? type : inferred;
     if (!mediaType && !extensions.test(url.pathname)) throw new Error('这个链接没有返回可识别的音视频文件，请使用 MP4 / MP3 等文件直链。');
-    const file = new File(chunks, mediaName(url, mediaType || ''), { type: mediaType || '' });
+    let filename = mediaName(url, mediaType || '');
+    if (bili) {
+      try { filename = decodeURIComponent(response.headers.get('x-media-name') || '') || 'B站音频.m4a'; } catch { filename = 'B站音频.m4a'; }
+      filename = Array.from(filename.replace(/[\u0000-\u001f\u007f/\\:*?"<>|]/g, '_')).slice(0,110).join('');
+      if (!filename.endsWith('.m4a')) filename += '.m4a';
+    }
+    const file = new File(chunks, filename, { type: bili ? 'audio/mp4' : mediaType || '' });
     complete = true;
     return file;
   } catch (error) {
     if (signal?.aborted) throw new DOMException('已取消链接读取。', 'AbortError');
     if (timedOut) throw new Error('视频来源长时间没有响应，已停止读取。请检查网络或换一个链接。');
-    if (error instanceof TypeError) throw new Error('浏览器无法读取此链接：可能是网络问题、链接失效，或来源网站不允许跨站读取。请使用允许外站读取的公开音视频直链，或选择本地文件。');
+    if (error instanceof TypeError) throw new Error(bili ? 'B站音轨读取中断或服务无法连接，请检查网络后重试。已有文字仍保留。' : '浏览器无法读取此链接：可能是网络问题、链接失效，或来源网站不允许跨站读取。请使用允许外站读取的公开音视频直链，或选择本地文件。');
     throw error;
   } finally {
     clearTimeout(timer);
