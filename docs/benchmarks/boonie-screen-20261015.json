@@ -1,0 +1,84 @@
+{
+  "scope": "Real compiled OCR + WASM; ffmpeg-extracted frames. Caption reference manually read from source video before inference. Not independent audio ground truth, browser/mobile QA, or a held-out accuracy set.",
+  "frame_count": 30,
+  "clip_duration_seconds": 15,
+  "source_start_seconds": 53,
+  "reference_sha256": "4c4669ed6e4910c76df827d2aea0d2e4605423e702f0c78353fdb3939ccbdabb",
+  "worker": {
+    "name": "video-ocr.worker-CiKI78o4.js",
+    "sha256": "cdf2ab04f1d160dc1aa85b570bc0221cb164ca949bbbc9edbe9a1826710b1bb9"
+  },
+  "wasm": {
+    "sha256": "f061472c6e77d6d50d079aacdc0ff9b63fee287ddd2cbf46cf62438d3891de2b"
+  },
+  "before": {
+    "score": {
+      "reference_character_count": 29,
+      "hypothesis_character_count": 40,
+      "character_errors": 12,
+      "cer": 0.41379310344827586,
+      "exact_lexical_match": false,
+      "false_positive_for_empty_reference": null,
+      "punctuation": {
+        "reference_count": 6,
+        "hypothesis_count": 9,
+        "has_sentence_punctuation": true,
+        "sequence_errors": 7,
+        "boundary_exact_when_lexical_exact": null
+      },
+      "digit_equivalent_cer": 0.41379310344827586
+    },
+    "subtitle_segment_count": 9,
+    "candidate_counts": {
+      "credits": 8,
+      "uncertain": 5
+    }
+  },
+  "after": {
+    "score": {
+      "reference_character_count": 29,
+      "hypothesis_character_count": 29,
+      "character_errors": 1,
+      "cer": 0.034482758620689655,
+      "exact_lexical_match": false,
+      "false_positive_for_empty_reference": null,
+      "punctuation": {
+        "reference_count": 6,
+        "hypothesis_count": 6,
+        "has_sentence_punctuation": true,
+        "sequence_errors": 4,
+        "boundary_exact_when_lexical_exact": null
+      },
+      "digit_equivalent_cer": 0.034482758620689655
+    },
+    "subtitle_segment_count": 6,
+    "candidate_counts": {
+      "credits": 11,
+      "uncertain": 1,
+      "screen_label": 4
+    }
+  },
+  "audio": [
+    {
+      "id": "boonie-theme-53-68",
+      "pcm_sha256": "be745c398d95b0e91ffa2d23eb59b95aea6673ce7d1d9747706ea4eee20cebd8",
+      "score": {
+        "reference_character_count": 29,
+        "hypothesis_character_count": 28,
+        "character_errors": 8,
+        "cer": 0.27586206896551724,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 6,
+          "hypothesis_count": 6,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 1,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "digit_equivalent_cer": 0.27586206896551724
+      },
+      "seconds": 8.438360996000002
+    }
+  ]
+}
