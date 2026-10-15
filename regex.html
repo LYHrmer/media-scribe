@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f5f0" />
+    <meta name="description" content="正则测试器：匹配高亮、分组捕获、标志位开关，输入即实时预览。浏览器本地处理。" />
+    <title>正则测试器 · 听写匣工具箱</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="site-header">
+        <a class="brand" href="./" aria-label="返回工具箱首页">
+          <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 10v4M9 6v12M13 3v18M17 7v10M21 10v4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></span>
+          <span>听写匣<span class="brand-edition">工具箱</span></span>
+        </a>
+        <span class="local-badge"><span class="status-dot" aria-hidden="true"></span>本地处理，数据不上传</span>
+      </header>
+
+      <main>
+        <noscript><p class="inline-error">此工具需要启用 JavaScript 才能运行。</p></noscript>
+        <section class="intro" aria-labelledby="page-title">
+          <p class="eyebrow">浏览器本地 <span>·</span> 粘贴或拖入文件</p>
+          <h1 id="page-title">正则 <span>测试器。</span></h1>
+          <p class="intro-description">匹配高亮、分组捕获、标志位开关，输入即实时预览。</p>
+        </section>
+
+        <section class="panel tool-panel">
+          <div class="tool-section">
+            <label class="tool-label" for="regex-pattern">正则表达式（无需斜杠）</label>
+            <input id="regex-pattern" class="tool-input regex-pattern" type="text" spellcheck="false" placeholder="例如 (?<hour>\d{2}):(?<minute>\d{2})" />
+            <div class="tool-row">
+              <label class="tool-check"><input id="flag-i" type="checkbox" />i 忽略大小写</label>
+              <label class="tool-check"><input id="flag-m" type="checkbox" />m 多行</label>
+              <label class="tool-check"><input id="flag-s" type="checkbox" />s 点匹配换行</label>
+              <label class="tool-check"><input id="flag-u" type="checkbox" />u Unicode</label>
+              <label class="tool-check"><input id="flag-y" type="checkbox" />y 粘性</label>
+            </div>
+            <p class="tool-hint">全局匹配（g）自动开启。过于复杂的表达式在超长文本上可能卡顿。</p>
+          </div>
+
+          <div class="tool-section">
+            <div class="tool-file-row">
+              <label class="tool-label" for="regex-text">测试文本（粘贴或选择文本文件）</label>
+              <button id="regex-file-button" class="text-button" type="button">选择文件</button>
+              <input id="regex-file-input" type="file" accept=".txt,.md,.srt,.vtt,.json,.csv,.log" hidden />
+            </div>
+            <textarea id="regex-text" class="tool-textarea" spellcheck="false" placeholder="在这里粘贴要匹配的文本…"></textarea>
+          </div>
+
+          <div id="tool-error" class="inline-error" role="alert" hidden></div>
+          <p id="regex-status" class="tool-status" role="status" hidden></p>
+          <div id="regex-view" class="regex-view" hidden></div>
+          <div id="match-list" class="match-list" hidden></div>
+        </section>
+      </main>
+
+      <footer class="site-footer"><span>听写匣工具箱</span><span>本地处理 <span class="footer-dot">·</span> 数据不上传</span></footer>
+    </div>
+    <script type="module" src="/src/tools/regex.js"></script>
+  </body>
+</html>

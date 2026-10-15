@@ -12,6 +12,7 @@ const PAGES = [
   ['json-format.html', 'src/tools/json-format.js'],
   ['text-diff.html', 'src/tools/text-diff.js'],
   ['codec-time.html', 'src/tools/codec-time.js'],
+  ['regex.html', 'src/tools/regex.js'],
 ];
 const read = path => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const has = path => existsSync(new URL(`../${path}`, import.meta.url));

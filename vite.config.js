@@ -17,6 +17,7 @@ export default defineConfig({
         'json-format': entry('json-format.html'),
         'text-diff': entry('text-diff.html'),
         'codec-time': entry('codec-time.html'),
+        regex: entry('regex.html'),
       },
     },
   },
