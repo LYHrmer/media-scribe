@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f5f0" />
+    <meta name="description" content="Markdown 预览：左侧输入右侧实时渲染，支持本地 .md 文件，输出安全转义。浏览器本地处理。" />
+    <title>Markdown 预览 · 听写匣工具箱</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="site-header">
+        <a class="brand" href="./" aria-label="返回工具箱首页">
+          <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 10v4M9 6v12M13 3v18M17 7v10M21 10v4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></span>
+          <span>听写匣<span class="brand-edition">工具箱</span></span>
+        </a>
+        <span class="local-badge"><span class="status-dot" aria-hidden="true"></span>本地处理，数据不上传</span>
+      </header>
+
+      <main>
+        <noscript><p class="inline-error">此工具需要启用 JavaScript 才能运行。</p></noscript>
+        <section class="intro" aria-labelledby="page-title">
+          <p class="eyebrow">浏览器本地 <span>·</span> 粘贴或拖入文件</p>
+          <h1 id="page-title">Markdown <span>预览。</span></h1>
+          <p class="intro-description">左侧输入，右侧实时渲染，支持本地 .md 文件。</p>
+        </section>
+
+        <section class="panel tool-panel">
+          <div class="diff-inputs">
+            <div class="tool-section">
+              <div class="tool-file-row">
+                <label class="tool-label" for="md-input">Markdown 源文（粘贴或选择 .md 文件）</label>
+                <button id="md-file-button" class="text-button" type="button">选择文件</button>
+                <input id="md-file-input" type="file" accept=".md,.markdown,.txt" hidden />
+              </div>
+              <textarea id="md-input" class="tool-textarea md-input" spellcheck="false" placeholder="# 标题&#10;&#10;在这里写 Markdown，**加粗**、`代码`、- 列表…"></textarea>
+            </div>
+            <div class="tool-section">
+              <label class="tool-label">渲染预览</label>
+              <div id="md-preview" class="md-preview" aria-live="polite"></div>
+            </div>
+          </div>
+          <p class="tool-hint">支持标题、粗斜体、行内代码、代码块、列表、引用、链接、图片、分割线。用户内容全部转义后渲染，链接仅放行 http / https / mailto。</p>
+          <div id="tool-error" class="inline-error" role="alert" hidden></div>
+        </section>
+      </main>
+
+      <footer class="site-footer"><span>听写匣工具箱</span><span>本地处理 <span class="footer-dot">·</span> 数据不上传</span></footer>
+    </div>
+    <script type="module" src="/src/tools/markdown.js"></script>
+  </body>
+</html>
