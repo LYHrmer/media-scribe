@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f5f0" />
+    <meta name="description" content="二维码生成：输入文本或网址即时生成二维码，四级纠错可选，PNG 下载。浏览器本地处理。" />
+    <title>二维码生成 · 听写匣工具箱</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="site-header">
+        <a class="brand" href="./" aria-label="返回工具箱首页">
+          <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 10v4M9 6v12M13 3v18M17 7v10M21 10v4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></span>
+          <span>听写匣<span class="brand-edition">工具箱</span></span>
+        </a>
+        <span class="local-badge"><span class="status-dot" aria-hidden="true"></span>本地处理，数据不上传</span>
+      </header>
+
+      <main>
+        <noscript><p class="inline-error">此工具需要启用 JavaScript 才能运行。</p></noscript>
+        <section class="intro" aria-labelledby="page-title">
+          <p class="eyebrow">浏览器本地 <span>·</span> 输入即生成</p>
+          <h1 id="page-title">二维码 <span>生成。</span></h1>
+          <p class="intro-description">输入文本或网址即时生成，四级纠错可选，可下载 PNG。</p>
+        </section>
+
+        <section class="panel tool-panel">
+          <div class="tool-section">
+            <label class="tool-label" for="qr-input">内容（文本、网址、Wi-Fi 配置等）</label>
+            <textarea id="qr-input" class="tool-textarea tool-textarea-short" spellcheck="false" placeholder="https://…"></textarea>
+            <div class="tool-row">
+              <select id="qr-ecl" class="tool-input" aria-label="纠错级别">
+                <option value="M" selected>纠错 M（15%，常用）</option>
+                <option value="L">纠错 L（7%，容量最大）</option>
+                <option value="Q">纠错 Q（25%）</option>
+                <option value="H">纠错 H（30%，最耐污）</option>
+              </select>
+              <button id="qr-download" class="secondary-button" type="button" disabled>下载 PNG</button>
+            </div>
+            <p class="tool-hint">纠错级别越高越耐脏污遮挡，但容量越小（L 级最多约 2.9 KB）。内容为 UTF-8 文本，中文自动按字节编码。</p>
+          </div>
+
+          <div id="tool-error" class="inline-error" role="alert" hidden></div>
+          <p id="qr-status" class="tool-status" role="status" hidden></p>
+          <canvas id="qr-canvas" class="qr-canvas" width="296" height="296" hidden></canvas>
+        </section>
+      </main>
+
+      <footer class="site-footer"><span>听写匣工具箱</span><span>本地处理 <span class="footer-dot">·</span> 数据不上传</span></footer>
+    </div>
+    <script type="module" src="/src/tools/qr.js"></script>
+  </body>
+</html>

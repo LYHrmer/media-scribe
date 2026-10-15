@@ -22,6 +22,7 @@ export default defineConfig({
         'text-stats': entry('text-stats.html'),
         'ts-batch': entry('ts-batch.html'),
         markdown: entry('markdown.html'),
+        qr: entry('qr.html'),
       },
     },
   },

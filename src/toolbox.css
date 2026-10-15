@@ -64,6 +64,7 @@
 .md-preview img { max-width: 100%; }
 .md-preview hr { margin: 14px 0; border: none; border-top: 1px solid #e1e6df; }
 .md-preview a { color: #408166; }
+.qr-canvas { display: block; width: 296px; height: 296px; margin-top: 14px; border: 1px solid #e1e6df; border-radius: 9px; image-rendering: pixelated; }
 @media (max-width: 760px) {
   .tool-panel { padding: 21px; }
   .diff-inputs { grid-template-columns: 1fr; }

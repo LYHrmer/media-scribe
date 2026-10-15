@@ -15,6 +15,9 @@
 - [正则测试器](https://lyhrmer.github.io/media-scribe/regex.html)：匹配高亮、分组捕获、标志位开关，输入即实时预览
 - [文件哈希](https://lyhrmer.github.io/media-scribe/file-hash.html)：拖入文件计算 SHA-256 / SHA-1 / SHA-512，粘贴期望哈希自动比对
 - [文本统计](https://lyhrmer.github.io/media-scribe/text-stats.html)：字数、词数、行数、段落与预计阅读时长，输入即统计
+- [时间戳批量转换](https://lyhrmer.github.io/media-scribe/ts-batch.html)：每行一个时间戳或日期时间，方向逐行自动识别，秒/毫秒兼容
+- [Markdown 预览](https://lyhrmer.github.io/media-scribe/markdown.html)：左侧输入右侧实时渲染，支持本地 .md 文件，输出安全转义
+- [二维码生成](https://lyhrmer.github.io/media-scribe/qr.html)：输入文本或网址即时生成二维码，四级纠错可选，PNG 下载
 
 注意：根 URL `…/media-scribe/` 现在是工具箱首页，转写功能在 `…/media-scribe/transcribe.html`；转写页「更多设置」里的「复制网址」帮助项复制的仍是工具箱首页地址。
 
