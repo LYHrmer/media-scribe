@@ -22,7 +22,7 @@
           <p class="eyebrow">免费使用 <span>·</span> 不用安装 <span>·</span> 无需账号 / API Key</p>
           <h1 id="page-title">音视频，<span>转成文字。</span></h1>
           <p class="intro-description">拖入录音、课程视频或访谈，让文字留下来。</p>
-          <p class="privacy-line"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2 16 4.5v5c0 3.9-6 7.5-6 7.5S4 13.4 4 9.5v-5L10 2Z" stroke="currentColor" stroke-width="1.5"/><path d="m7 9.5 2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>文件只在你的浏览器里处理</p>
+          <p class="privacy-line"><svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 2 16 4.5v5c0 3.9-6 7.5-6 7.5S4 13.4 4 9.5v-5L10 2Z" stroke="currentColor" stroke-width="1.5"/><path d="m7 9.5 2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>识别在你的浏览器里完成</p>
         </section>
 
         <div class="workspace">
@@ -44,11 +44,11 @@
             <div class="media-link-import">
               <label for="media-url">或粘贴音视频链接</label>
               <div class="media-link-row">
-                <input id="media-url" type="text" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://…/视频.mp4" aria-describedby="media-url-help" />
+                <input id="media-url" type="text" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="粘贴 B站分享链接或音视频文件直链" aria-describedby="media-url-help" />
                 <button id="import-url" class="secondary-button" type="button">读取链接</button>
                 <button id="cancel-url" class="text-button" type="button" hidden>取消</button>
               </div>
-              <p id="media-url-help">无需手动下载。支持允许外站读取的 HTTPS 音视频文件直链，暂不支持抖音、B站等播放网页。读取后在本机识别。</p>
+              <p id="media-url-help">B站公开普通视频：无需平台登录或手动下载，支持 BV / av、b23.tv 和分P，最长 30 分钟。本站读取音轨后交给浏览器识别，不读取画面。也支持允许外站读取的 HTTPS 文件直链；抖音、YouTube 分享页暂不支持。</p>
               <p id="media-url-status" class="media-url-status" role="status" aria-live="polite" hidden></p>
             </div>
             <div class="single-file-picker">
@@ -159,7 +159,7 @@
         </section>
       </main>
 
-      <footer class="site-footer"><span>听写匣 <span class="footer-dot">·</span> 让声音成为文字</span><span>开源语音 / 画面识别 <span class="footer-dot">·</span> 文件不上传</span></footer>
+      <footer class="site-footer"><span>听写匣 <span class="footer-dot">·</span> 让声音成为文字</span><span>开源语音 / 画面识别 <span class="footer-dot">·</span> 本地文件不上传</span></footer>
     </div>
     <script type="module" src="/src/main.js"></script>
   </body>

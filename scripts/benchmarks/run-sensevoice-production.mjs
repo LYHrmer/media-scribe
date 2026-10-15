@@ -83,9 +83,9 @@ async function run(c) {
     }
   }
   // No reference is passed to any worker, model, or segmenter.
-  const row = { id: c.id, pcm_sha256: c.pcm_sha256, reference: c.reference, language: c.language, result, score: scoreTranscript(c.reference, result.text, c.language), seconds: (performance.now() - start) / 1000, process_rss_mib: process.memoryUsage().rss / 1024 / 1024 };
+  const row = { id: c.id, pcm_sha256: c.pcm_sha256, reference: c.reference, language: c.language, result, score: typeof c.reference === 'string' ? scoreTranscript(c.reference, result.text, c.language) : null, seconds: (performance.now() - start) / 1000, process_rss_mib: process.memoryUsage().rss / 1024 / 1024 };
   rows.push(row);
-  console.log(JSON.stringify({ id: c.id, text: result.text, cer: row.score.cer, digit_equivalent_cer: row.score.digit_equivalent_cer, wer: row.score.wer, deferred: check.skipAsr, seconds: row.seconds }));
+  console.log(JSON.stringify({ id: c.id, text: result.text, cer: row.score?.cer, digit_equivalent_cer: row.score?.digit_equivalent_cer, wer: row.score?.wer, deferred: check.skipAsr, seconds: row.seconds }));
   return row;
 }
 for (const c of manifest.cases) {

@@ -8,6 +8,7 @@ import { reviewCaptionEvidence, captionLabel } from './caption-review.js';
 import { punctuateResult } from './punctuation.js';
 import { evaluateSpeechPresence } from './vad-client.js';
 import { importMediaUrl } from './media-url.js';
+import { bilibiliEndpoint } from './bilibili-url.js';
 
 const SENSEVOICE_MODEL = 'FunAudioLLM/SenseVoiceSmall';
 const COMPACT = import.meta.env.VITE_COMPACT_BUILD === '1';
@@ -392,9 +393,10 @@ async function readMediaLink() {
   showError(''); linkStatus('正在连接视频来源…'); render();
   try {
     const file = await importMediaUrl(ui['media-url'].value, { signal: controller.signal,
-      onProgress: ({ loaded, total }) => {
+      bilibiliService: bilibiliEndpoint(window.location, import.meta.env.VITE_BILIBILI_ENDPOINT || ''),
+      onProgress: ({ loaded, total, stage, platform }) => {
         if (linkImport !== controller) return;
-        linkStatus(loaded ? `正在读取 ${bytesLabel(loaded)}${total ? ` / ${bytesLabel(total)}` : ''}。数据保留在当前浏览器，不上传。` : '已连接，正在读取音视频…');
+        linkStatus(stage === 'resolve' ? '正在读取 B站公开视频音轨，无需平台账号…' : loaded ? `正在读取 ${bytesLabel(loaded)}${total ? ` / ${bytesLabel(total)}` : ''}。${platform === 'bilibili' ? '本站转交音轨，稍后在本机识别。' : '数据保留在当前浏览器，不上传。'}` : '已连接，正在读取音视频…');
       } });
     if (linkImport !== controller || controller.signal.aborted) return;
     linkImport = null;

@@ -1,12 +1,15 @@
 # 听写匣 · 浏览器本地版
 
-打开网页，选择音频或视频，也可以粘贴公开音视频文件链接，点击「读取链接」，再「开始转写」。不需要安装软件、账号或 API Key，也不按识别次数收费。音视频、视频画面和识别结果在浏览器本机处理；网络用于下载网页、运行库、开源模型，以及主动粘贴链接所指向的媒体。
+> 此分支为 v0.5.7 B站导入开发稿，**尚未通过在线发布验证**。开发环境的 10 条完整音轨已转写，但当前托管服务器被 B站接口以 412 拒绝，尚未合并到 main；官方在线版继续使用 v0.5.6。下文 B站入口描述的是待发布实现，不能视为现有在线能力。详情见 [验证与阻塞记录](docs/BILIBILI_VALIDATION.md)。
+
+打开网页，选择音频或视频，也可以粘贴 B站公开视频链接或音视频文件直链，点击「读取链接」，再「开始转写」。不需要安装软件、账号或 API Key，也不按识别次数收费。识别在浏览器本机完成，本地选择的文件不上传。B站链接由本站后台匿名读取音轨并转交浏览器；后台不运行识别模型。首次使用仍需下载开源模型。
 
 [在线使用](https://lyhrmer.github.io/media-scribe/) · [源码](https://github.com/LYHrmer/media-scribe)
 
 ## 使用方式
 
-- **链接导入**：粘贴允许跨站读取的 HTTPS 音视频文件直链（如 MP4、MP3、WAV），省去手动下载和选择文件；读取完成后进入同一个转写队列。支持进度、取消和 300 MB 限制，30 分钟限制仍在解码后检查。媒体只保留在当前浏览器会话中，链接不写入识别结果或持久缓存。当前不解析抖音、B站、YouTube 等播放网页，也不支持 M3U8 / DASH、登录或付费资源；禁止跨站读取的直链也不能导入。详见 [链接导入验证](docs/LINK_IMPORT_VALIDATION.md)。
+- **B站链接**：粘贴公开普通视频的 BV / av 或 b23.tv 链接，保留 `?p=` 选择的分P；点击「读取链接」，完成后「开始转写」。无需 B站登录、Cookie 或手动保存媒体。读取整条 AAC 音轨，单段不超过 30 分钟、64 MiB；不取视频画面。失败可重试，原稿保留。暂不支持直播、番剧、互动、付费、登录或地区受限内容。详见 [B站验证](docs/BILIBILI_VALIDATION.md)。
+- **文件直链**：支持允许跨站读取的 HTTPS 音视频文件（如 MP4、MP3、WAV），上限 300 MB、30 分钟。媒体只保留在当前浏览器会话中。YouTube、抖音分享页和 M3U8 / DASH 播放列表暂不支持。详见 [直链验证](docs/LINK_IMPORT_VALIDATION.md)。
 - **自动**：视频识别完整音轨，同时将画面文字保留在候选区供核对。标题、人名条不会自动替代语音；音频直接识别声音。
 - **仅识别声音**：忽略画面上的字幕、标题和标识。
 - **仅识别画面字幕**：适合有字幕或没有音轨的视频。可疑字另列为待核对候选，不自动拼进正文。
@@ -20,6 +23,8 @@
 中文输出会按需运行本地 CT-Transformer 标点模型，补逗号、句号、问号等，保留原始字词与已有标点。通过只保留相关词表，将原模型约 72 MiB 裁成约 7.3 MiB；保留词输入的原/裁模型预测已实测一致。纯英文沿用语音/OCR 原标点，中英混合场景仍需校对。标点失败时保留原文；JSON 可追溯补标点前的文字。详见 [标点验证](docs/PUNCTUATION_VALIDATION.md)。
 
 ## 正确性与当前限制
+
+v0.5.7 接入 B站公开普通视频音轨，使用受限的 HTTP 后台处理公开播放信息与正常来源 Referer，再交给现有本地模型识别。它改善链接导入能力，不改变识别模型或宣称准确率提升。固定 10 条不同视频的完整音轨均已完成真实下载与 FFmpeg 解码；转写、在线接口及失败记录详见 [本轮验证](docs/BILIBILI_VALIDATION.md)。
 
 v0.5.6 新增公开音视频直链导入、读取进度与取消；平台分享网页或跨站访问受限的链接会明确提示。已找到与截图内容吻合的《熊出没》片头，用真实模型复测 15 秒片段：修复倾斜双列署名和账号文字混入后，仅画面正文对 29 字参考的编辑错误从 12 降到 1；默认声音识别仍有 8 处错误。该结果不代表普遍准确率或手机验证。详情见 [链接导入](docs/LINK_IMPORT_VALIDATION.md) 和 [片头复测](docs/BOONIE_VALIDATION.md)。
 
@@ -59,7 +64,9 @@ npm run build
 npm run dev
 ```
 
-部署完整 `dist/` 到 HTTPS 静态网站即可。模型在构建时从官方来源下载；浏览器从同一站点下载，不需要单独连接模型网站。Whisper 权重拆成不超过 16 MiB 的分片；模型资产均有 SHA-256 校验。缓存目录默认 `.cache/models/` 和 `.cache/ocr-v4/`，支持 `MODELS_CACHE_DIR`、`OCR_MODELS_CACHE_DIR`、`PUNCTUATION_CACHE_DIR`、`SENSEVOICE_CACHE_DIR`；人声检查模型从固定官方版本生成 `public/models-vad/`。标点构建需要系统 `tar`，从经哈希校验的官方归档提取模型后，在构建时裁剪词表；不依赖 Python 或额外模型服务。
+部署完整 `dist/` 到 HTTPS 静态网站即可使用本地文件和直链功能。B站导入还需要独立后台，本分支的官方域名配置指向本站测试服务，尚未上线可用；fork / 自定义域名不会默认调用它。自行部署请配置 `VITE_BILIBILI_ENDPOINT`，并在服务端允许自己站点的 Origin，见 [发布说明](docs/DEPLOYMENT.md)。模型在构建时从官方来源下载；浏览器从同一站点下载，不需要单独连接模型网站。Whisper 权重拆成不超过 16 MiB 的分片；模型资产均有 SHA-256 校验。缓存目录默认 `.cache/models/` 和 `.cache/ocr-v4/`，支持 `MODELS_CACHE_DIR`、`OCR_MODELS_CACHE_DIR`、`PUNCTUATION_CACHE_DIR`、`SENSEVOICE_CACHE_DIR`；人声检查模型从固定官方版本生成 `public/models-vad/`。标点构建需要系统 `tar`，从经哈希校验的官方归档提取模型后，在构建时裁剪词表；不依赖 Python 或额外模型服务。
+
+使用 `VITE_COMPACT_BUILD=1 SITES_LINK_SERVICE=1 npm run build` 生成带 B站服务的 Worker 包（`dist/client` + `dist/server`），普通构建仍输出静态 `dist/`。后台运行于 HTTP Worker，不需要模型 API、Python 或 yt-dlp 进程；公开接口的可用性会随平台策略变化。
 
 默认完整构建面向 GitHub Pages 等较大静态空间。受 256 MiB 限制的托管使用 `VITE_COMPACT_BUILD=1 npm run build`，保留默认 SenseVoice 和 Tiny，去掉可选 Small；完整版三种模型均可选。GitHub Pages 使用 `.github/workflows/pages.yml`；设置与访问问题见 [发布说明](docs/DEPLOYMENT.md)。模型、媒体、缓存和 `dist/` 不提交源代码仓库。
 

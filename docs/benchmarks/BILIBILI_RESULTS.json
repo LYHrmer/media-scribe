@@ -1,0 +1,752 @@
+{
+  "version": "0.5.7",
+  "date": "2026-10-15T07:56:59.479Z",
+  "scope": "Fixed public sources; complete anonymous audio download and FFmpeg decode; compiled production SenseVoice, VAD and punctuation WASM in Node. Not real-browser or phone QA.",
+  "model": "FunAudioLLM/SenseVoiceSmall int8",
+  "model_sha256": "c71f0ce00bec95b07744e116345e33d8cbbe08cef896382cf907bf4b51a2cd51",
+  "worker_fingerprints": {
+    "vad.worker-C9h8-FgH.js": "e19bc613db3bdaa1e87f1fa91a6a4722613a83a4204c2b8d1bdb4ecabef04ebe",
+    "punctuation.worker-Ch2hTEJS.js": "178ac8d7ab9e4f7fd13a75d37763eafa1d276ac9c388771dcf7be98642620209",
+    "sensevoice.worker-gduX_vXW.js": "0a4c728cd09265a5a48e6569f6ad4cb57e6a3bb1e975ac351050199fb22f4532",
+    "models-sensevoice/runtime.mjs": "3a7e50f11a449f4b9fd2b9373fbb3f16fd487cce804ae6f51241d72c5f0dbcbe",
+    "models-sensevoice/asr.mjs": "6686bf26631572b161fc2b6532302d8eeda91a774c32f3216eced57ec5769ff2"
+  },
+  "full_audio_reference_available": false,
+  "samples": [
+    {
+      "id": "sample-01",
+      "source_url": "https://www.bilibili.com/video/BV13x41117TL",
+      "language": "chinese",
+      "download_status": 200,
+      "audio_bytes": 13224473,
+      "audio_sha256": "aef19621b1ebbd3e85ddb51ba0c568eb7349b768501755e47f33facb55aa3c3d",
+      "full_decode_exit": 0,
+      "pcm_sha256": "d6d70de52f3c6c137865a94a4df5942b45251dde1fc236a8e663181c46d2a8de",
+      "pcm_duration_seconds": 554.121,
+      "transcribed": true,
+      "transcript_characters": 2795,
+      "transcript_sha256": "fcc41690b2a64aac08ec824156c1488372f9ea3eeb28e7e61bc007aa639f1d7a",
+      "segments": 93,
+      "punctuation_present": true,
+      "inference_seconds": 124.30547716,
+      "accuracy_score": null
+    },
+    {
+      "id": "sample-02",
+      "source_url": "https://www.bilibili.com/video/BV1L8f1BiErq",
+      "language": "english",
+      "download_status": 200,
+      "audio_bytes": 1106839,
+      "audio_sha256": "bf9c86a98afd088cd440b73bd77c94447a5c13e4bc41743f08ac8804afd49f48",
+      "full_decode_exit": 0,
+      "pcm_sha256": "166cc70b5efee56610c74fa567607f69e7c5328565eee3ff42175ba55a5e1084",
+      "pcm_duration_seconds": 87.934,
+      "transcribed": true,
+      "transcript_characters": 1563,
+      "transcript_sha256": "8ae7a74c9f84633837a1d7ddd3202127eee1f44161f4f073337a511dda2d9ffe",
+      "segments": 23,
+      "punctuation_present": true,
+      "inference_seconds": 24.046063910000026,
+      "accuracy_score": null
+    },
+    {
+      "id": "sample-03",
+      "source_url": "https://www.bilibili.com/video/BV19NF5zLE7G",
+      "language": "chinese",
+      "download_status": 200,
+      "audio_bytes": 1008869,
+      "audio_sha256": "03df4d67919f6f6a299cc39c10a43dd08bd019c9eb4f0d6c191a6193ad2fa3dc",
+      "full_decode_exit": 0,
+      "pcm_sha256": "8314020c96f6f55f7546386b433e7cc1ea2b36072d14788cf535cf2f80c2359c",
+      "pcm_duration_seconds": 150.0938125,
+      "transcribed": true,
+      "transcript_characters": 475,
+      "transcript_sha256": "6998a1e74da192647405dd2c4fb2456070fb80b8c727c5e32db79076669e1f56",
+      "segments": 21,
+      "punctuation_present": true,
+      "inference_seconds": 32.83507663500002,
+      "accuracy_score": null
+    },
+    {
+      "id": "sample-04",
+      "source_url": "https://www.bilibili.com/video/BV1ct411Q7Q6",
+      "language": "chinese",
+      "download_status": 200,
+      "audio_bytes": 3047591,
+      "audio_sha256": "5a771310e1aa156391c4cb290c439dd45869ae37f1281de919ea2a6765fd7056",
+      "full_decode_exit": 0,
+      "pcm_sha256": "8b75878d4ca3d712fc0dab5a44e319e02ec034e14a6ce4efcc68c6a4eb9dce55",
+      "pcm_duration_seconds": 187.98875,
+      "transcribed": true,
+      "transcript_characters": 728,
+      "transcript_sha256": "108b98f697bf6d88f84cbe43ea66aa1e017109d2c0bac47c7525faed36661670",
+      "segments": 46,
+      "punctuation_present": true,
+      "inference_seconds": 40.89979680800001,
+      "accuracy_score": null
+    },
+    {
+      "id": "sample-05",
+      "source_url": "https://www.bilibili.com/video/BV1xt4y1S7Hp?p=3",
+      "language": "english",
+      "download_status": 200,
+      "audio_bytes": 896182,
+      "audio_sha256": "205635a3cae416a1aaee5a0184c9e84906292025d9d80207fc5ee3b34ac3ead0",
+      "full_decode_exit": 0,
+      "pcm_sha256": "a8e814a462888139919cde7c77699f0a5531afa7789f9253dfb2c10ffe67aed1",
+      "pcm_duration_seconds": 56.23875,
+      "transcribed": true,
+      "transcript_characters": 1097,
+      "transcript_sha256": "4024dd517e550a211d65c8ac6d7282bfa72fc56787a5e315e85502fff96b0f6f",
+      "segments": 4,
+      "punctuation_present": true,
+      "inference_seconds": 12.637615407000006,
+      "accuracy_score": null
+    },
+    {
+      "id": "sample-06",
+      "source_url": "https://www.bilibili.com/video/BV1p4rMBwEgo?p=8",
+      "language": "english",
+      "download_status": 200,
+      "audio_bytes": 663605,
+      "audio_sha256": "537732259f6da5f7a8c88e6dc4e6fe21e306c8f9a7d687417787c0d6971bb489",
+      "full_decode_exit": 0,
+      "pcm_sha256": "00ad27caf14a5519ef0c143ec877164630e7bb6d874033380759a4908bdbd591",
+      "pcm_duration_seconds": 80.759,
+      "transcribed": true,
+      "transcript_characters": 794,
+      "transcript_sha256": "87bee4690d8da3586e1afea6375c9e4a37250e102be99f93e62bb8c5c816b5c3",
+      "segments": 19,
+      "punctuation_present": true,
+      "inference_seconds": 17.603467556999995,
+      "accuracy_score": null
+    },
+    {
+      "id": "sample-07",
+      "source_url": "https://www.bilibili.com/video/BV1K64y1u7MT",
+      "language": "english",
+      "download_status": 200,
+      "audio_bytes": 1011111,
+      "audio_sha256": "0e7ecd9c892f63da5d3e31c1d7f8e7ccbc2203c80f3e903b324e0a29da552770",
+      "full_decode_exit": 0,
+      "pcm_sha256": "bd73198a998e63379ec323e6fac25ae921bd4ff52b1909a3193bc5faafbdccb9",
+      "pcm_duration_seconds": 64.2960625,
+      "transcribed": true,
+      "transcript_characters": 800,
+      "transcript_sha256": "1b17383ba23e6b7da0d70f9817f167dbbe030072ba30199d8de8a68c611719d7",
+      "segments": 4,
+      "punctuation_present": true,
+      "inference_seconds": 14.184933307000028,
+      "accuracy_score": null
+    },
+    {
+      "id": "sample-08",
+      "source_url": "https://www.bilibili.com/video/BV1KTsre2EDU",
+      "language": "chinese",
+      "download_status": 200,
+      "audio_bytes": 756513,
+      "audio_sha256": "0d1983ba49a34bac47e7358f949cb3038e746d85e751de29044a606911179b43",
+      "full_decode_exit": 0,
+      "pcm_sha256": "d1fc1b2b51bdb02973d3e2bbe15b950578f1c2925c32b34cc1cf1df1be80e752",
+      "pcm_duration_seconds": 66.7109375,
+      "transcribed": true,
+      "transcript_characters": 335,
+      "transcript_sha256": "9401af569ba125678b9c7d51c08eaa4b9503bfae1cddf4c152577bf522c148f3",
+      "segments": 11,
+      "punctuation_present": true,
+      "inference_seconds": 14.019144471999985,
+      "accuracy_score": null
+    },
+    {
+      "id": "sample-09",
+      "source_url": "https://www.bilibili.com/video/BV1MgdDYvELc",
+      "language": "chinese",
+      "download_status": 200,
+      "audio_bytes": 4636954,
+      "audio_sha256": "10453f804e0ddea5a7b6152227ba172d7f13a91395c1e76b15ddfc8669c8990f",
+      "full_decode_exit": 0,
+      "pcm_sha256": "37e3a831a598ca896165974c49ec668ff1363237d53fee87be7173b59ef34ca3",
+      "pcm_duration_seconds": 291.9909375,
+      "transcribed": true,
+      "transcript_characters": 1599,
+      "transcript_sha256": "e162b27febe103e266ac8e03cdb969d3e115c24fcf827de7b732ee85053700b6",
+      "segments": 59,
+      "punctuation_present": true,
+      "inference_seconds": 62.65961603,
+      "accuracy_score": null
+    },
+    {
+      "id": "sample-10",
+      "source_url": "https://www.bilibili.com/video/BV1kv411s76z",
+      "language": "chinese",
+      "download_status": 200,
+      "audio_bytes": 6105870,
+      "audio_sha256": "75d6ebf3e8f4714b32fe778788d4a87fbecf466c0264c96c6edcee1b7af95f8c",
+      "full_decode_exit": 0,
+      "pcm_sha256": "329e5e2c44814457c3404a5ef3010b3d33c2fd7a0a6b990caaaced907704ffa0",
+      "pcm_duration_seconds": 153.0453125,
+      "transcribed": true,
+      "transcript_characters": 770,
+      "transcript_sha256": "511ccba5410c3ae1257b2be53f2ae70505bd80899e47ab6ac70d6de25616d783",
+      "segments": 30,
+      "punctuation_present": true,
+      "inference_seconds": 34.051852823,
+      "accuracy_score": null
+    }
+  ],
+  "caption_spot_check": {
+    "sample": "sample-03",
+    "source": "Visible burned-in Chinese narration captions around 37–45 seconds; independently read before reviewing full ASR output. Speaker labels excluded.",
+    "reference_sha256": "eeaf3a9608166289db0fa54cdab864232fe39bcc436730c3104d53446027524f",
+    "output_excerpt_sha256": "bf0c60565240eda76f8d0fc197e4c51ea7019e8e28e2d10ed2d5a6488f58654b",
+    "selection": "Same passage located in full audio output; not a full-video accuracy score.",
+    "score": {
+      "reference_character_count": 40,
+      "hypothesis_character_count": 40,
+      "character_errors": 0,
+      "cer": 0,
+      "exact_lexical_match": true,
+      "false_positive_for_empty_reference": null,
+      "punctuation": {
+        "reference_count": 5,
+        "hypothesis_count": 5,
+        "has_sentence_punctuation": true,
+        "sequence_errors": 2,
+        "boundary_exact_when_lexical_exact": false
+      },
+      "digit_equivalent_cer": 0
+    }
+  },
+  "first_production_handler_run": {
+    "date": "2026-10-15T07:46:30.455Z",
+    "app_version": "0.5.7",
+    "scope": "Production importer + in-process production HTTP handler + real upstream fetch + complete FFmpeg decode; not a deployed or browser test.",
+    "cookies": false,
+    "samples": [
+      {
+        "id": "sample-01",
+        "source_url": "https://www.bilibili.com/video/BV13x41117TL",
+        "bytes": 13224473,
+        "sha256": "aef19621b1ebbd3e85ddb51ba0c568eb7349b768501755e47f33facb55aa3c3d",
+        "filename": "阿滴英文｜英文歌分享#6 _Closer.m4a",
+        "probe": {
+          "programs": [],
+          "streams": [
+            {
+              "codec_name": "aac",
+              "codec_type": "audio",
+              "sample_rate": "44100",
+              "channels": 2
+            }
+          ],
+          "format": {
+            "duration": "554.117392"
+          }
+        },
+        "result": "decoded",
+        "seconds": 11.443181591
+      },
+      {
+        "id": "sample-02",
+        "source_url": "https://www.bilibili.com/video/BV1L8f1BiErq",
+        "bytes": 1106839,
+        "sha256": "bf9c86a98afd088cd440b73bd77c94447a5c13e4bc41743f08ac8804afd49f48",
+        "filename": "谷爱凌采访片段在外网爆火，记者提出满分问题：你开口前会思考吗？谷爱凌给出超满分回答！.m4a",
+        "probe": {
+          "programs": [],
+          "streams": [
+            {
+              "codec_name": "aac",
+              "codec_type": "audio",
+              "sample_rate": "44100",
+              "channels": 2
+            }
+          ],
+          "format": {
+            "duration": "87.933741"
+          }
+        },
+        "result": "decoded",
+        "seconds": 8.387023203
+      },
+      {
+        "id": "sample-03",
+        "source_url": "https://www.bilibili.com/video/BV19NF5zLE7G",
+        "bytes": 1008869,
+        "sha256": "03df4d67919f6f6a299cc39c10a43dd08bd019c9eb4f0d6c191a6193ad2fa3dc",
+        "filename": "“相机在风中凌乱……”军事记者想做个采访有多难？.m4a",
+        "probe": {
+          "programs": [],
+          "streams": [
+            {
+              "codec_name": "aac",
+              "codec_type": "audio",
+              "sample_rate": "44100",
+              "channels": 2
+            }
+          ],
+          "format": {
+            "duration": "150.093560"
+          }
+        },
+        "result": "decoded",
+        "seconds": 4.004799373999998
+      },
+      {
+        "id": "sample-04",
+        "source_url": "https://www.bilibili.com/video/BV1ct411Q7Q6",
+        "bytes": 3047591,
+        "sha256": "5a771310e1aa156391c4cb290c439dd45869ae37f1281de919ea2a6765fd7056",
+        "filename": "央视街头采访遇到的神人神回复，简直防不胜防啊.m4a",
+        "probe": {
+          "programs": [],
+          "streams": [
+            {
+              "codec_name": "aac",
+              "codec_type": "audio",
+              "sample_rate": "44100",
+              "channels": 2
+            }
+          ],
+          "format": {
+            "duration": "187.965057"
+          }
+        },
+        "result": "decoded",
+        "seconds": 1.5037999830000008
+      },
+      {
+        "id": "sample-05",
+        "source_url": "https://www.bilibili.com/video/BV1xt4y1S7Hp?p=3",
+        "bytes": 896182,
+        "sha256": "205635a3cae416a1aaee5a0184c9e84906292025d9d80207fc5ee3b34ac3ead0",
+        "filename": "【中字合集】Billie Eilish碧梨2016-2020年采访 时间顺序整理 高清画质 部分中字 · P3 170407  Billie Eilish Interview Part Three -.m4a",
+        "probe": {
+          "programs": [],
+          "streams": [
+            {
+              "codec_name": "aac",
+              "codec_type": "audio",
+              "sample_rate": "44100",
+              "channels": 2
+            }
+          ],
+          "format": {
+            "duration": "56.238073"
+          }
+        },
+        "result": "decoded",
+        "seconds": 1.2239561519999989
+      },
+      {
+        "id": "sample-06",
+        "source_url": "https://www.bilibili.com/video/BV1p4rMBwEgo?p=8",
+        "result": "failed",
+        "error": "B站音轨读取中断或服务无法连接，请检查网络后重试。已有文字仍保留。",
+        "seconds": 12.298949771
+      },
+      {
+        "id": "sample-07",
+        "source_url": "https://www.bilibili.com/video/BV1K64y1u7MT",
+        "bytes": 1011111,
+        "sha256": "0e7ecd9c892f63da5d3e31c1d7f8e7ccbc2203c80f3e903b324e0a29da552770",
+        "filename": "BBC World News系列 _ 4月·一分钟世界新闻One-Minute World News · P1 20200401-BBCNews-A.m4a",
+        "probe": {
+          "programs": [],
+          "streams": [
+            {
+              "codec_name": "aac",
+              "codec_type": "audio",
+              "sample_rate": "44100",
+              "channels": 1
+            }
+          ],
+          "format": {
+            "duration": "64.426395"
+          }
+        },
+        "result": "decoded",
+        "seconds": 5.923570119999996
+      },
+      {
+        "id": "sample-08",
+        "source_url": "https://www.bilibili.com/video/BV1KTsre2EDU",
+        "bytes": 756513,
+        "sha256": "0d1983ba49a34bac47e7358f949cb3038e746d85e751de29044a606911179b43",
+        "filename": "2024金海豚奖评委采访——李翔（四川大学艺术学院设计与媒体艺术系副教授）.m4a",
+        "probe": {
+          "programs": [],
+          "streams": [
+            {
+              "codec_name": "aac",
+              "codec_type": "audio",
+              "sample_rate": "44100",
+              "channels": 2
+            }
+          ],
+          "format": {
+            "duration": "66.710590"
+          }
+        },
+        "result": "decoded",
+        "seconds": 1.0976650040000022
+      },
+      {
+        "id": "sample-09",
+        "source_url": "https://www.bilibili.com/video/BV1MgdDYvELc",
+        "bytes": 4636954,
+        "sha256": "10453f804e0ddea5a7b6152227ba172d7f13a91395c1e76b15ddfc8669c8990f",
+        "filename": "邓为央视新闻采访，CCTV1央视晚间新闻报道2025百年丁香诗会 · P1 央视新闻采访.m4a",
+        "probe": {
+          "programs": [],
+          "streams": [
+            {
+              "codec_name": "aac",
+              "codec_type": "audio",
+              "sample_rate": "44100",
+              "channels": 2
+            }
+          ],
+          "format": {
+            "duration": "291.990703"
+          }
+        },
+        "result": "decoded",
+        "seconds": 1.9019084860000002
+      },
+      {
+        "id": "sample-10",
+        "source_url": "https://www.bilibili.com/video/BV1kv411s76z",
+        "bytes": 6105870,
+        "sha256": "75d6ebf3e8f4714b32fe778788d4a87fbecf466c0264c96c6edcee1b7af95f8c",
+        "filename": "“那中国人是不是人？这就是一个根本的问题了。”.m4a",
+        "probe": {
+          "programs": [],
+          "streams": [
+            {
+              "codec_name": "aac",
+              "codec_type": "audio",
+              "sample_rate": "48000",
+              "channels": 2
+            }
+          ],
+          "format": {
+            "duration": "153.045000"
+          }
+        },
+        "result": "decoded",
+        "seconds": 1.2998894059999948
+      }
+    ]
+  },
+  "second_production_handler_run": {
+    "date": "2026-10-15T07:51:12.365Z",
+    "app_version": "0.5.7",
+    "scope": "Production importer + in-process production HTTP handler + real upstream fetch + complete FFmpeg decode; not a deployed or browser test.",
+    "cookies": false,
+    "samples": [
+      {
+        "id": "sample-01",
+        "source_url": "https://www.bilibili.com/video/BV13x41117TL",
+        "bytes": 13224473,
+        "sha256": "aef19621b1ebbd3e85ddb51ba0c568eb7349b768501755e47f33facb55aa3c3d",
+        "filename": "阿滴英文｜英文歌分享#6 _Closer.m4a",
+        "probe": {
+          "programs": [],
+          "streams": [
+            {
+              "codec_name": "aac",
+              "codec_type": "audio",
+              "sample_rate": "44100",
+              "channels": 2
+            }
+          ],
+          "format": {
+            "duration": "554.117392"
+          }
+        },
+        "result": "decoded",
+        "seconds": 19.473750363
+      },
+      {
+        "id": "sample-02",
+        "source_url": "https://www.bilibili.com/video/BV1L8f1BiErq",
+        "bytes": 1106839,
+        "sha256": "bf9c86a98afd088cd440b73bd77c94447a5c13e4bc41743f08ac8804afd49f48",
+        "filename": "谷爱凌采访片段在外网爆火，记者提出满分问题：你开口前会思考吗？谷爱凌给出超满分回答！.m4a",
+        "probe": {
+          "programs": [],
+          "streams": [
+            {
+              "codec_name": "aac",
+              "codec_type": "audio",
+              "sample_rate": "44100",
+              "channels": 2
+            }
+          ],
+          "format": {
+            "duration": "87.933741"
+          }
+        },
+        "result": "decoded",
+        "seconds": 6.867673327
+      },
+      {
+        "id": "sample-03",
+        "source_url": "https://www.bilibili.com/video/BV19NF5zLE7G",
+        "bytes": 1008869,
+        "sha256": "03df4d67919f6f6a299cc39c10a43dd08bd019c9eb4f0d6c191a6193ad2fa3dc",
+        "filename": "“相机在风中凌乱……”军事记者想做个采访有多难？.m4a",
+        "probe": {
+          "programs": [],
+          "streams": [
+            {
+              "codec_name": "aac",
+              "codec_type": "audio",
+              "sample_rate": "44100",
+              "channels": 2
+            }
+          ],
+          "format": {
+            "duration": "150.093560"
+          }
+        },
+        "result": "decoded",
+        "seconds": 1.3246080379999985
+      },
+      {
+        "id": "sample-04",
+        "source_url": "https://www.bilibili.com/video/BV1ct411Q7Q6",
+        "bytes": 3047591,
+        "sha256": "5a771310e1aa156391c4cb290c439dd45869ae37f1281de919ea2a6765fd7056",
+        "filename": "央视街头采访遇到的神人神回复，简直防不胜防啊.m4a",
+        "probe": {
+          "programs": [],
+          "streams": [
+            {
+              "codec_name": "aac",
+              "codec_type": "audio",
+              "sample_rate": "44100",
+              "channels": 2
+            }
+          ],
+          "format": {
+            "duration": "187.965057"
+          }
+        },
+        "result": "decoded",
+        "seconds": 1.5235121859999998
+      },
+      {
+        "id": "sample-05",
+        "source_url": "https://www.bilibili.com/video/BV1xt4y1S7Hp?p=3",
+        "bytes": 896182,
+        "sha256": "205635a3cae416a1aaee5a0184c9e84906292025d9d80207fc5ee3b34ac3ead0",
+        "filename": "【中字合集】Billie Eilish碧梨2016-2020年采访 时间顺序整理 高清画质 部分中字 · P3 170407  Billie Eilish Interview Part Three -.m4a",
+        "probe": {
+          "programs": [],
+          "streams": [
+            {
+              "codec_name": "aac",
+              "codec_type": "audio",
+              "sample_rate": "44100",
+              "channels": 2
+            }
+          ],
+          "format": {
+            "duration": "56.238073"
+          }
+        },
+        "result": "decoded",
+        "seconds": 1.255427427999999
+      },
+      {
+        "id": "sample-06",
+        "source_url": "https://www.bilibili.com/video/BV1p4rMBwEgo?p=8",
+        "bytes": 663605,
+        "sha256": "537732259f6da5f7a8c88e6dc4e6fe21e306c8f9a7d687417787c0d6971bb489",
+        "filename": "【艾伦里克曼】Alan Rickman 访谈合集__十年记 · P8 1997 Alan Rickman Interview(360p).m4a",
+        "probe": {
+          "programs": [],
+          "streams": [
+            {
+              "codec_name": "aac",
+              "codec_type": "audio",
+              "sample_rate": "44100",
+              "channels": 2
+            }
+          ],
+          "format": {
+            "duration": "80.758776"
+          }
+        },
+        "result": "decoded",
+        "seconds": 1.335065638
+      },
+      {
+        "id": "sample-07",
+        "source_url": "https://www.bilibili.com/video/BV1K64y1u7MT",
+        "result": "failed",
+        "error": "B站音轨读取中断或服务无法连接，请检查网络后重试。已有文字仍保留。",
+        "seconds": 11.102334782999998
+      },
+      {
+        "id": "sample-08",
+        "source_url": "https://www.bilibili.com/video/BV1KTsre2EDU",
+        "bytes": 756513,
+        "sha256": "0d1983ba49a34bac47e7358f949cb3038e746d85e751de29044a606911179b43",
+        "filename": "2024金海豚奖评委采访——李翔（四川大学艺术学院设计与媒体艺术系副教授）.m4a",
+        "probe": {
+          "programs": [],
+          "streams": [
+            {
+              "codec_name": "aac",
+              "codec_type": "audio",
+              "sample_rate": "44100",
+              "channels": 2
+            }
+          ],
+          "format": {
+            "duration": "66.710590"
+          }
+        },
+        "result": "decoded",
+        "seconds": 7.694222413999996
+      },
+      {
+        "id": "sample-09",
+        "source_url": "https://www.bilibili.com/video/BV1MgdDYvELc",
+        "bytes": 4636954,
+        "sha256": "10453f804e0ddea5a7b6152227ba172d7f13a91395c1e76b15ddfc8669c8990f",
+        "filename": "邓为央视新闻采访，CCTV1央视晚间新闻报道2025百年丁香诗会 · P1 央视新闻采访.m4a",
+        "probe": {
+          "programs": [],
+          "streams": [
+            {
+              "codec_name": "aac",
+              "codec_type": "audio",
+              "sample_rate": "44100",
+              "channels": 2
+            }
+          ],
+          "format": {
+            "duration": "291.990703"
+          }
+        },
+        "result": "decoded",
+        "seconds": 5.404104914000003
+      },
+      {
+        "id": "sample-10",
+        "source_url": "https://www.bilibili.com/video/BV1kv411s76z",
+        "bytes": 6105870,
+        "sha256": "75d6ebf3e8f4714b32fe778788d4a87fbecf466c0264c96c6edcee1b7af95f8c",
+        "filename": "“那中国人是不是人？这就是一个根本的问题了。”.m4a",
+        "probe": {
+          "programs": [],
+          "streams": [
+            {
+              "codec_name": "aac",
+              "codec_type": "audio",
+              "sample_rate": "48000",
+              "channels": 2
+            }
+          ],
+          "format": {
+            "duration": "153.045000"
+          }
+        },
+        "result": "decoded",
+        "seconds": 8.753226155999997
+      }
+    ]
+  },
+  "first_live_deployment": {
+    "date": "2026-10-15T08:00:58.745Z",
+    "app_version": "0.5.7",
+    "scope": "Production importer + deployed HTTP endpoint + complete FFmpeg decode in Node; not browser QA.",
+    "cookies": false,
+    "samples": [
+      {
+        "id": "sample-01",
+        "source_url": "https://www.bilibili.com/video/BV13x41117TL",
+        "result": "failed",
+        "error": "B站暂时拒绝匿名读取，请稍后重试或选择本地文件。",
+        "seconds": 11.662659523
+      },
+      {
+        "id": "sample-02",
+        "source_url": "https://www.bilibili.com/video/BV1L8f1BiErq",
+        "result": "failed",
+        "error": "B站暂时拒绝匿名读取，请稍后重试或选择本地文件。",
+        "seconds": 0.4725660230000012
+      },
+      {
+        "id": "sample-03",
+        "source_url": "https://www.bilibili.com/video/BV19NF5zLE7G",
+        "result": "failed",
+        "error": "B站暂时拒绝匿名读取，请稍后重试或选择本地文件。",
+        "seconds": 0.3907362809999995
+      },
+      {
+        "id": "sample-04",
+        "source_url": "https://www.bilibili.com/video/BV1ct411Q7Q6",
+        "result": "failed",
+        "error": "B站暂时拒绝匿名读取，请稍后重试或选择本地文件。",
+        "seconds": 0.47110543399999916
+      },
+      {
+        "id": "sample-05",
+        "source_url": "https://www.bilibili.com/video/BV1xt4y1S7Hp?p=3",
+        "result": "failed",
+        "error": "B站暂时拒绝匿名读取，请稍后重试或选择本地文件。",
+        "seconds": 0.38328404600000066
+      },
+      {
+        "id": "sample-06",
+        "source_url": "https://www.bilibili.com/video/BV1p4rMBwEgo?p=8",
+        "result": "failed",
+        "error": "B站暂时拒绝匿名读取，请稍后重试或选择本地文件。",
+        "seconds": 0.3227659999999996
+      },
+      {
+        "id": "sample-07",
+        "source_url": "https://www.bilibili.com/video/BV1K64y1u7MT",
+        "result": "failed",
+        "error": "B站暂时拒绝匿名读取，请稍后重试或选择本地文件。",
+        "seconds": 0.32755151900000057
+      },
+      {
+        "id": "sample-08",
+        "source_url": "https://www.bilibili.com/video/BV1KTsre2EDU",
+        "result": "failed",
+        "error": "B站暂时拒绝匿名读取，请稍后重试或选择本地文件。",
+        "seconds": 0.351028472
+      },
+      {
+        "id": "sample-09",
+        "source_url": "https://www.bilibili.com/video/BV1MgdDYvELc",
+        "result": "failed",
+        "error": "B站暂时拒绝匿名读取，请稍后重试或选择本地文件。",
+        "seconds": 0.43474333599999954
+      },
+      {
+        "id": "sample-10",
+        "source_url": "https://www.bilibili.com/video/BV1kv411s76z",
+        "result": "failed",
+        "error": "B站暂时拒绝匿名读取，请稍后重试或选择本地文件。",
+        "seconds": 0.32314684400000077
+      }
+    ]
+  },
+  "live_recovery": {
+    "endpoint": "/x/web-interface/view",
+    "upstream_status": 412,
+    "upstream_code": -412,
+    "upstream_message": "request was banned",
+    "app_http_status": 502,
+    "honest_app_user_agent_added": true,
+    "result": "still_blocked",
+    "next_action": "Stop upstream probing; restore stable deployment; keep unmerged implementation and evidence."
+  }
+}

@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 import { isVideoFile } from '../src/video-frames.js';
 import { reviewCaptionEvidence, captionLabel } from '../src/caption-review.js';
+import { bilibiliEndpoint } from '../src/bilibili-url.js';
 
 // These tests execute the shipped UI event handlers with a small DOM surface and
 // explicit decoder/Worker doubles. They verify races and recovery, not browser
@@ -118,7 +119,7 @@ function harness(decode = async () => decoded(), vision = {}) {
   const context = vm.createContext({ document, window, navigator: { clipboard },
     decodeAudio: decode, MAX_FILE_BYTES: 300 * 1024 * 1024,
     Worker: WorkerDouble, URL: BrowserURL, Blob, Float32Array, AbortController,
-    isVideoFile, reviewCaptionEvidence, captionLabel,
+    isVideoFile, reviewCaptionEvidence, captionLabel, bilibiliEndpoint,
     importMediaUrl: vision.importUrl || (async () => { throw new Error('模拟链接不可用'); }),
     punctuateResult: vision.punctuate || (async result => result),
     evaluateSpeechPresence: vision.speechCheck || (async () => ({ reject: false })),
@@ -132,6 +133,7 @@ function harness(decode = async () => decoded(), vision = {}) {
   vm.runInContext(mainSource.replace(/^import .*;\n/gm, '')
     .replaceAll('import.meta.url', JSON.stringify('https://test.invalid/src/main.js'))
     .replaceAll('import.meta.env.VITE_COMPACT_BUILD', JSON.stringify(vision.compact ? '1' : '0'))
+    .replaceAll('import.meta.env.VITE_BILIBILI_ENDPOINT', JSON.stringify(vision.bilibiliService || ''))
     .replaceAll('import.meta.env.BASE_URL', JSON.stringify('/')), context, { filename: 'main.js' });
   const ui = Object.fromEntries(elements);
   ui.language.value = 'chinese';
@@ -194,6 +196,24 @@ test('failed URL import preserves queue and unlocks controls for retry', async (
   h.ui['media-url'].value = 'https://example.com/page'; await h.ui['media-url'].emit('keydown', { key: 'Enter' });
   assert.deepEqual(h.states(), ['待转写']); assert.match(h.ui['inline-error'].textContent, /模拟链接不可用/);
   h.controlsRestored(); assert.equal(h.ui['import-url'].disabled, false); assert.equal(h.ui['cancel-url'].hidden, true);
+});
+
+test('Bilibili audio passes the configured service into import and uses the normal ASR and export flow', async () => {
+  const service='https://links.example/api/bilibili';let used;
+  const h=harness(undefined,{bilibiliService:service,importUrl:async(value,options)=>{
+    used={value,service:options.bilibiliService};
+    options.onProgress({stage:'resolve',platform:'bilibili',loaded:0});
+    return {...file('公开采访.m4a'),type:'audio/mp4'};
+  }});
+  h.ui['media-url'].value='https://www.bilibili.com/video/BV13x41117TL?p=2';
+  await h.ui['import-url'].click();
+  assert.equal(used.service,service);assert.match(used.value,/p=2/);
+  assert.deepEqual(h.states(),['待转写']);assert.equal(h.downloads.length,0);
+  const run=h.ui['start-button'].click();await flush();
+  assert.equal(h.workers.length,1);h.workers.at(-1).result('这是一段采访。');await run;
+  assert.deepEqual(h.states(),['已完成']);assert.equal(h.ui.transcript.value,'这是一段采访。');
+  await h.ui['export-button'].click();
+  assert.equal(await h.downloads.at(-1).blob.text(),'这是一段采访。\n');
 });
 
 test('a low-voice candidate avoids ASR and offers a force retry without losing the file', async () => {
