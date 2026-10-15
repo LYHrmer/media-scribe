@@ -5,19 +5,24 @@
 
 const BASE64_CHUNK = 0x8000;
 
-export function base64Encode(text) {
+export function base64Encode(text, { urlSafe = false } = {}) {
   const bytes = new TextEncoder().encode(String(text));
   let binary = '';
   for (let i = 0; i < bytes.length; i += BASE64_CHUNK) {
     binary += String.fromCharCode(...bytes.subarray(i, i + BASE64_CHUNK));
   }
-  return btoa(binary);
+  const standard = btoa(binary);
+  return urlSafe ? standard.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '') : standard;
 }
 
+// Decoding always accepts both alphabets: URL-safe input is normalized back
+// to standard Base64 and re-padded before atob.
 export function base64Decode(encoded) {
+  let normalized = String(encoded).replace(/\s+/g, '').replace(/-/g, '+').replace(/_/g, '/');
+  normalized += '='.repeat((4 - (normalized.length % 4)) % 4);
   let binary;
   try {
-    binary = atob(String(encoded).replace(/\s+/g, ''));
+    binary = atob(normalized);
   } catch {
     throw new Error('Base64 内容无效，无法解码');
   }

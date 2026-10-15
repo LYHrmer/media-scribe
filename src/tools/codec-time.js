@@ -21,7 +21,7 @@ function guard(action) {
 }
 
 $('b64-encode').addEventListener('click', () => guard(() => {
-  $('b64-output').value = base64Encode($('b64-input').value);
+  $('b64-output').value = base64Encode($('b64-input').value, { urlSafe: $('b64-urlsafe').checked });
 }));
 $('b64-decode').addEventListener('click', () => guard(() => {
   $('b64-output').value = base64Decode($('b64-input').value);

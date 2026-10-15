@@ -39,6 +39,11 @@
             <button id="format-button" class="primary-button" type="button">格式化</button>
             <button id="minify-button" class="secondary-button" type="button">压缩</button>
             <button id="validate-button" class="secondary-button" type="button">仅校验</button>
+            <select id="indent-select" class="tool-input" aria-label="缩进方式">
+              <option value="2" selected>缩进 2 空格</option>
+              <option value="4">缩进 4 空格</option>
+              <option value="tab">缩进 Tab</option>
+            </select>
             <label class="tool-check"><input id="sort-keys" type="checkbox" />递归按键排序</label>
           </div>
           <div id="tool-error" class="inline-error" role="alert" hidden></div>

@@ -62,7 +62,9 @@ function run(action) {
     else { showError(describeError(result)); revealError(text, result); }
     return;
   }
+  const indent = $('indent-select').value === 'tab' ? '\t' : Number($('indent-select').value);
   const result = formatJson(text, {
+    indent,
     sortKeys: $('sort-keys').checked,
     minify: action === 'minify',
   });

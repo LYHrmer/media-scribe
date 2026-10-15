@@ -29,6 +29,18 @@ test('base64Decode tolerates whitespace in the input', () => {
   assert.equal(base64Decode(wrapped), '多行\n内容');
 });
 
+test('url-safe base64 encodes without + / = and decodes both alphabets', () => {
+  const standard = base64Encode('>>>???');
+  assert.ok(standard.includes('+') || standard.includes('/'));
+  const safe = base64Encode('>>>???', { urlSafe: true });
+  assert.ok(!/[+/=]/.test(safe));
+  assert.equal(base64Decode(safe), '>>>???');
+  assert.equal(base64Decode(standard), '>>>???');
+  // padding is restored for url-safe input that drops it
+  assert.equal(base64Decode(base64Encode('a', { urlSafe: true })), 'a');
+  assert.equal(base64Encode('a', { urlSafe: true }), 'YQ');
+});
+
 test('url round-trips Chinese and reserved characters', () => {
   const text = '中文 &a=b?c=d';
   assert.equal(urlDecode(urlEncode(text)), text);

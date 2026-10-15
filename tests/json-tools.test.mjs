@@ -13,6 +13,11 @@ test('minifies when asked', () => {
   assert.equal(result.result, '{"a":1}');
 });
 
+test('indent accepts a width or a tab character', () => {
+  assert.equal(formatJson('{"a":1}', { indent: 4 }).result, '{\n    "a": 1\n}');
+  assert.equal(formatJson('{"a":1}', { indent: '\t' }).result, '{\n\t"a": 1\n}');
+});
+
 test('sortKeysDeep sorts object keys recursively but keeps array order', () => {
   const sorted = sortKeysDeep({ b: 1, a: [{ d: 1, c: 2 }, 3] });
   assert.deepEqual(Object.keys(sorted), ['a', 'b']);
