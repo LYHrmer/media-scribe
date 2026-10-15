@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f5f5f0" />
+    <meta name="description" content="时间戳批量转换：每行一个时间戳或日期时间，方向逐行自动识别，秒/毫秒兼容。浏览器本地处理。" />
+    <title>时间戳批量转换 · 听写匣工具箱</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="site-header">
+        <a class="brand" href="./" aria-label="返回工具箱首页">
+          <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 10v4M9 6v12M13 3v18M17 7v10M21 10v4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></span>
+          <span>听写匣<span class="brand-edition">工具箱</span></span>
+        </a>
+        <span class="local-badge"><span class="status-dot" aria-hidden="true"></span>本地处理，数据不上传</span>
+      </header>
+
+      <main>
+        <noscript><p class="inline-error">此工具需要启用 JavaScript 才能运行。</p></noscript>
+        <section class="intro" aria-labelledby="page-title">
+          <p class="eyebrow">浏览器本地 <span>·</span> 粘贴即用</p>
+          <h1 id="page-title">时间戳 <span>批量转换。</span></h1>
+          <p class="intro-description">每行一个时间戳或日期时间，方向逐行自动识别。</p>
+        </section>
+
+        <section class="panel tool-panel">
+          <div class="tool-section">
+            <div class="tool-file-row">
+              <label class="tool-label" for="batch-input">每行一条（粘贴或选择文本文件）</label>
+              <button id="batch-file-button" class="text-button" type="button">选择文件</button>
+              <input id="batch-file-input" type="file" accept=".txt,.csv,.log,.md" hidden />
+            </div>
+            <textarea id="batch-input" class="tool-textarea" spellcheck="false" placeholder="1760000000&#10;2026-10-14 12:34:56&#10;1760000000000"></textarea>
+            <div class="tool-row">
+              <button id="convert-button" class="primary-button" type="button">转换</button>
+              <button class="secondary-button copy-button" type="button" data-target="batch-output">复制结果</button>
+            </div>
+            <p class="tool-hint">纯数字按 Unix 时间戳处理（秒/毫秒自动识别）；日期格式 YYYY-MM-DD HH:mm:ss（时间可省略，本地时区）；无法识别的行原样保留并标注。</p>
+            <div id="tool-error" class="inline-error" role="alert" hidden></div>
+          </div>
+
+          <div class="tool-section">
+            <label class="tool-label" for="batch-output">结果（与输入逐行对应）</label>
+            <textarea id="batch-output" class="tool-textarea tool-output" spellcheck="false" readonly></textarea>
+          </div>
+        </section>
+      </main>
+
+      <footer class="site-footer"><span>听写匣工具箱</span><span>本地处理 <span class="footer-dot">·</span> 数据不上传</span></footer>
+    </div>
+    <script type="module" src="/src/tools/ts-batch.js"></script>
+  </body>
+</html>

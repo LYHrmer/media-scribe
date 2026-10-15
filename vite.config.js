@@ -20,6 +20,7 @@ export default defineConfig({
         regex: entry('regex.html'),
         'file-hash': entry('file-hash.html'),
         'text-stats': entry('text-stats.html'),
+        'ts-batch': entry('ts-batch.html'),
       },
     },
   },

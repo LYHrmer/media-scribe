@@ -15,6 +15,7 @@ const PAGES = [
   ['regex.html', 'src/tools/regex.js'],
   ['file-hash.html', 'src/tools/file-hash.js'],
   ['text-stats.html', 'src/tools/text-stats.js'],
+  ['ts-batch.html', 'src/tools/ts-batch.js'],
 ];
 const read = path => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const has = path => existsSync(new URL(`../${path}`, import.meta.url));
