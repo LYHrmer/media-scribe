@@ -1,0 +1,86 @@
+{
+  "created_utc": "2026-10-15T07:29:03.253491+00:00",
+  "selection_rule": "Fixed before media requests; failures stay in the denominator; page indices are exact.",
+  "samples": [
+    {
+      "id": "sample-01",
+      "bvid": "BV13x41117TL",
+      "page": 1,
+      "kind": "music + spoken introduction",
+      "language_expected": "zh/en",
+      "source_url": "https://www.bilibili.com/video/BV13x41117TL"
+    },
+    {
+      "id": "sample-02",
+      "bvid": "BV1L8f1BiErq",
+      "page": 1,
+      "kind": "Eileen Gu interview",
+      "language_expected": "en",
+      "source_url": "https://www.bilibili.com/video/BV1L8f1BiErq"
+    },
+    {
+      "id": "sample-03",
+      "bvid": "BV19NF5zLE7G",
+      "page": 1,
+      "kind": "outdoor military reporter interview",
+      "language_expected": "zh",
+      "source_url": "https://www.bilibili.com/video/BV19NF5zLE7G"
+    },
+    {
+      "id": "sample-04",
+      "bvid": "BV1ct411Q7Q6",
+      "page": 1,
+      "kind": "CCTV street interview compilation",
+      "language_expected": "zh",
+      "source_url": "https://www.bilibili.com/video/BV1ct411Q7Q6"
+    },
+    {
+      "id": "sample-05",
+      "bvid": "BV1xt4y1S7Hp",
+      "page": 3,
+      "kind": "Billie Eilish interview multi-part clip",
+      "language_expected": "en",
+      "source_url": "https://www.bilibili.com/video/BV1xt4y1S7Hp?p=3"
+    },
+    {
+      "id": "sample-06",
+      "bvid": "BV1p4rMBwEgo",
+      "page": 8,
+      "kind": "Alan Rickman interview multi-part clip",
+      "language_expected": "en",
+      "source_url": "https://www.bilibili.com/video/BV1p4rMBwEgo?p=8"
+    },
+    {
+      "id": "sample-07",
+      "bvid": "BV1K64y1u7MT",
+      "page": 1,
+      "kind": "BBC one-minute news",
+      "language_expected": "en",
+      "source_url": "https://www.bilibili.com/video/BV1K64y1u7MT"
+    },
+    {
+      "id": "sample-08",
+      "bvid": "BV1KTsre2EDU",
+      "page": 1,
+      "kind": "Golden Dolphin judge interview",
+      "language_expected": "zh",
+      "source_url": "https://www.bilibili.com/video/BV1KTsre2EDU"
+    },
+    {
+      "id": "sample-09",
+      "bvid": "BV1MgdDYvELc",
+      "page": 1,
+      "kind": "CCTV poetry event interview report",
+      "language_expected": "zh",
+      "source_url": "https://www.bilibili.com/video/BV1MgdDYvELc"
+    },
+    {
+      "id": "sample-10",
+      "bvid": "BV1kv411s76z",
+      "page": 1,
+      "kind": "Chinese interview excerpt",
+      "language_expected": "zh",
+      "source_url": "https://www.bilibili.com/video/BV1kv411s76z"
+    }
+  ]
+}
