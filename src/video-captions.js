@@ -1,3 +1,4 @@
+import { classifyScreenTracks } from './caption-review.js';
 // Scores below are OCR model scores and agreement, not probabilities that the
 // spoken words are correct. No dictionary, lyric, or expected transcript is used.
 const CONTENT = /[\p{L}\p{M}\p{N}]/u;
@@ -238,7 +239,7 @@ function fuseTrack(track, options) {
     && support >= options.minSupport;
   return { start, end, text: finalText, confidence, support,
     source: 'video_ocr', timeSource: 'video_frames', scoreKind: 'ocr_model_agreement', reliable,
-    observedText: anchor.raw,
+    observedText: anchor.raw, box: anchor.box,
     alternatives, uncertainCharacters, uncertainInsertions,
     uncertaintyText: 'text', uncertaintyIndexUnit: 'codepoint', warnings,
     reason: reliable ? null : 'needs_review' };
@@ -307,8 +308,9 @@ export function fuseVideoCaptions(frames, settings = {}) {
       } else segments.push(result);
     }
   }
-  segments.sort((a, b) => a.start - b.start);
-  candidates.sort((a, b) => a.start - b.start);
-  return { reliable: segments.length > 0, segments, candidates,
-    warnings: candidates.length ? ['还有画面文字需要核对，未自动混入已确认的字幕。'] : [] };
+  const classified = classifyScreenTracks([...segments, ...candidates]);
+  const subtitles = classified.filter(item => item.reliable).sort((a, b) => a.start - b.start);
+  const review = classified.filter(item => !item.reliable).sort((a, b) => a.start - b.start);
+  return { reliable: subtitles.length > 0, segments: subtitles, candidates: review,
+    warnings: review.length ? ['另有画面文字待核对，已与字幕候选分开。'] : [] };
 }

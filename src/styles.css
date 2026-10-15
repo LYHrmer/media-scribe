@@ -220,3 +220,12 @@ kbd { font: inherit; padding: 0 4px; border: 1px solid #dfe5d7; border-radius: 3
   .footer-dot { margin-inline: 3px; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } .progress-track.indeterminate > span { width: 45%; } }
+
+.caption-review-row { padding: 10px 0; border-bottom: 1px solid #e1e6dc; }
+.caption-review-row:last-child { border-bottom: 0; }
+.caption-review-actions { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 5px; }
+.caption-review-actions button { padding: 7px 0; font-size: 12px; }
+.caption-audio-reading { color: #785e38; }
+.source-player-wrap { margin: 14px 0; }
+.source-player-wrap video { width: 100%; max-height: 300px; border-radius: 8px; background: #132125; }
+.source-player-wrap p { font-size: 12px; color: #64766d; }
