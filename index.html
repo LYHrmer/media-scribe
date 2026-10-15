@@ -64,7 +64,7 @@
             <details class="advanced-settings">
               <summary><span>更多设置</span><span id="settings-summary" class="settings-summary">中文 · 中文增强</span><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m4 6 4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
               <div class="settings-fields">
-                <label for="recognition-source" class="source-setting">识别方式<select id="recognition-source"><option value="auto" selected>自动 · 识别声音，画面文字供核对</option><option value="audio">仅识别声音</option><option value="video">仅识别画面字幕</option></select></label>
+                <label for="recognition-source" class="source-setting">识别方式<select id="recognition-source"><option value="auto" selected>自动 · 识别声音并核对画面字幕</option><option value="audio">仅识别声音</option><option value="video">仅识别画面字幕</option></select></label>
                 <label for="language">识别语言<select id="language"><option value="chinese" selected>中文</option><option value="english">英语</option></select></label>
                 <label for="model">识别精度<select id="model"><option value="Xenova/whisper-tiny">快速 · 耗时较短</option><option value="FunAudioLLM/SenseVoiceSmall" selected>中文增强 · 推荐</option>
                   <option value="Xenova/whisper-small">通用高精度 · 中英文</option></select></label>
@@ -112,10 +112,19 @@
             </div>
             <p id="result-warning" class="result-warning" role="status" hidden></p>
             <details id="visual-candidates" class="visual-candidates" hidden>
-              <summary>查看画面文字候选 · 待核对</summary>
-              <p>画面文字尚未与声音逐字核验；多帧一致也可能只是标题、人名条或背景文字。自动模式会将这些文字保留在此处供核对，请对照原片后手动编辑正文。</p>
+              <summary id="visual-summary">画面字幕核对</summary>
+              <p>自动比对对应时段的语音识别。两种识别一致仍可能出错；有差异或声音未确认的句子可回放核对，再复制到正文。演职员信息单独收起，分类有误时仍可查看。</p>
               <div id="visual-candidate-list" class="visual-candidate-list"></div>
+              <details id="visual-other" hidden>
+                <summary id="visual-other-summary">其他画面文字</summary>
+                <div id="visual-other-list" class="visual-candidate-list"></div>
+              </details>
             </details>
+
+            <div id="source-player-wrap" class="source-player-wrap" hidden>
+              <video id="source-player" controls playsinline preload="metadata" aria-label="本地原片回放"></video>
+              <p id="source-player-status" role="status"></p>
+            </div>
 
             <div id="output-empty" class="output-empty">
               <div class="paper-illustration" aria-hidden="true"><span></span><span></span><span></span><span></span><svg viewBox="0 0 28 28" fill="none"><path d="M5 12v4m6-8v12m6-16v20m6-13v6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></div>

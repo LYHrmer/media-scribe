@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 import { isVideoFile } from '../src/video-frames.js';
+import { reviewCaptionEvidence, captionLabel } from '../src/caption-review.js';
 
 // These tests execute the shipped UI event handlers with a small DOM surface and
 // explicit decoder/Worker doubles. They verify races and recovery, not browser
@@ -117,7 +118,7 @@ function harness(decode = async () => decoded(), vision = {}) {
   const context = vm.createContext({ document, window, navigator: { clipboard },
     decodeAudio: decode, MAX_FILE_BYTES: 300 * 1024 * 1024,
     Worker: WorkerDouble, URL: BrowserURL, Blob, Float32Array, AbortController,
-    isVideoFile,
+    isVideoFile, reviewCaptionEvidence, captionLabel,
     punctuateResult: vision.punctuate || (async result => result),
     evaluateSpeechPresence: vision.speechCheck || (async () => ({ reject: false })),
     readVideoFrames: vision.readFrames || (async () => { throw new Error('模拟浏览器不能读取画面'); }),
@@ -926,9 +927,10 @@ test('an interview name plate never bypasses full audio in auto mode and both OC
   await run;
   assert.equal(h.ui.transcript.value, '问：这个实验如何进行？答：我们先记录数据。');
   assert.doesNotMatch(h.ui['result-meta'].textContent, /画面字幕/);
-  assert.equal(h.ui['visual-candidate-list'].children.length, 2);
-  assert.match(h.ui['visual-candidate-list'].children[0].textContent, /陈敏 研究员.*尚未与声音核对/);
-  assert.match(h.ui['visual-candidate-list'].children[1].textContent, /背景招牌.*固定文字/);
+  assert.equal(h.ui['visual-candidate-list'].children.length, 1);
+  assert.equal(h.ui['visual-other-list'].children.length, 1);
+  assert.match(h.ui['visual-candidate-list'].children[0].textContent, /陈敏 研究员.*声音尚未确认/);
+  assert.match(h.ui['visual-other-list'].children[0].textContent, /背景招牌.*固定画面文字/);
   h.ui['export-format'].value = 'json';
   await h.ui['export-button'].click();
   const exported = JSON.parse(await h.downloads.at(-1).blob.text());
@@ -1192,4 +1194,44 @@ test('stop passes an aborted signal to the decoder and preserves a fresh run sig
   h.workers[0].result('新任务');
   await next;
   assert.equal(h.ui.transcript.value, '新任务');
+});
+
+test('caption review compares local ASR, keeps credits collapsed, and replay/copy preserve the draft', async () => {
+  const caption={start:.2,end:1,text:'我们明天继续练习。',reliable:true,category:'subtitle'};
+  const credit={start:.2,end:1,text:'编剧。',reliable:false,reason:'probable_credit',category:'credits'};
+  const h=harness(undefined,videoFixture({fuse:()=>({reliable:true,segments:[caption],candidates:[credit],warnings:[]})}));
+  await h.add([{...file('captions.mp4'),type:'video/mp4'}]);
+  const run=h.ui['start-button'].click();await flush();h.workers.at(-1).result('我们明天继续练习。');await run;
+  assert.match(h.ui['visual-summary'].textContent,/1 句与语音识别一致/);
+  assert.equal(h.ui['visual-other-list'].children.length,1);
+  assert.match(h.ui['visual-other-list'].children[0].textContent,/疑似演职员信息/);
+  const actions=h.ui['visual-candidate-list'].children[0].children.at(-1).children;
+  let plays=0,pauses=0;h.ui['source-player'].play=()=>{plays++;return Promise.resolve();};h.ui['source-player'].pause=()=>{pauses++;};
+  await actions[0].click();assert.equal(plays,1);assert.equal(h.ui['source-player-wrap'].hidden,false);
+  await h.ui['source-player'].emit('loadedmetadata');assert.equal(h.ui['source-player'].currentTime,0);
+  h.ui['source-player'].currentTime=1.8;await h.ui['source-player'].emit('timeupdate');assert.equal(pauses,1);
+  await actions[1].click();assert.equal(h.clipboard.values.at(-1),caption.text);assert.equal(h.ui.transcript.value,caption.text);
+  await h.ui['clear-files'].click();assert.equal(h.ui['source-player-wrap'].hidden,true);
+});
+
+test('audio-only retry refreshes agreement and restore recovers the previous evidence', async () => {
+  const h=harness(undefined,videoFixture({fuse:()=>({reliable:true,segments:[{start:0,end:1,text:'我们明天继续练习。',reliable:true}],candidates:[],warnings:[]})}));
+  await h.add([{...file('captions-retry.mp4'),type:'video/mp4'}]);
+  const initial=h.ui['start-button'].click();await flush();h.workers.at(-1).result('我们明天继续练习。');await initial;
+  assert.match(h.ui['visual-summary'].textContent,/1 句与语音识别一致/);
+  h.ui['recognition-source'].value='audio';
+  const retry=h.ui['rerun-button'].click();await flush();
+  assert.doesNotMatch(h.ui['visual-summary'].textContent,/与语音识别一致/,'an active retry invalidates the old agreement');
+  h.workers.at(-1).result('这里讲述另一个故事。');await retry;
+  assert.doesNotMatch(h.ui['visual-summary'].textContent,/与语音识别一致/);
+  await h.ui['restore-button'].click();assert.match(h.ui['visual-summary'].textContent,/1 句与语音识别一致/);
+});
+
+test('canceled punctuation cannot attach new ASR agreement to the previous draft', async () => {
+  let calls=0;const pending=deferred();
+  const h=harness(undefined,videoFixture({fuse:()=>({reliable:true,segments:[{start:0,end:1,text:'我们明天继续练习。',reliable:true}],candidates:[],warnings:[]}),
+    punctuate:(result,{signal})=>{if(++calls===1)return Promise.resolve(result);signal.addEventListener('abort',()=>pending.reject(new DOMException('stop','AbortError')));return pending.promise;}}));
+  await h.add([{...file('cancel-review.mp4'),type:'video/mp4'}]);const first=h.ui['start-button'].click();await flush();h.workers.at(-1).result('这是之前的正文。');await first;
+  const retry=h.ui['rerun-button'].click();await flush();h.workers.at(-1).result('我们明天继续练习。');await flush();await h.ui['stop-button'].click();await retry;
+  assert.equal(h.ui.transcript.value,'这是之前的正文。');assert.doesNotMatch(h.ui['visual-summary'].textContent,/与语音识别一致/);
 });

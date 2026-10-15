@@ -1,0 +1,277 @@
+{
+  "scope": "Development diagnostic: one previously seen private lyric video, one vendor Chinese speech recording, derived pause control, two synthetic negative controls. Not a holdout or browser/media-decoder test.",
+  "method": "First reproduce previous ffmpeg mono and browser-style average. One fixed <=8s non-overlap variant. Initial runner applies VAD per slice; adaptive follow-up disables that gate for all slices and the whole-input control, matching a once-gated full recording. Reference only reaches the scorer.",
+  "adopted": false,
+  "reason": "Short chunks still have 15 errors over 22 reference characters; no general accuracy evidence.",
+  "inputs": {
+    "normal_report_sha256": "5b1d9d3859984eceffb25a4285f3a578146d51683b4e924c57ee36fa4650b078",
+    "forced_report_sha256": "501fad926c19353928009fe2bab88f445c46223c0335c7162fab25f545f88be9",
+    "frozen_plan_sha256": "4c23944c0dbf100b78e48f3de398136d6a8c6a46b8e1d937383027cbcdc3e1a6"
+  },
+  "plan": {
+    "method": "one fixed alternative; complete nonoverlapping windows <=8s, quietest 40ms in 6-8s, ties later; no reference or OCR supplied",
+    "offsets": [
+      0,
+      107840,
+      224640,
+      347136
+    ],
+    "sample_rate": 16000,
+    "source_sha256": "717a588c4025fcd913ab7afab8b7bceeabe78296ad10072222641bd103d45cfb"
+  },
+  "fingerprints": {
+    "vad.worker-C9h8-FgH.js": "e19bc613db3bdaa1e87f1fa91a6a4722613a83a4204c2b8d1bdb4ecabef04ebe",
+    "punctuation.worker-Ch2hTEJS.js": "178ac8d7ab9e4f7fd13a75d37763eafa1d276ac9c388771dcf7be98642620209",
+    "sensevoice.worker-gduX_vXW.js": "0a4c728cd09265a5a48e6569f6ad4cb57e6a3bb1e975ac351050199fb22f4532",
+    "models-sensevoice/runtime.mjs": "3a7e50f11a449f4b9fd2b9373fbb3f16fd487cce804ae6f51241d72c5f0dbcbe",
+    "models-sensevoice/asr.mjs": "6686bf26631572b161fc2b6532302d8eeda91a774c32f3216eced57ec5769ff2"
+  },
+  "model_sha256": "c71f0ce00bec95b07744e116345e33d8cbbe08cef896382cf907bf4b51a2cd51",
+  "runtime_sha256": "e4dead1d159c531282e635069fa9e028175dee71f3f90908186994655425b3ce",
+  "ordinary": [
+    {
+      "id": "zh-clean",
+      "pcm_sha256": "32679c5676d4a67bab7d297da1db34f92ec8a2f4899f4a03c6c80b3f4efdabdd",
+      "score": {
+        "reference_character_count": 13,
+        "hypothesis_character_count": 13,
+        "character_errors": 0,
+        "cer": 0,
+        "exact_lexical_match": true,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 1,
+          "hypothesis_count": 1,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 0,
+          "boundary_exact_when_lexical_exact": true
+        },
+        "digit_equivalent_cer": 0
+      },
+      "seconds": 5.61238584,
+      "asr_deferred": false
+    },
+    {
+      "id": "zh-pause",
+      "pcm_sha256": "e0a3e8fea00ca53ec914e92cf2332b8247f678e803c69fce2549120444c6e1f2",
+      "score": {
+        "reference_character_count": 26,
+        "hypothesis_character_count": 26,
+        "character_errors": 0,
+        "cer": 0,
+        "exact_lexical_match": true,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 2,
+          "hypothesis_count": 3,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 1,
+          "boundary_exact_when_lexical_exact": false
+        },
+        "digit_equivalent_cer": 0
+      },
+      "seconds": 2.738738192,
+      "asr_deferred": false
+    },
+    {
+      "id": "original",
+      "pcm_sha256": "8933b1e813ec67abeb6de3067625a2dfec13672fd7706181cd571d143617794b",
+      "score": {
+        "reference_character_count": 22,
+        "hypothesis_character_count": 7,
+        "character_errors": 20,
+        "cer": 0.9090909090909091,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 4,
+          "hypothesis_count": 1,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 3,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "digit_equivalent_cer": 0.9090909090909091
+      },
+      "seconds": 4.275130005000001,
+      "asr_deferred": false
+    },
+    {
+      "id": "browser-mix",
+      "pcm_sha256": "717a588c4025fcd913ab7afab8b7bceeabe78296ad10072222641bd103d45cfb",
+      "score": {
+        "reference_character_count": 22,
+        "hypothesis_character_count": 7,
+        "character_errors": 20,
+        "cer": 0.9090909090909091,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 4,
+          "hypothesis_count": 1,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 3,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "digit_equivalent_cer": 0.9090909090909091
+      },
+      "seconds": 4.350644034999999,
+      "asr_deferred": false
+    },
+    {
+      "id": "silence",
+      "pcm_sha256": "ac2878215ad33205d1732578c89f25ededaad1b676911c540825bcf4baa42d9b",
+      "score": {
+        "reference_character_count": 0,
+        "hypothesis_character_count": 0,
+        "character_errors": 0,
+        "cer": null,
+        "exact_lexical_match": true,
+        "false_positive_for_empty_reference": false,
+        "punctuation": {
+          "reference_count": 0,
+          "hypothesis_count": 0,
+          "has_sentence_punctuation": false,
+          "sequence_errors": 0,
+          "boundary_exact_when_lexical_exact": true
+        }
+      },
+      "seconds": 0.10006019899999956,
+      "asr_deferred": true
+    },
+    {
+      "id": "noise",
+      "pcm_sha256": "95dafb55ead16468877ffbeb0349ab10a34fe69eaa18a3874b6fb569e19ab9eb",
+      "score": {
+        "reference_character_count": 0,
+        "hypothesis_character_count": 0,
+        "character_errors": 0,
+        "cer": null,
+        "exact_lexical_match": true,
+        "false_positive_for_empty_reference": false,
+        "punctuation": {
+          "reference_count": 0,
+          "hypothesis_count": 0,
+          "has_sentence_punctuation": false,
+          "sequence_errors": 0,
+          "boundary_exact_when_lexical_exact": true
+        }
+      },
+      "seconds": 0.10601083199999993,
+      "asr_deferred": true
+    }
+  ],
+  "slice_vad": {
+    "score": {
+      "reference_character_count": 22,
+      "hypothesis_character_count": 15,
+      "character_errors": 16,
+      "cer": 0.7272727272727273,
+      "exact_lexical_match": false,
+      "false_positive_for_empty_reference": null,
+      "punctuation": {
+        "reference_count": 4,
+        "hypothesis_count": 2,
+        "has_sentence_punctuation": true,
+        "sequence_errors": 2,
+        "boundary_exact_when_lexical_exact": null
+      },
+      "digit_equivalent_cer": 0.7272727272727273
+    },
+    "sample_count": 347136,
+    "segments": [
+      {
+        "id": "short-0",
+        "pcm_sha256": "678e689cc992d6f2317437610c1cd63a5d3282d8192604f26d3295d04b7f8bc8",
+        "start_sample": 0,
+        "end_sample": 107840,
+        "asr_deferred": false,
+        "seconds": 1.232925785000003
+      },
+      {
+        "id": "short-1",
+        "pcm_sha256": "85a54997d43266bf4a4c598a05a6b62d340ef1085049840af1b3e8317b4051eb",
+        "start_sample": 107840,
+        "end_sample": 224640,
+        "asr_deferred": false,
+        "seconds": 1.3734758439999968
+      },
+      {
+        "id": "short-2",
+        "pcm_sha256": "edb80dca399c3573244fe085e043a369ab2bbae8e571fe9796e9ada688e48809",
+        "start_sample": 224640,
+        "end_sample": 347136,
+        "asr_deferred": true,
+        "seconds": 0.1658334869999999
+      }
+    ]
+  },
+  "forced_control": [
+    {
+      "id": "browser-mix",
+      "pcm_sha256": "717a588c4025fcd913ab7afab8b7bceeabe78296ad10072222641bd103d45cfb",
+      "score": {
+        "reference_character_count": 22,
+        "hypothesis_character_count": 7,
+        "character_errors": 20,
+        "cer": 0.9090909090909091,
+        "exact_lexical_match": false,
+        "false_positive_for_empty_reference": null,
+        "punctuation": {
+          "reference_count": 4,
+          "hypothesis_count": 1,
+          "has_sentence_punctuation": true,
+          "sequence_errors": 3,
+          "boundary_exact_when_lexical_exact": null
+        },
+        "digit_equivalent_cer": 0.9090909090909091
+      },
+      "seconds": 8.474682577,
+      "asr_deferred": false
+    }
+  ],
+  "forced_slices": {
+    "score": {
+      "reference_character_count": 22,
+      "hypothesis_character_count": 20,
+      "character_errors": 15,
+      "cer": 0.6818181818181818,
+      "exact_lexical_match": false,
+      "false_positive_for_empty_reference": null,
+      "punctuation": {
+        "reference_count": 4,
+        "hypothesis_count": 3,
+        "has_sentence_punctuation": true,
+        "sequence_errors": 2,
+        "boundary_exact_when_lexical_exact": null
+      },
+      "digit_equivalent_cer": 0.6818181818181818
+    },
+    "sample_count": 347136,
+    "segments": [
+      {
+        "id": "short-0",
+        "pcm_sha256": "678e689cc992d6f2317437610c1cd63a5d3282d8192604f26d3295d04b7f8bc8",
+        "start_sample": 0,
+        "end_sample": 107840,
+        "asr_deferred": false,
+        "seconds": 1.285880982999999
+      },
+      {
+        "id": "short-1",
+        "pcm_sha256": "85a54997d43266bf4a4c598a05a6b62d340ef1085049840af1b3e8317b4051eb",
+        "start_sample": 107840,
+        "end_sample": 224640,
+        "asr_deferred": false,
+        "seconds": 1.3389722199999996
+      },
+      {
+        "id": "short-2",
+        "pcm_sha256": "edb80dca399c3573244fe085e043a369ab2bbae8e571fe9796e9ada688e48809",
+        "start_sample": 224640,
+        "end_sample": 347136,
+        "asr_deferred": false,
+        "seconds": 1.6333588749999999
+      }
+    ]
+  }
+}

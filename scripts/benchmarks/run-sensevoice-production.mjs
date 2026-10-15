@@ -64,12 +64,13 @@ async function openWorker(kind) {
 const vad = await openWorker('vad'), punctuation = await openWorker('punctuation');
 let asr = await openWorker('sensevoice');
 const rows = [], decoding = process.env.BENCHMARK_DECODING || 'timestamps';
+const forceSpeech = process.env.BENCHMARK_FORCE_SPEECH === '1';
 let sequence = 0;
 async function run(c) {
   const raw = await fs.readFile(path.resolve(path.dirname(manifestPath), c.pcm_path)); assert.equal(sha(raw), c.pcm_sha256);
   const audio = new Float32Array(raw.buffer.slice(raw.byteOffset, raw.byteOffset + raw.byteLength)), id = ++sequence;
   const start = performance.now();
-  let check = await vad({ type: 'start', id, sampleCount: audio.length });
+  let check = forceSpeech ? { type: 'result', skipAsr: false, forced: true } : await vad({ type: 'start', id, sampleCount: audio.length });
   for (let offset = 0; ['ready', 'chunk-ready'].includes(check.type); offset += 512000) {
     check = offset >= audio.length ? await vad({ type: 'finish', id }) : await vad({ type: 'chunk', id, audio: audio.slice(offset, offset + 512000) });
   }
@@ -97,7 +98,7 @@ if (!process.env.SKIP_CACHE_CHECK) {
   await run(manifest.cases.find(c => c.id === 'zh-clean'));
   assert.equal(requests.length, coldGets, 'a new worker reuses SHA-verified compressed cache');
 }
-const output = { scope: 'Actual compiled Vite ASR + VAD + punctuation workers and real WASM; only HTTP, Cache API and worker transport simulated. No browser UI or phone QA claim.', decoding,
+const output = { forceSpeech, scope: 'Actual compiled Vite ASR + VAD + punctuation workers and real WASM; only HTTP, Cache API and worker transport simulated. No browser UI or phone QA claim.', decoding,
   model_sha256: 'c71f0ce00bec95b07744e116345e33d8cbbe08cef896382cf907bf4b51a2cd51',
   runtime_sha256: 'e4dead1d159c531282e635069fa9e028175dee71f3f90908186994655425b3ce', fingerprints, requests, cache_reuse: !process.env.SKIP_CACHE_CHECK, cases: rows };
 await fs.writeFile(path.resolve(outputArg), JSON.stringify(output, null, 2) + '\n');
