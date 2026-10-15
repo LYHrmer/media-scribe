@@ -85,7 +85,7 @@ export async function openBilibiliAudio(value, { fetchImpl=fetch, signal, maxByt
   const arm=()=>{clearTimeout(timer);timer=setTimeout(()=>{timedOut=true;abort.abort();},timeoutMs);};
   const cleanup=()=>{if(released)return;released=true;clearTimeout(timer);signal?.removeEventListener('abort',onAbort);abort.abort();};
   const get=async(url,headers={})=>{
-    const options={method:'GET',headers,redirect:'manual',credentials:'omit',cache:'no-store',signal:abort.signal};
+    const options={method:'GET',headers:{'User-Agent':'MediaScribe/0.5.7 (+https://github.com/LYHrmer/media-scribe)',...headers},redirect:'manual',credentials:'omit',cache:'no-store',signal:abort.signal};
     arm();
     try{return await fetchImpl(url,options);}
     catch(error){
@@ -97,7 +97,17 @@ export async function openBilibiliAudio(value, { fetchImpl=fetch, signal, maxByt
   };
   const json=async(path,referer)=>{
     const response=await get(API+path,{Referer:referer,Origin:'https://www.bilibili.com',Accept:'application/json'});
-    if(!response.ok) { await response.body?.cancel().catch(()=>{}); throw new LinkError(response.status===403||response.status===412?'B站暂时拒绝匿名读取，请稍后重试或选择本地文件。':'B站接口暂不可用，请稍后重试。',502); }
+    if(!response.ok) {
+      // Operational diagnostics omit the user's video ID, query and all headers.
+      const diagnostic={endpoint:path.split('?')[0],status:response.status};
+      try{
+        const body=await limitedText(response,65536);
+        try{const data=JSON.parse(body);diagnostic.code=data.code;diagnostic.message=String(data.message||'').slice(0,120);}
+        catch{diagnostic.title=/<title[^>]*>([^<]{0,120})<\/title>/i.exec(body)?.[1]||'';}
+      }catch{}
+      console.warn('[Bilibili upstream]',JSON.stringify(diagnostic));
+      throw new LinkError(response.status===403||response.status===412?'B站暂时拒绝匿名读取，请稍后重试或选择本地文件。':'B站接口暂不可用，请稍后重试。',502);
+    }
     try { return JSON.parse(await limitedText(response,1024*1024)); }
     catch(error){if(error instanceof LinkError)throw error;throw new LinkError('B站未返回有效播放信息。',502);}
   };
