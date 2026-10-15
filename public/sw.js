@@ -1,4 +1,4 @@
-const CACHE = 'tingxie-static-v0.5.5';
+const CACHE = 'tingxie-static-v0.5.6';
 function usableAsset(response) {
   // Static hosts and security checks can return an HTML page at an asset URL.
   // Never retain that page as JavaScript, CSS, an image, or the WASM runtime.
@@ -14,7 +14,7 @@ self.addEventListener('activate', event => event.waitUntil((async () => {
 self.addEventListener('fetch', event => {
   const request = event.request;
   const url = new URL(request.url);
-  if (request.method !== 'GET' || url.origin !== self.location.origin || url.protocol !== 'https:') return;
+  if (request.method !== 'GET' || request.cache === 'no-store' || url.origin !== self.location.origin || url.protocol !== 'https:') return;
   // User files are decoded from local ArrayBuffers, never fetched or cached here.
   if (!request.mode.includes('navigate') && !/\.(?:js|css|mjs|wasm|svg|ico)$/.test(url.pathname)) return;
   event.respondWith((async () => {

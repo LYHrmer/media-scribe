@@ -22,9 +22,28 @@ test('English and colon-separated credits are recognized without a name dictiona
   assert.equal(classifyScreenTracks([track('Written by'),track('Ada North',box(.4,.86))])[1].category,'credits');
   assert.equal(classifyScreenTracks([track('艺术指导：林明')])[0].category,'credits');
 });
+test('episode-prefixed roles and production credits stay separate without suppressing sentences', () => {
+  for (const text of ['本集编剧：林明', '本期导演：周禾', '制作监督', '总监制', '总策划']) {
+    assert.equal(classifyScreenTracks([track(text)])[0].category, 'credits');
+  }
+  for (const text of ['本集编剧讲述了一个故事', '我来负责制作监督工作', '我们邀请了本期导演']) {
+    assert.equal(classifyScreenTracks([track(text)])[0].category, 'subtitle');
+  }
+});
 test('short text with no spatial or temporal credit connection remains visible', () => {
   const out=classifyScreenTracks([track('导演',box(.1,.2)),track('欢迎你',box(.4,.85)),track('周禾',box(.1,.26),{start:5,end:6}),track('林明',null)]);
   assert.deepEqual(out.map(x=>x.category),['credits','subtitle','subtitle','subtitle']);
+});
+test('tilted two-column credits are grouped by overlap while distant bottom lyrics remain', () => {
+  const items = [track('执行导演',box(.44,.38,.18,.11)), track('林明',box(.38,.49,.11,.11)),
+    track('周禾',box(.56,.46,.12,.11)), track('许宁',box(.59,.55,.09,.11)), track('向前走',box(.4,.88,.2,.04))];
+  assert.deepEqual(classifyScreenTracks(items).map(x=>x.category), ['credits','credits','credits','credits','subtitle']);
+});
+test('standalone screen handles stay reviewable without suppressing normal mentions', () => {
+  const items = classifyScreenTracks([track('@示例账号'), track('@sample_user'), track('请关注@示例账号')]);
+  assert.deepEqual(items.map(x=>x.category), ['screen_label','screen_label','subtitle']);
+  assert.equal(items[0].reliable, false); assert.equal(captionLabel(items[0]), '疑似账号标识');
+  assert.equal(reviewCaptionEvidence([items[0]],asr(items[0].text))[0].audioEvidence,undefined);
 });
 test('full OCR fusion keeps credit text out of visual-only transcript but retains it for review', () => {
   const texts=[{text:'编剧',box:[[400,200],[600,240]],confidence:.99},{text:'林明',box:[[400,260],[600,300]],confidence:.99},{text:'跟着歌声向前走',box:[[300,850],[700,890]],confidence:.99}];
