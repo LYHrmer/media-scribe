@@ -295,10 +295,21 @@ function addFiles(files) {
 
 function cancelError() { const error = new Error('CANCELED'); error.name = 'AbortError'; return error; }
 
+// Detach first: an event already queued by an old Worker cannot settle a new job.
+function releaseWorker(instance = worker) {
+  if (instance !== worker) return null;
+  const job = activeJob;
+  activeJob = null;
+  worker = null;
+  workerKind = null;
+  instance?.terminate();
+  return job;
+}
+
 function ensureWorker(settings) {
   const kind = settings.model === SENSEVOICE_MODEL ? `sensevoice:${settings.language}:${settings.decoding}` : 'whisper';
   if (worker && workerKind === kind) return worker;
-  worker?.terminate();
+  releaseWorker();
   const instance = settings.model === SENSEVOICE_MODEL
     ? new Worker(new URL('./sensevoice.worker.js', import.meta.url), { type: 'module' })
     : new Worker(new URL('./transcriber.worker.js', import.meta.url), { type: 'module' });
@@ -320,8 +331,7 @@ function ensureWorker(settings) {
       progress.percent = null;
       renderProgress();
     } else if (data.type === 'result' || data.type === 'error') {
-      const job = activeJob;
-      activeJob = null;
+      const job = releaseWorker(instance);
       if (data.type === 'result') job.resolve({ text: data.text || '', segments: data.segments || [], duration: data.duration, ...(typeof data.rawText === 'string' ? { rawText: data.rawText } : {}), ...(data.timing === 'approximate' ? { timing: 'approximate' } : {}), warnings: Array.isArray(data.warnings) ? data.warnings : [] });
       else job.reject(new Error(data.message || '这份文件未能完成识别，请重试。'));
     }
@@ -329,10 +339,7 @@ function ensureWorker(settings) {
   const fatal = event => {
     event.preventDefault?.();
     if (instance !== worker) return;
-    instance.terminate();
-    worker = null;
-    const job = activeJob;
-    activeJob = null;
+    const job = releaseWorker(instance);
     job?.reject(new Error('本地识别文件未能加载，请检查网络并刷新重试。如果出现「blocked」或 401 / 403，请复制网址到系统浏览器；仍被拒绝时，需要站点托管方排查。'));
   };
   instance.onerror = fatal;
@@ -342,12 +349,13 @@ function ensureWorker(settings) {
 
 function transcribe(audio, entry, token, settings) {
   return new Promise((resolve, reject) => {
+    let instance;
     try {
-      const instance = ensureWorker(settings);
+      instance = ensureWorker(settings);
       const id = `${entry.id}-run-${token}`;
       activeJob = { id, resolve, reject };
       instance.postMessage({ type: 'transcribe', id, audio, model: settings.model, language: settings.language, decoding: settings.decoding }, [audio.buffer]);
-    } catch (error) { activeJob = null; reject(error); }
+    } catch (error) { releaseWorker(instance); reject(error); }
   });
 }
 
@@ -386,8 +394,7 @@ async function recognizeVideo(entry, token, signal) {
   const frames = [];
   let client;
   // Do not hold both ASR and OCR model heaps on a phone at the same time.
-  worker?.terminate();
-  worker = null;
+  releaseWorker();
   try {
     const metadata = await readVideoFrames(entry.file, {
       signal,
@@ -466,7 +473,7 @@ async function recognizeEntry(entry, token, settings, signal) {
   entry.status = 'decoding';
   progress = { stage: '正在读取声音', message: warnings.length ? `${warnings.at(-1)} 正在本机读取音轨。` : '正在浏览器中读取和整理音频，文件不会上传。', percent: null };
   render();
-  const decoded = await decodeAudio(entry.file, { onStatus: message => {
+  const decoded = await decodeAudio(entry.file, { signal, onStatus: message => {
     if (token === runToken) { progress.message = message; renderProgress(); }
   } });
   if (signal.aborted || token !== runToken) throw cancelError();
@@ -562,11 +569,7 @@ function stopQueue() {
   activeAbort = null;
   const entry = queue.find(item => item.id === activeFileId);
   if (entry && ['decoding', 'running'].includes(entry.status)) entry.status = 'canceled';
-  const job = activeJob;
-  activeJob = null;
-  worker?.terminate();
-  worker = null;
-  job?.reject(cancelError());
+  releaseWorker()?.reject(cancelError());
   busy = false;
   activeFileId = null;
   render();
@@ -619,7 +622,7 @@ ui['drop-zone'].addEventListener('dragleave', () => ui['drop-zone'].classList.re
 ui['drop-zone'].addEventListener('drop', event => { event.preventDefault(); ui['drop-zone'].classList.remove('drag-over'); if (!busy) addFiles(event.dataTransfer.files); });
 document.addEventListener('dragover', event => { if (event.dataTransfer?.types.includes('Files')) event.preventDefault(); });
 document.addEventListener('drop', event => { if (event.dataTransfer?.types.includes('Files')) event.preventDefault(); });
-ui['clear-files'].addEventListener('click', () => { if (busy) return; queue.length = 0; selectedId = null; showError(''); render(); });
+ui['clear-files'].addEventListener('click', () => { if (busy) return; releaseWorker()?.reject(cancelError()); queue.length = 0; selectedId = null; showError(''); render(); });
 ui['start-button'].addEventListener('click', startQueue);
 ui['rerun-button'].addEventListener('click', rerunSelected);
 ui['restore-button'].addEventListener('click', restorePrevious);

@@ -1,0 +1,434 @@
+{
+  "schema_version": 1,
+  "protocol_id": "qwen-web-1280-512-derived-diagnostic-20261014",
+  "frozen_at": "2026-10-14T10:26:32.728190+00:00",
+  "scope": "Derived resource-stability diagnostic on the same fixed 31 cases after observing a 2048/512 sequential abort. Not independent new holdout data, not browser/mobile UI validation.",
+  "change_from_original": "Only CLI max_total_len changes 2048 -> 1280. No runner logic, audio, order, references, hotwords, language, model, runtime, max_new_tokens or sampling changes.",
+  "runner_sha256": "51433db6d36340339124e61d134e700f0291f9e444701c6031ffea79d599025b",
+  "input_manifest_sha256": "15449b4550419e877116eba84e47ac0458f3f0ee760dee1a8f3f5fc5bf9c4708",
+  "model_manifest_sha256": "87c77d816a56c4a2e60b0345bf2490c322a176b73c14f02ba80f6492fdb80e71",
+  "runtime_manifest_sha256": "68233015eb9a711b797a717c7f8cf38c09ab534e419a2fef6276eabd1b9118a3",
+  "settings": {
+    "feature_dim": 128,
+    "sample_rate": 16000,
+    "num_threads": 1,
+    "provider": "cpu",
+    "max_total_len": 1280,
+    "max_new_tokens": 512,
+    "temperature": 1e-06,
+    "top_p": 0.8,
+    "seed": 42,
+    "hotwords": "",
+    "repeat": 1,
+    "recognizer_lifetime": "one recognizer for all 31 inputs, original order"
+  },
+  "capacity_proof": {
+    "method": "Source-derived conservative upper bound; no feature/model inference performed for this proof. All PCM sample counts read from file sizes.",
+    "sources": [
+      {
+        "url": "https://github.com/k2-fsa/sherpa-onnx/blob/v1.13.8/sherpa-onnx/csrc/offline-recognizer-qwen3-asr-impl.cc",
+        "sha256": "d9daad0eafcd066fa088eb06d858ecfd394fef35ce1e6f595ab934e6e5525824"
+      },
+      {
+        "url": "https://github.com/k2-fsa/sherpa-onnx/blob/v1.13.8/sherpa-onnx/csrc/offline-stream.cc",
+        "sha256": "03ec1bbd50ff0a1d7d83bb952ee0d9d4020f49e850af08ea1892158163c98f98"
+      }
+    ],
+    "feature_upper_bound": "F_bound = ceil(PCM_samples / 160) + 100. The 100-frame margin is analytical only; no silence or samples are added. Fixed Qwen uses Whisper-style 10ms frames; aligned GetFrames caps at floor(N/160).",
+    "audio_token_bound": "A(F) = 13*floor(F/100) + ceil((F mod 100)/8)",
+    "fixed_empty_hotword_prompt_tokens": 18,
+    "prompt_assumptions": "fixed pinned tokenizer; explicit Chinese or English; no hotwords; <audio_pad> is one token",
+    "minimum_nontruncating_condition": "C=A+18 <= M; generation up to G additionally needs C+G-1<=M. We use stricter C+G<=M.",
+    "max_samples": 687578,
+    "max_audio_seconds": 42.973625,
+    "max_feature_frames_bound": 4398,
+    "max_audio_tokens_bound": 572,
+    "max_context_plus_512": 1102,
+    "minimum_remaining_slots": 178,
+    "all_31_pass_capacity_check": true,
+    "kv_tensor_bytes_original": 469762048,
+    "kv_tensor_bytes_derived": 293601280,
+    "kv_tensor_reduction_bytes": 176160768,
+    "limitations": "Capacity sufficiency is not stability or accuracy evidence. max_new_tokens=512 remains an independent limit. Fixed Sherpa engine output includes low-diversity repetition-tail protection."
+  },
+  "prior_runs_preserved": [
+    {
+      "file": "web-qwen-zh-clean-smoke.json",
+      "sha256": "ff5db15b99cc8b505636cd9d0d6c29559d2d196580c4ea31e4a16ea89b27ef35",
+      "status": "failed",
+      "stage": "creating_qwen_recognizer",
+      "completed_cases": 0,
+      "error": "Cannot read properties of undefined (reading 'length')"
+    },
+    {
+      "file": "web-qwen-zh-clean-smoke-v2.json",
+      "sha256": "8bc6c5e4a44094e75d009debc0bc7f85846438b53680153e672150d056ef660b",
+      "status": "complete",
+      "stage": "complete",
+      "completed_cases": 1,
+      "error": null
+    },
+    {
+      "file": "web-qwen-all-v2.json",
+      "sha256": "7bd9a49cd1f416e1067538195b4d79b8807b72123cdcadff035551eab91aa2f7",
+      "status": "failed",
+      "stage": "decoding:meli-f01b-zh:1",
+      "completed_cases": 8,
+      "error": "Aborted(). Build with -sASSERTIONS for more info."
+    },
+    {
+      "file": "web-qwen-fresh-long-v2.json",
+      "sha256": "16add8037d115c4687d6b51c30325cd53c493f232fc7000c61347dbf51bdeec7",
+      "status": "complete",
+      "stage": "complete",
+      "completed_cases": 1,
+      "error": null
+    }
+  ],
+  "failure_interpretation": "Sequential 2048 run aborted after 8 successes at first MELI input, while fresh 2048 run of that same 25.620625s input succeeded. Heap had reached 2GiB; logs do not explicitly identify OOM. Possible sequence/resource-state sensitivity is a hypothesis, not a proven root cause.",
+  "success_criterion": "All 31 cases produce terminal complete rows in the original order in one recognizer lifetime, no abort; independently score all completed outputs and retain failures. Do not select best text between protocols.",
+  "output_filename": "web-qwen-all-kv1280-v2.json",
+  "cases_in_frozen_order": [
+    {
+      "id": "zh-clean",
+      "pcm_sha256": "32679c5676d4a67bab7d297da1db34f92ec8a2f4899f4a03c6c80b3f4efdabdd",
+      "samples": 89472,
+      "audio_seconds": 5.592,
+      "conservative_feature_frames": 660,
+      "audio_tokens_bound": 86,
+      "context_tokens_bound": 104,
+      "context_plus_512": 616,
+      "remaining_slots": 664
+    },
+    {
+      "id": "en-jfk",
+      "pcm_sha256": "16ba6e5258b459b41344a5542cf71429dfe446acf32c6a9dbdce02258c1f77e7",
+      "samples": 176000,
+      "audio_seconds": 11.0,
+      "conservative_feature_frames": 1200,
+      "audio_tokens_bound": 156,
+      "context_tokens_bound": 174,
+      "context_plus_512": 686,
+      "remaining_slots": 594
+    },
+    {
+      "id": "zh-fast",
+      "pcm_sha256": "8ed6de5a6673e93d5bba306db190ab8f5ca786f2b01d85de328a47312ca0ba00",
+      "samples": 182086,
+      "audio_seconds": 11.380375,
+      "conservative_feature_frames": 1239,
+      "audio_tokens_bound": 161,
+      "context_tokens_bound": 179,
+      "context_plus_512": 691,
+      "remaining_slots": 589
+    },
+    {
+      "id": "zh-noisy-digits",
+      "pcm_sha256": "162c06cacf17383517878f77d0b9d2ed91a6085f56859f8164c8da15a8388434",
+      "samples": 365328,
+      "audio_seconds": 22.833,
+      "conservative_feature_frames": 2384,
+      "audio_tokens_bound": 310,
+      "context_tokens_bound": 328,
+      "context_plus_512": 840,
+      "remaining_slots": 440
+    },
+    {
+      "id": "en-noisy-dialogue",
+      "pcm_sha256": "6fbaf85e93aea0be14b8934df691e518e441b0cc7e76012e22a45b2d98cd369f",
+      "samples": 304320,
+      "audio_seconds": 19.02,
+      "conservative_feature_frames": 2002,
+      "audio_tokens_bound": 261,
+      "context_tokens_bound": 279,
+      "context_plus_512": 791,
+      "remaining_slots": 489
+    },
+    {
+      "id": "silence",
+      "pcm_sha256": "ac2878215ad33205d1732578c89f25ededaad1b676911c540825bcf4baa42d9b",
+      "samples": 80000,
+      "audio_seconds": 5.0,
+      "conservative_feature_frames": 600,
+      "audio_tokens_bound": 78,
+      "context_tokens_bound": 96,
+      "context_plus_512": 608,
+      "remaining_slots": 672
+    },
+    {
+      "id": "noise",
+      "pcm_sha256": "60ce8607268552a37e3d1e2022d7629db4d6d63b4d07cb0c9b5396558e56930d",
+      "samples": 80000,
+      "audio_seconds": 5.0,
+      "conservative_feature_frames": 600,
+      "audio_tokens_bound": 78,
+      "context_tokens_bound": 96,
+      "context_plus_512": 608,
+      "remaining_slots": 672
+    },
+    {
+      "id": "user-lyrics",
+      "pcm_sha256": "8933b1e813ec67abeb6de3067625a2dfec13672fd7706181cd571d143617794b",
+      "samples": 347136,
+      "audio_seconds": 21.696,
+      "conservative_feature_frames": 2270,
+      "audio_tokens_bound": 295,
+      "context_tokens_bound": 313,
+      "context_plus_512": 825,
+      "remaining_slots": 455
+    },
+    {
+      "id": "meli-f01b-zh",
+      "pcm_sha256": "b575ec11b47e8f77e2f93c9b70e34f86f76e81098cff87d979ad2c34eff63c56",
+      "samples": 409930,
+      "audio_seconds": 25.620625,
+      "conservative_feature_frames": 2663,
+      "audio_tokens_bound": 346,
+      "context_tokens_bound": 364,
+      "context_plus_512": 876,
+      "remaining_slots": 404
+    },
+    {
+      "id": "meli-f00a-en",
+      "pcm_sha256": "851649f5812e85129633774e3ed12cd142845d587cad389cd839e61cf6ef36f8",
+      "samples": 555039,
+      "audio_seconds": 34.6899375,
+      "conservative_feature_frames": 3569,
+      "audio_tokens_bound": 464,
+      "context_tokens_bound": 482,
+      "context_plus_512": 994,
+      "remaining_slots": 286
+    },
+    {
+      "id": "meli-m00a-zh",
+      "pcm_sha256": "973a08588a7784906d4b2c3101bbeff516964d9378ae52f81a2bd22f528bb33d",
+      "samples": 575574,
+      "audio_seconds": 35.973375,
+      "conservative_feature_frames": 3698,
+      "audio_tokens_bound": 481,
+      "context_tokens_bound": 499,
+      "context_plus_512": 1011,
+      "remaining_slots": 269
+    },
+    {
+      "id": "meli-m00a-en",
+      "pcm_sha256": "5e3e56d11815dc8c2205f61f5543a95a1b267f057037f0ac3b38a18ba7d7efcc",
+      "samples": 622087,
+      "audio_seconds": 38.8804375,
+      "conservative_feature_frames": 3989,
+      "audio_tokens_bound": 519,
+      "context_tokens_bound": 537,
+      "context_plus_512": 1049,
+      "remaining_slots": 231
+    },
+    {
+      "id": "meli-holdout-f01a-zh",
+      "pcm_sha256": "eeee334828ca96abd0904e29388accd5f82939d7fdc18a607630cea545ff66a8",
+      "samples": 343103,
+      "audio_seconds": 21.4439375,
+      "conservative_feature_frames": 2245,
+      "audio_tokens_bound": 292,
+      "context_tokens_bound": 310,
+      "context_plus_512": 822,
+      "remaining_slots": 458
+    },
+    {
+      "id": "meli-holdout-m00b-zh",
+      "pcm_sha256": "0d36b193d802f0eba21e75cf13f60396da296b92f3f6fe47a1f593cf1320cba3",
+      "samples": 448764,
+      "audio_seconds": 28.04775,
+      "conservative_feature_frames": 2905,
+      "audio_tokens_bound": 378,
+      "context_tokens_bound": 396,
+      "context_plus_512": 908,
+      "remaining_slots": 372
+    },
+    {
+      "id": "meli-accent-f02a-en",
+      "pcm_sha256": "a24afaa5804245262f8422800c62c4a68cd3912be4301c4e4a74e9ea66a8df4e",
+      "samples": 568119,
+      "audio_seconds": 35.5074375,
+      "conservative_feature_frames": 3651,
+      "audio_tokens_bound": 475,
+      "context_tokens_bound": 493,
+      "context_plus_512": 1005,
+      "remaining_slots": 275
+    },
+    {
+      "id": "meli-accent-m01a-en",
+      "pcm_sha256": "e7f41e97a7326f71061883c7c83f656062f98f1d90d8f361ae5e5032f835b058",
+      "samples": 351102,
+      "audio_seconds": 21.943875,
+      "conservative_feature_frames": 2295,
+      "audio_tokens_bound": 298,
+      "context_tokens_bound": 316,
+      "context_plus_512": 828,
+      "remaining_slots": 452
+    },
+    {
+      "id": "meli-accent-f02b-zh",
+      "pcm_sha256": "cd1eba9f714b4f5257ec906231e93de03e8b455cbe01e9385eba478c95d58970",
+      "samples": 344529,
+      "audio_seconds": 21.5330625,
+      "conservative_feature_frames": 2254,
+      "audio_tokens_bound": 293,
+      "context_tokens_bound": 311,
+      "context_plus_512": 823,
+      "remaining_slots": 457
+    },
+    {
+      "id": "meli-accent-m01b-zh",
+      "pcm_sha256": "21720d19fccf650d048ff897de6449a586646d30f9035eb50cebab6bd245b607",
+      "samples": 310279,
+      "audio_seconds": 19.3924375,
+      "conservative_feature_frames": 2040,
+      "audio_tokens_bound": 265,
+      "context_tokens_bound": 283,
+      "context_plus_512": 795,
+      "remaining_slots": 485
+    },
+    {
+      "id": "meli-accent-f89a-en",
+      "pcm_sha256": "7ea7ea047f677a2b200813cb9358d114f433b36f6abe6b7ee45aa1e40b6e8f81",
+      "samples": 431298,
+      "audio_seconds": 26.956125,
+      "conservative_feature_frames": 2796,
+      "audio_tokens_bound": 363,
+      "context_tokens_bound": 381,
+      "context_plus_512": 893,
+      "remaining_slots": 387
+    },
+    {
+      "id": "meli-accent-final-f94a-en",
+      "pcm_sha256": "414551f75a9734f2749018fac35a12bcffee410739c6d4943f5da1d4af839666",
+      "samples": 687578,
+      "audio_seconds": 42.973625,
+      "conservative_feature_frames": 4398,
+      "audio_tokens_bound": 572,
+      "context_tokens_bound": 590,
+      "context_plus_512": 1102,
+      "remaining_slots": 178
+    },
+    {
+      "id": "meli-accent-final-m99a-en",
+      "pcm_sha256": "fb277033f17f14f3a1449b2d49da0b28b8042f431748145a51f991e16a6ed54a",
+      "samples": 614222,
+      "audio_seconds": 38.388875,
+      "conservative_feature_frames": 3939,
+      "audio_tokens_bound": 512,
+      "context_tokens_bound": 530,
+      "context_plus_512": 1042,
+      "remaining_slots": 238
+    },
+    {
+      "id": "meli-merge-holdout-f95a-en",
+      "pcm_sha256": "e0357297f32b954eb365ec0e3ce20a3f89147772114b358dd48ee0b5f921a659",
+      "samples": 646019,
+      "audio_seconds": 40.3761875,
+      "conservative_feature_frames": 4138,
+      "audio_tokens_bound": 538,
+      "context_tokens_bound": 556,
+      "context_plus_512": 1068,
+      "remaining_slots": 212
+    },
+    {
+      "id": "meli-merge-holdout-f96a-en",
+      "pcm_sha256": "7d2536772d60ef4037bdcc5ba8f200fdf5dea3cfa35c9cfa02c7ab3e3ff4be71",
+      "samples": 543837,
+      "audio_seconds": 33.9898125,
+      "conservative_feature_frames": 3499,
+      "audio_tokens_bound": 455,
+      "context_tokens_bound": 473,
+      "context_plus_512": 985,
+      "remaining_slots": 295
+    },
+    {
+      "id": "meli-next-holdout-f99a-en",
+      "pcm_sha256": "c8494e764d911fc5676118eed97be83213abfdbcda8ee85af2410ae4d0913e06",
+      "samples": 685237,
+      "audio_seconds": 42.8273125,
+      "conservative_feature_frames": 4383,
+      "audio_tokens_bound": 570,
+      "context_tokens_bound": 588,
+      "context_plus_512": 1100,
+      "remaining_slots": 180
+    },
+    {
+      "id": "meli-next-holdout-m89a-en",
+      "pcm_sha256": "1558286e61972ec7f6b5a72ecb21264b0df3c6f899ed5fd8070c31a75dec5c0f",
+      "samples": 375040,
+      "audio_seconds": 23.44,
+      "conservative_feature_frames": 2444,
+      "audio_tokens_bound": 318,
+      "context_tokens_bound": 336,
+      "context_plus_512": 848,
+      "remaining_slots": 432
+    },
+    {
+      "id": "meli-next-holdout-f97a-en",
+      "pcm_sha256": "67fbfcde4ca96c9afbcc25a0ec95bfd2e3c2a91e7e98aee2cb86848d44ec2376",
+      "samples": 563370,
+      "audio_seconds": 35.210625,
+      "conservative_feature_frames": 3622,
+      "audio_tokens_bound": 471,
+      "context_tokens_bound": 489,
+      "context_plus_512": 1001,
+      "remaining_slots": 279
+    },
+    {
+      "id": "meli-next-holdout-m02a-en",
+      "pcm_sha256": "9daec832bdd206e77cf4fa2e3cce57561e4b20f4c688f26c8d118989a4db589f",
+      "samples": 425165,
+      "audio_seconds": 26.5728125,
+      "conservative_feature_frames": 2758,
+      "audio_tokens_bound": 359,
+      "context_tokens_bound": 377,
+      "context_plus_512": 889,
+      "remaining_slots": 391
+    },
+    {
+      "id": "meli-next-holdout-m97a-zh",
+      "pcm_sha256": "e207803e256d088d4429f7bdbde8d2e6aea516574ca80073e1dff43bca3734c9",
+      "samples": 331840,
+      "audio_seconds": 20.74,
+      "conservative_feature_frames": 2174,
+      "audio_tokens_bound": 283,
+      "context_tokens_bound": 301,
+      "context_plus_512": 813,
+      "remaining_slots": 467
+    },
+    {
+      "id": "meli-next-holdout-m03a-zh",
+      "pcm_sha256": "dc815e209bb3f1bac37871095c97a4c8267f6e80c8b954b66544e26a32da29a3",
+      "samples": 387277,
+      "audio_seconds": 24.2048125,
+      "conservative_feature_frames": 2521,
+      "audio_tokens_bound": 328,
+      "context_tokens_bound": 346,
+      "context_plus_512": 858,
+      "remaining_slots": 422
+    },
+    {
+      "id": "meli-next-holdout-f94b-zh",
+      "pcm_sha256": "07537c32c2683b5ab80465bb521d9a7717987c2ef049581e2a925d080038f15f",
+      "samples": 329930,
+      "audio_seconds": 20.620625,
+      "conservative_feature_frames": 2163,
+      "audio_tokens_bound": 281,
+      "context_tokens_bound": 299,
+      "context_plus_512": 811,
+      "remaining_slots": 469
+    },
+    {
+      "id": "meli-next-holdout-f03a-zh",
+      "pcm_sha256": "58bbf276d653a01e15435034e72d38875cee81226d999e5b2bfda2c90dfebdbb",
+      "samples": 595195,
+      "audio_seconds": 37.1996875,
+      "conservative_feature_frames": 3820,
+      "audio_tokens_bound": 497,
+      "context_tokens_bound": 515,
+      "context_plus_512": 1027,
+      "remaining_slots": 253
+    }
+  ]
+}

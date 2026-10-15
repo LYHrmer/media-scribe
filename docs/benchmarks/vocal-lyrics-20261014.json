@@ -1,0 +1,319 @@
+{
+  "schema_version": 1,
+  "status": "complete_after_enum_adapter",
+  "scope": "One already-seen private lyric development sample; not held-out accuracy or browser validation",
+  "protocol_sha256": "851856b8d3b9e79070422da9c38a2aa697a5fdc7f6cfeecc55aefd846cac7fe6",
+  "reference_sha256": "7283c70b27515e6e9d186cd65ec4a35d1a4a52a160ee1130c79417508d4ef9c9",
+  "reference_units": 22,
+  "punctuation": "Not evaluated; lexical CER removes punctuation. No punctuation accuracy claim.",
+  "compiled": [
+    {
+      "path": "/workspace/sites/tingxie-web/dist/assets/punctuation.worker-Ch2hTEJS.js",
+      "sha256": "178ac8d7ab9e4f7fd13a75d37763eafa1d276ac9c388771dcf7be98642620209"
+    },
+    {
+      "path": "/workspace/sites/tingxie-web/dist/assets/sensevoice.worker-gduX_vXW.js",
+      "sha256": "0a4c728cd09265a5a48e6569f6ad4cb57e6a3bb1e975ac351050199fb22f4532"
+    },
+    {
+      "path": "/workspace/sites/tingxie-web/dist/assets/vad.worker-C9h8-FgH.js",
+      "sha256": "e19bc613db3bdaa1e87f1fa91a6a4722613a83a4204c2b8d1bdb4ecabef04ebe"
+    }
+  ],
+  "actual_sensevoice_fingerprints": {
+    "vad.worker-C9h8-FgH.js": "e19bc613db3bdaa1e87f1fa91a6a4722613a83a4204c2b8d1bdb4ecabef04ebe",
+    "punctuation.worker-Ch2hTEJS.js": "178ac8d7ab9e4f7fd13a75d37763eafa1d276ac9c388771dcf7be98642620209",
+    "sensevoice.worker-gduX_vXW.js": "0a4c728cd09265a5a48e6569f6ad4cb57e6a3bb1e975ac351050199fb22f4532",
+    "models-sensevoice/runtime.mjs": "3a7e50f11a449f4b9fd2b9373fbb3f16fd487cce804ae6f51241d72c5f0dbcbe",
+    "models-sensevoice/asr.mjs": "6686bf26631572b161fc2b6532302d8eeda91a774c32f3216eced57ec5769ff2"
+  },
+  "execution": {
+    "initial_runs": [
+      {
+        "stage": "run_separation",
+        "argv": [
+          "timeout",
+          "600",
+          "/workspace/experiments/next-accuracy-oct14/official-venv/bin/python",
+          "/workspace/experiments/lyrics-recovery-oct14/vocals/run-htdemucs-vocals.py"
+        ],
+        "returncode": 0,
+        "wall_seconds": 15.915755533002084,
+        "memory_events_before": {
+          "low": 0,
+          "high": 0,
+          "max": 127348,
+          "oom": 1,
+          "oom_kill": 1,
+          "oom_group_kill": 0
+        },
+        "memory_events_after": {
+          "low": 0,
+          "high": 0,
+          "max": 127348,
+          "oom": 1,
+          "oom_kill": 1,
+          "oom_group_kill": 0
+        },
+        "private_log_sha256": "1a0b5d7c56e741e705cc9452ba506727099d66393514ae0c874fdfde7f292e56",
+        "peak_rss_kib": 1345964,
+        "cpu_user_seconds": 26.321124,
+        "cpu_system_seconds": 2.833881,
+        "resource_source": "Linux wait4 child rusage"
+      },
+      {
+        "stage": "run_sensevoice",
+        "argv": [
+          "node",
+          "--experimental-vm-modules",
+          "/workspace/experiments/next-accuracy-oct14/scripts/run-sensevoice-production-blind.mjs",
+          "/workspace/sites/tingxie-web/dist",
+          "/workspace/experiments/lyrics-recovery-oct14/vocals/comparison-inference.json",
+          "/workspace/experiments/lyrics-recovery-oct14/vocals/sensevoice-comparison.local.json"
+        ],
+        "returncode": 1,
+        "wall_seconds": 0.4446415800048271,
+        "memory_events_before": {
+          "low": 0,
+          "high": 0,
+          "max": 127348,
+          "oom": 1,
+          "oom_kill": 1,
+          "oom_group_kill": 0
+        },
+        "memory_events_after": {
+          "low": 0,
+          "high": 0,
+          "max": 127348,
+          "oom": 1,
+          "oom_kill": 1,
+          "oom_group_kill": 0
+        },
+        "private_log_sha256": "d7702e164c957b2f3abbd7c5e29e15aa68e1985abb58e1d8b137631a520c5ef3",
+        "peak_rss_kib": 187100,
+        "cpu_user_seconds": 0.7037209999999999,
+        "cpu_system_seconds": 0.105515,
+        "resource_source": "Linux wait4 child rusage"
+      },
+      {
+        "stage": "run_qwen_native",
+        "argv": [
+          "/workspace/experiments/next-accuracy-oct14/runtime/bin/python",
+          "/workspace/experiments/next-accuracy-oct14/scripts/run-native-qwen.py",
+          "--cases",
+          "/workspace/experiments/lyrics-recovery-oct14/vocals/comparison-inference.json",
+          "--output",
+          "/workspace/experiments/lyrics-recovery-oct14/vocals/qwen-comparison.local.json",
+          "--model-dir",
+          "/workspace/experiments/next-accuracy-oct14/models/qwen3-asr-0.6B-int8",
+          "--num-threads",
+          "2",
+          "--max-total-len",
+          "2048",
+          "--max-new-tokens",
+          "512"
+        ],
+        "returncode": 0,
+        "wall_seconds": 16.717020336000132,
+        "memory_events_before": {
+          "low": 0,
+          "high": 0,
+          "max": 127348,
+          "oom": 1,
+          "oom_kill": 1,
+          "oom_group_kill": 0
+        },
+        "memory_events_after": {
+          "low": 0,
+          "high": 0,
+          "max": 132430,
+          "oom": 1,
+          "oom_kill": 1,
+          "oom_group_kill": 0
+        },
+        "private_log_sha256": "11a230ba65fcc1b97b10adb0134ccdef18a0b8d28119544127af9c115de811e4",
+        "peak_rss_kib": 2757272,
+        "cpu_user_seconds": 26.827708,
+        "cpu_system_seconds": 1.776831,
+        "resource_source": "Linux wait4 child rusage"
+      }
+    ],
+    "sensevoice_compatibility_retry": {
+      "utc": "2026-10-14T11:48:34.374092+00:00",
+      "reason": "First attempt rejected unsupported enum zh before ASR model loading; map it mechanically to chinese",
+      "changes": {
+        "language": [
+          "zh",
+          "chinese"
+        ]
+      },
+      "pcm_unchanged": true,
+      "references_read": false,
+      "result_text_read_to_choose_retry": false,
+      "original_manifest_sha256": "091b78bf47936900b7467922a4f4537b514f2b7cef611da374d92aef54423646",
+      "adapted_manifest_sha256": "042847950caa0fdac59849d5f6b92ffc05c8c3f9a85b2c277996f9bdde6b2b52",
+      "argv": [
+        "node",
+        "--experimental-vm-modules",
+        "/workspace/experiments/next-accuracy-oct14/scripts/run-sensevoice-production-blind.mjs",
+        "/workspace/sites/tingxie-web/dist",
+        "/workspace/experiments/lyrics-recovery-oct14/vocals/sensevoice-language-adapter-inference.json",
+        "/workspace/experiments/lyrics-recovery-oct14/vocals/sensevoice-comparison.local.json"
+      ],
+      "returncode": 0,
+      "wall_seconds": 18.326392594004574,
+      "peak_rss_kib": 1749892,
+      "cpu_user_seconds": 21.045692,
+      "cpu_system_seconds": 1.046446,
+      "memory_events_after": "low 0\nhigh 0\nmax 132430\noom 1\noom_kill 1\noom_group_kill 0\n"
+    },
+    "memory_events_before": {
+      "low": 0,
+      "high": 0,
+      "max": 127348,
+      "oom": 1,
+      "oom_kill": 1,
+      "oom_group_kill": 0
+    },
+    "memory_events_after": "low 0\nhigh 0\nmax 132430\noom 1\noom_kill 1\noom_group_kill 0\n"
+  },
+  "cases": [
+    {
+      "model": "production-sensevoice-v054",
+      "id": "lyrics-frozen-original",
+      "pcm_sha256": "8933b1e813ec67abeb6de3067625a2dfec13672fd7706181cd571d143617794b",
+      "text_sha256": "b1ba567c6ae0f0a19688a0afac54b2a6a45516714300183ae2da850334b7d2bd",
+      "score": {
+        "metric": "CER",
+        "reference_tokens": 22,
+        "hypothesis_tokens": 7,
+        "matches": 2,
+        "substitutions": 5,
+        "deletions": 15,
+        "insertions": 0,
+        "errors": 20,
+        "rate": 0.9090909090909091
+      },
+      "seconds": 9.529554627
+    },
+    {
+      "model": "production-sensevoice-v054",
+      "id": "lyrics-mixture",
+      "pcm_sha256": "6f559474d71d48cb2c282a7d61ebd3fb1e465c1a7b5e14bb312cfb4fba35dcc5",
+      "text_sha256": "b1ba567c6ae0f0a19688a0afac54b2a6a45516714300183ae2da850334b7d2bd",
+      "score": {
+        "metric": "CER",
+        "reference_tokens": 22,
+        "hypothesis_tokens": 7,
+        "matches": 2,
+        "substitutions": 5,
+        "deletions": 15,
+        "insertions": 0,
+        "errors": 20,
+        "rate": 0.9090909090909091
+      },
+      "seconds": 4.28604464
+    },
+    {
+      "model": "production-sensevoice-v054",
+      "id": "lyrics-vocals",
+      "pcm_sha256": "8f671450f4e1a80c13a3399b0c3d4dd7b261573efbfda8e14cabc82f83d6b6e8",
+      "text_sha256": "cafd7994cf1bfd51fd3d234bb0c366745e4ed3255e70d659a7cbf4416426e973",
+      "score": {
+        "metric": "CER",
+        "reference_tokens": 22,
+        "hypothesis_tokens": 5,
+        "matches": 3,
+        "substitutions": 2,
+        "deletions": 17,
+        "insertions": 0,
+        "errors": 19,
+        "rate": 0.8636363636363636
+      },
+      "seconds": 4.373654325000001
+    },
+    {
+      "model": "native-qwen-06-int8",
+      "id": "lyrics-frozen-original",
+      "pcm_sha256": "8933b1e813ec67abeb6de3067625a2dfec13672fd7706181cd571d143617794b",
+      "text_sha256": "65b6916420de5fc1d4ba5c2025bd215ddf884fd472d299d3438614d4b2f6ea00",
+      "score": {
+        "metric": "CER",
+        "reference_tokens": 22,
+        "hypothesis_tokens": 18,
+        "matches": 2,
+        "substitutions": 16,
+        "deletions": 4,
+        "insertions": 0,
+        "errors": 20,
+        "rate": 0.9090909090909091
+      },
+      "seconds": null
+    },
+    {
+      "model": "native-qwen-06-int8",
+      "id": "lyrics-mixture",
+      "pcm_sha256": "6f559474d71d48cb2c282a7d61ebd3fb1e465c1a7b5e14bb312cfb4fba35dcc5",
+      "text_sha256": "8c45f8397fbb866e0ee658f88d2a64fca76fcc295156c5f85b6dd9ceb771898f",
+      "score": {
+        "metric": "CER",
+        "reference_tokens": 22,
+        "hypothesis_tokens": 19,
+        "matches": 3,
+        "substitutions": 16,
+        "deletions": 3,
+        "insertions": 0,
+        "errors": 19,
+        "rate": 0.8636363636363636
+      },
+      "seconds": null
+    },
+    {
+      "model": "native-qwen-06-int8",
+      "id": "lyrics-vocals",
+      "pcm_sha256": "8f671450f4e1a80c13a3399b0c3d4dd7b261573efbfda8e14cabc82f83d6b6e8",
+      "text_sha256": "2659cdd468bb53a3296978e1f2a90f2ecf1a5ae6d67cc36552d3dfbc1c0a68c1",
+      "score": {
+        "metric": "CER",
+        "reference_tokens": 22,
+        "hypothesis_tokens": 19,
+        "matches": 3,
+        "substitutions": 16,
+        "deletions": 3,
+        "insertions": 0,
+        "errors": 19,
+        "rate": 0.8636363636363636
+      },
+      "seconds": null
+    }
+  ],
+  "comparisons": [
+    {
+      "model": "production-sensevoice-v054",
+      "primary_contrast": "same-model resampling-control mixture versus separated vocals",
+      "mixture_errors": 20,
+      "vocal_errors": 19,
+      "error_delta": -1
+    },
+    {
+      "model": "native-qwen-06-int8",
+      "primary_contrast": "same-model resampling-control mixture versus separated vocals",
+      "mixture_errors": 19,
+      "vocal_errors": 19,
+      "error_delta": 0
+    }
+  ],
+  "source_hashes": {
+    "separation-result.local.json": "cd2de76d7c6ac4d5cfbfa30b782d4c8a07c9e97a9ef76c578564b23827be9ea0",
+    "qwen-comparison.local.json": "9b89709863963bb435d7c42f7e7b49b0a2f768b3e59dc7d1225fd9813779504a",
+    "sensevoice-comparison.local.json": "d8606c61de153a18853f5a0dc1343e916cb713d787a24ef6d30f25be6baac904",
+    "execution-receipt.local.json": "534aef34792a1766074cc114aad2c64ee5c5b18db084973d5f6dec8e182f8e3e",
+    "sensevoice-language-adapter-receipt.local.json": "83e4363b2867be2012148235988dc91814febbeb0ea9dbedef44284e14196853"
+  },
+  "limitations": [
+    "A single known song cannot establish generalization.",
+    "No product model was replaced.",
+    "First SenseVoice attempt failed an enum check before loading ASR; all PCM/configurations were preserved in the documented mechanical adapter.",
+    "Native Qwen and offline Demucs are not browser or mobile feasibility tests."
+  ]
+}
