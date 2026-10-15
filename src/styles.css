@@ -56,6 +56,13 @@ h2 { font-size: 14px; font-weight: 650; margin: 0; letter-spacing: .2px; }
 .drop-zone > span:not(.upload-icon) { font-size: 11px; margin-top: 7px; color: #8c9793; }
 .drop-zone > .drop-types { color: #a0aaa5 !important; font-size: 10px !important; margin-top: 15px !important; }
 .file-limit { margin: 9px 0 0; text-align: center; font-size: 10px; letter-spacing: .25px; color: #98a29d; }
+.media-link-import { margin-top: 18px; padding: 14px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.media-link-import label { display: block; margin-bottom: 8px; font-size: 12px; font-weight: 600; }
+.media-link-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.media-link-row input { flex: 1 1 140px; min-width: 0; width: 100%; min-height: 42px; border: 1px solid var(--border); border-radius: 7px; padding: 9px; font: inherit; font-size: 14px; background: white; color: var(--text); }
+.media-link-row button { min-height: 42px; flex-shrink: 0; }
+.media-link-import p { margin: 9px 0 0; font-size: 11px; line-height: 1.7; color: #65796e; overflow-wrap: anywhere; }
+.media-link-import .media-url-status { color: #315f4e; }
 .single-file-picker { margin-top: 12px; padding: 10px 12px; background: #f7f9f5; border-radius: 8px; }
 .single-file-picker label { display: block; color: #526b5c; font-size: 12px; margin-bottom: 3px; }
 .single-file-picker input[type="file"] { display: block; width: 100%; min-width: 0; padding: 5px 0; font-size: 12px; }

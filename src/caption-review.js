@@ -3,12 +3,13 @@
 const HAN = /\p{Script=Han}/u;
 const clean = value => String(value ?? '').normalize('NFKC').toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
 const words = value => String(value ?? '').normalize('NFKC').toLowerCase().match(/[\p{L}\p{N}]+/gu) || [];
-const role = /^(?:总?编剧|总?导演|联合导演|执行导演|艺术指导|美术指导|摄影指导|音乐总监|制片人|出品人|领衔主演|主演|演员表|配音|作词|作曲|编曲|演唱|特别鸣谢|written by|directed by|director|screenplay|producer|executive producer|cast|starring|music by|lyrics by)(?:\s*[:：]\s*[\p{L}\p{N}·、，, &.-]{1,48})?$/iu;
+const role = /^(?:(?:本集|本期)?(?:总?编剧|总?导演|联合导演|执行导演|艺术指导|美术指导|摄影指导|音乐总监|制作监督|总?监制|总?策划|总?制片人|出品人|领衔主演|主演|演员表|配音|作词|作曲|编曲|演唱|特别鸣谢)|written by|directed by|director|screenplay|producer|executive producer|cast|starring|music by|lyrics by)(?:\s*[:：]\s*[\p{L}\p{N}·、，, &.-]{1,48})?$/iu;
 const labelText = value => String(value ?? '').trim().replace(/[。.!！?？]+$/u, '').trim();
 const overlaps = (a, b) => Math.min(a.end, b.end) > Math.max(a.start, b.start);
 const validBox = b => b && ['left','right','top','bottom','width','height','x','y'].every(k => Number.isFinite(b[k]))
   && b.left >= 0 && b.top >= 0 && b.right <= 1 && b.bottom <= 1 && b.width > 0 && b.height > 0;
 const nameShape = value => /^(?:[\p{Script=Han}·]{2,5}(?:[、，\s]+[\p{Script=Han}·]{2,5}){0,3}|[\p{Script=Latin}.'’-]+(?:\s+[\p{Script=Latin}.'’-]+){1,3})$/u.test(labelText(value));
+const handleShape = value => /^@+[\p{L}\p{N}_·.-]{2,32}$/u.test(labelText(value));
 
 function neighbouringCredit(item, heading) {
   // A role word anywhere in the video must not suppress an unrelated subtitle.
@@ -17,9 +18,13 @@ function neighbouringCredit(item, heading) {
   if (!validBox(a) || !validBox(b)) return false;
   const sameRow = Math.abs(a.y - b.y) <= Math.max(a.height, b.height) * 0.65
     && a.left >= b.right - b.width * 0.1 && a.left - b.right <= Math.max(0.12, b.width);
-  const below = a.top >= b.bottom - b.height * 0.1
+  const horizontalOverlap = Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left));
+  // Tilted credit cards can have overlapping axis-aligned boxes. Compare their
+  // centres and column overlap rather than requiring disjoint top/bottom edges.
+  const below = a.y >= b.y + Math.min(a.height, b.height) * 0.5
     && a.top - b.bottom <= Math.max(a.height, b.height) * 3.2
-    && Math.abs(a.x - b.x) <= Math.max(a.width, b.width) * 0.55;
+    && (Math.abs(a.x - b.x) <= Math.max(a.width, b.width) * 0.55
+      || horizontalOverlap >= Math.min(a.width, b.width) * 0.25);
   // Distant text at the bottom of a credits screen stays a separate candidate.
   return sameRow || below;
 }
@@ -29,6 +34,8 @@ export function classifyScreenTracks(tracks) {
   const headings = list.filter(item => role.test(labelText(item.observedText ?? item.text)));
   return list.map(item => {
     const heading = headings.includes(item) || headings.some(other => neighbouringCredit(item, other));
+    if (!heading && handleShape(item.observedText ?? item.text)) return { ...item, category: 'screen_label',
+      reliable: false, reason: 'probable_handle', warnings: [...(item.warnings || []), '疑似画面账号标识；不代表正在说的话，可回放核对。'] };
     const category = heading ? 'credits' : item.reason === 'static_text' ? 'static' : item.reliable ? 'subtitle' : 'uncertain';
     return { ...item, category, ...(heading ? { reliable: false, reason: 'probable_credit',
       warnings: [...(item.warnings || []), '疑似演职员信息；分类可能有误，可回放核对。'] } : {}) };
@@ -58,7 +65,7 @@ export function reviewCaptionEvidence(candidates, result) {
     const base = { ...candidate };
     // Never inherit agreement from an earlier transcription/retry.
     delete base.audioEvidence;
-    if (['credits', 'static'].includes(candidate.category) || ['probable_credit','static_text'].includes(candidate.reason)) return base;
+    if (['credits', 'static', 'screen_label'].includes(candidate.category) || ['probable_credit','static_text','probable_handle'].includes(candidate.reason)) return base;
     const query = tokens(String(candidate.text || ''));
     const minimum = HAN.test(candidate.text || '') ? 4 : 3;
     const valid = Number.isFinite(candidate.start) && Number.isFinite(candidate.end) && candidate.end > candidate.start;
@@ -81,6 +88,7 @@ export function reviewCaptionEvidence(candidates, result) {
 }
 
 export function captionLabel(candidate) {
+  if (candidate.reason === 'probable_handle' || candidate.category === 'screen_label') return '疑似账号标识';
   if (candidate.reason === 'probable_credit' || candidate.category === 'credits') return '疑似演职员信息';
   if (candidate.reason === 'static_text' || candidate.category === 'static') return '固定画面文字';
   if (candidate.audioEvidence?.status === 'match') return '与对应时段的语音识别一致';

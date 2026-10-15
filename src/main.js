@@ -7,6 +7,7 @@ import { fuseVideoCaptions } from './video-captions.js';
 import { reviewCaptionEvidence, captionLabel } from './caption-review.js';
 import { punctuateResult } from './punctuation.js';
 import { evaluateSpeechPresence } from './vad-client.js';
+import { importMediaUrl } from './media-url.js';
 
 const SENSEVOICE_MODEL = 'FunAudioLLM/SenseVoiceSmall';
 const COMPACT = import.meta.env.VITE_COMPACT_BUILD === '1';
@@ -25,6 +26,7 @@ const ui = Object.fromEntries([
   'recognition-source', 'visual-candidates', 'visual-candidate-list',
   'visual-summary', 'visual-other', 'visual-other-summary', 'visual-other-list',
   'source-player', 'source-player-wrap', 'source-player-status',
+  'media-url', 'import-url', 'cancel-url', 'media-url-status',
 ].map(id => [id, $(id)]));
 
 if (COMPACT) {
@@ -44,7 +46,7 @@ function pickerStatus(message = '') {
 }
 
 function openPicker(id) {
-  if (busy) return;
+  if (busy || linkImport) return;
   pickerStatus();
   // Keep this synchronous inside the user's click: mobile pickers need the
   // original activation. The default input has no accept filter; media is
@@ -74,6 +76,7 @@ let worker = null;
 let workerKind = null;
 let activeJob = null;
 let busy = false;
+let linkImport = null;
 let runToken = 0;
 let nextId = 0;
 let activeFileId = null;
@@ -149,7 +152,7 @@ function renderQueue() {
     status.className = `queue-state ${entry.status}`;
     status.textContent = statusLabels[entry.status];
     row.append(icon, select, status);
-    if (!busy) {
+    if (!busy && !linkImport) {
       const remove = document.createElement('button');
       remove.type = 'button';
       remove.className = 'remove-file';
@@ -167,16 +170,21 @@ function renderQueue() {
 }
 
 function renderControls() {
+  const locked = busy || Boolean(linkImport);
   const pending = queue.filter(canRun).length;
   const failed = queue.some(entry => entry.status === 'error');
-  ui['start-button'].disabled = busy || (!pending && !failed);
+  ui['start-button'].disabled = locked || (!pending && !failed);
   ui['start-label'].textContent = busy ? '正在转写…' : pending ? `开始转写${pending > 1 ? ` ${pending} 个文件` : ''}` : failed ? '重试未完成文件' : queue.length ? '转写已完成' : '开始转写';
   ui['stop-button'].hidden = !busy;
-  for (const id of pickerControls) ui[id].disabled = busy;
-  ui['clear-files'].disabled = busy;
-  ui.language.disabled = busy;
-  ui.model.disabled = busy;
-  ui['recognition-source'].disabled = busy;
+  for (const id of pickerControls) ui[id].disabled = locked;
+  ui['clear-files'].disabled = locked;
+  ui.language.disabled = locked;
+  ui.model.disabled = locked;
+  ui['recognition-source'].disabled = locked;
+  ui['media-url'].disabled = locked;
+  ui['import-url'].disabled = locked;
+  ui['import-url'].textContent = linkImport ? '正在读取…' : '读取链接';
+  ui['cancel-url'].hidden = !linkImport;
   const mode = { auto: '自动', audio: '仅声音', video: '仅画面' }[ui['recognition-source'].value] || '自动';
   ui['settings-summary'].textContent = `${languageLabel(ui.language.value)} · ${mode} · ${modelLabel(ui.model.value)}`;
 }
@@ -257,10 +265,10 @@ function renderOutput() {
   ui['character-count'].textContent = `${hasResult ? [...entry.draft].length.toLocaleString('zh-CN') : 0} 个字符`;
   ui['result-meta'].textContent = hasResult ? `${timeLabel(entry.result.duration)} · ${entry.result.source === 'video_ocr' ? '画面字幕 · 待核对' : entry.result.speechCheck?.deferred ? '人声待核对 · 暂停生成文字' : `${modelLabel(entry.model)} · ${languageLabel(entry.language)}`}` : '可编辑 · 可导出';
   ui['rerun-actions'].hidden = !hasResult;
-  ui['rerun-button'].disabled = busy || !hasResult;
+  ui['rerun-button'].disabled = busy || Boolean(linkImport) || !hasResult;
   ui['rerun-button'].textContent = entry?.result?.speechCheck?.deferred ? '仍然尝试识别' : '不满意，重新转写';
   ui['restore-button'].hidden = !entry?.previousRevision;
-  ui['restore-button'].disabled = busy || !entry?.previousRevision;
+  ui['restore-button'].disabled = busy || Boolean(linkImport) || !entry?.previousRevision;
   ui.transcript.disabled = Boolean(rerunning);
   const forceSpeechHelp = entry?.forceSpeech ? '已允许直接识别原音，后续重试会跳过人声检查。' : '';
   const upgradeHelp = shouldUpgradeOnRerun(entry) ? (COMPACT ? '未切换精度时，重转将改用中文增强，下载约 152 MiB。' : '未切换精度时，重转将改用高精度，下载约 190 MB 且更慢。') : '';
@@ -283,13 +291,13 @@ function renderOutput() {
   ui['timeline-view'].hidden = !hasResult || currentTab !== 'timeline';
   if (outputRenderKey === key) return;
   outputRenderKey = key;
-  const otherText = candidate => ['credits', 'static'].includes(candidate.category) || ['probable_credit', 'static_text'].includes(candidate.reason);
+  const otherText = candidate => ['credits', 'static', 'screen_label'].includes(candidate.category) || ['probable_credit', 'static_text', 'probable_handle'].includes(candidate.reason);
   const subtitleCandidates = candidates.filter(candidate => !otherText(candidate));
   const otherCandidates = candidates.filter(otherText);
   const agreed = subtitleCandidates.filter(candidate => candidate.audioEvidence?.status === 'match').length;
   ui['visual-summary'].textContent = `画面字幕核对 · ${subtitleCandidates.length} 句候选${agreed ? ` · ${agreed} 句与语音识别一致` : ''}`;
   ui['visual-other'].hidden = !otherCandidates.length;
-  ui['visual-other-summary'].textContent = `其他画面文字（${otherCandidates.length}）· 疑似演职员信息或固定文字`;
+  ui['visual-other-summary'].textContent = `其他画面文字（${otherCandidates.length}）· 署名、账号或固定文字`;
   const candidateRow = candidate => {
     const row = document.createElement('div');
     row.className = 'caption-review-row';
@@ -352,7 +360,7 @@ function renderOutput() {
 function render() { renderQueue(); renderControls(); renderProgress(); renderOutput(); showError(errorMessage); }
 
 function addFiles(files) {
-  if (busy) return;
+  if (busy || linkImport) return;
   const errors = [];
   for (const file of files) {
     if (!file.size) { errors.push(`${file.name} 是空文件。`); continue; }
@@ -370,6 +378,48 @@ function addFiles(files) {
   for (const id of fileInputs) ui[id].value = '';
   pickerStatus();
   render();
+}
+
+function linkStatus(message) {
+  ui['media-url-status'].textContent = message;
+  ui['media-url-status'].hidden = !message;
+}
+
+async function readMediaLink() {
+  if (busy || linkImport) return;
+  const controller = new AbortController();
+  linkImport = controller;
+  showError(''); linkStatus('正在连接视频来源…'); render();
+  try {
+    const file = await importMediaUrl(ui['media-url'].value, { signal: controller.signal,
+      onProgress: ({ loaded, total }) => {
+        if (linkImport !== controller) return;
+        linkStatus(loaded ? `正在读取 ${bytesLabel(loaded)}${total ? ` / ${bytesLabel(total)}` : ''}。数据保留在当前浏览器，不上传。` : '已连接，正在读取音视频…');
+      } });
+    if (linkImport !== controller || controller.signal.aborted) return;
+    linkImport = null;
+    addFiles([file]);
+    const entry = queue.find(item => item.file.name === file.name && item.file.size === file.size && item.file.lastModified === file.lastModified);
+    if (entry) selectedId = entry.id;
+    ui['media-url'].value = '';
+    linkStatus(entry?.result ? '此文件已在列表中，已选中已有结果，可重新转写。' : '链接读取完成。点击「开始转写」即可，关闭页面后需重新读取。');
+    render();
+    ui['start-button'].focus();
+  } catch (error) {
+    if (linkImport !== controller) return;
+    linkStatus('');
+    showError(error.name === 'AbortError' ? '已取消链接读取。' : error.message || '链接读取失败，请更换链接。');
+  } finally {
+    if (linkImport === controller) { linkImport = null; render(); }
+  }
+}
+
+function cancelMediaLink() {
+  if (!linkImport) return;
+  const controller = linkImport;
+  linkImport = null;
+  controller.abort();
+  linkStatus('已取消链接读取，已有文件和文字已保留。'); render();
 }
 
 function cancelError() { const error = new Error('CANCELED'); error.name = 'AbortError'; return error; }
@@ -439,7 +489,7 @@ function transcribe(audio, entry, token, settings) {
 }
 
 async function startQueue() {
-  if (busy) return;
+  if (busy || linkImport) return;
   if (!queue.some(canRun)) queue.filter(entry => entry.status === 'error').forEach(entry => { entry.status = 'pending'; });
   const pending = queue.filter(canRun);
   if (!pending.length) return;
@@ -448,7 +498,7 @@ async function startQueue() {
 
 async function rerunSelected() {
   const entry = selectedEntry();
-  if (busy || !entry?.result) return;
+  if (busy || linkImport || !entry?.result) return;
   // This explicit file preference survives failed/stopped attempts and restoring
   // earlier text. It is deliberately not part of a result revision.
   if (entry.result.speechCheck?.deferred) entry.forceSpeech = true;
@@ -459,7 +509,7 @@ async function rerunSelected() {
 
 function restorePrevious() {
   const entry = selectedEntry();
-  if (busy || !entry?.previousRevision) return;
+  if (busy || linkImport || !entry?.previousRevision) return;
   Object.assign(entry, entry.previousRevision);
   entry.previousRevision = null;
   entry.revision++;
@@ -704,12 +754,15 @@ for (const id of fileInputs) {
   ui[id].addEventListener('cancel', () => pickerStatus('未选择文件。如手机提示无法打开，可展开上方提示，试单文件入口或系统浏览器。'));
 }
 ui['copy-link'].addEventListener('click', copyBrowserLink);
+ui['import-url'].addEventListener('click', readMediaLink);
+ui['cancel-url'].addEventListener('click', cancelMediaLink);
+ui['media-url'].addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); return readMediaLink(); } });
 ui['drop-zone'].addEventListener('dragover', event => { event.preventDefault(); if (!busy) ui['drop-zone'].classList.add('drag-over'); });
 ui['drop-zone'].addEventListener('dragleave', () => ui['drop-zone'].classList.remove('drag-over'));
 ui['drop-zone'].addEventListener('drop', event => { event.preventDefault(); ui['drop-zone'].classList.remove('drag-over'); if (!busy) addFiles(event.dataTransfer.files); });
 document.addEventListener('dragover', event => { if (event.dataTransfer?.types.includes('Files')) event.preventDefault(); });
 document.addEventListener('drop', event => { if (event.dataTransfer?.types.includes('Files')) event.preventDefault(); });
-ui['clear-files'].addEventListener('click', () => { if (busy) return; releaseWorker()?.reject(cancelError()); queue.length = 0; selectedId = null; showError(''); render(); });
+ui['clear-files'].addEventListener('click', () => { if (busy || linkImport) return; releaseWorker()?.reject(cancelError()); queue.length = 0; selectedId = null; showError(''); render(); });
 ui['start-button'].addEventListener('click', startQueue);
 ui['rerun-button'].addEventListener('click', rerunSelected);
 ui['restore-button'].addEventListener('click', restorePrevious);
@@ -744,7 +797,7 @@ document.addEventListener('keydown', event => {
   if (event.key.toLowerCase() === 's' && selectedEntry()?.result) { event.preventDefault(); exportResult(); }
 });
 window.addEventListener('beforeunload', event => {
-  if (busy) { event.preventDefault(); event.returnValue = ''; }
+  if (busy || linkImport) { event.preventDefault(); event.returnValue = ''; }
 });
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`).catch(() => {}));
