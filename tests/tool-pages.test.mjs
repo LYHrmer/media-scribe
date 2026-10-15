@@ -14,6 +14,7 @@ const PAGES = [
   ['codec-time.html', 'src/tools/codec-time.js'],
   ['regex.html', 'src/tools/regex.js'],
   ['file-hash.html', 'src/tools/file-hash.js'],
+  ['text-stats.html', 'src/tools/text-stats.js'],
 ];
 const read = path => readFileSync(new URL(`../${path}`, import.meta.url), 'utf8');
 const has = path => existsSync(new URL(`../${path}`, import.meta.url));
@@ -43,7 +44,7 @@ test('each tool page loads exactly one existing module script named after it', (
 
 test('hub cards link to pages that exist', () => {
   const hrefs = [...read('index.html').matchAll(/href="\.\/([a-z-]+\.html)"/g)].map(m => m[1]);
-  assert.ok(hrefs.length >= 5, 'hub should link the flagship plus all tools');
+  assert.ok(hrefs.length >= 8, 'hub should link the flagship plus all tools');
   for (const href of hrefs) assert.ok(has(href), `hub link ${href} does not exist`);
 });
 

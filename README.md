@@ -12,6 +12,9 @@
 - [JSON 格式化](https://lyhrmer.github.io/media-scribe/json-format.html)：格式化、压缩、校验并定位错误行列，支持递归按键排序
 - [文本对比](https://lyhrmer.github.io/media-scribe/text-diff.html)：两段文本逐行对比，标出新增与删除
 - [编解码与时间戳](https://lyhrmer.github.io/media-scribe/codec-time.html)：Base64、URL 编解码，Unix 时间戳与本地日期时间互转
+- [正则测试器](https://lyhrmer.github.io/media-scribe/regex.html)：匹配高亮、分组捕获、标志位开关，输入即实时预览
+- [文件哈希](https://lyhrmer.github.io/media-scribe/file-hash.html)：拖入文件计算 SHA-256 / SHA-1 / SHA-512，粘贴期望哈希自动比对
+- [文本统计](https://lyhrmer.github.io/media-scribe/text-stats.html)：字数、词数、行数、段落与预计阅读时长，输入即统计
 
 注意：根 URL `…/media-scribe/` 现在是工具箱首页，转写功能在 `…/media-scribe/transcribe.html`；转写页「更多设置」里的「复制网址」帮助项复制的仍是工具箱首页地址。
 

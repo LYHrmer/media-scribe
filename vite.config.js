@@ -19,6 +19,7 @@ export default defineConfig({
         'codec-time': entry('codec-time.html'),
         regex: entry('regex.html'),
         'file-hash': entry('file-hash.html'),
+        'text-stats': entry('text-stats.html'),
       },
     },
   },

@@ -89,5 +89,5 @@ $('regex-pattern').addEventListener('input', render);
 $('regex-text').addEventListener('input', render);
 for (const f of FLAGS) $(`flag-${f}`).addEventListener('change', render);
 
-wireFilePicker($('regex-file-button'), $('regex-file-input'), $('regex-text'), { onFile: render });
-wireFileDrop($('regex-text'), { onFile: render });
+wireFilePicker($('regex-file-button'), $('regex-file-input'), $('regex-text'), { onError: showError, onFile: render });
+wireFileDrop($('regex-text'), { onError: showError, onFile: render });
