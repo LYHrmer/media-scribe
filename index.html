@@ -28,7 +28,7 @@
         <div class="workspace">
           <section class="panel file-panel" aria-labelledby="files-title">
             <div class="panel-heading">
-              <div class="heading-group"><span class="step-number">01</span><h2 id="files-title">添加文件</h2></div>
+              <div class="heading-group"><span class="step-number">01</span><h2 id="files-title">添加音视频</h2></div>
               <button id="clear-files" class="text-button" type="button" hidden>清空</button>
             </div>
 
@@ -41,6 +41,16 @@
               <span>或点击这里选择文件</span>
               <span class="drop-types">支持一次添加多个文件</span>
             </button>
+            <div class="media-link-import">
+              <label for="media-url">或粘贴音视频链接</label>
+              <div class="media-link-row">
+                <input id="media-url" type="text" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://…/视频.mp4" aria-describedby="media-url-help" />
+                <button id="import-url" class="secondary-button" type="button">读取链接</button>
+                <button id="cancel-url" class="text-button" type="button" hidden>取消</button>
+              </div>
+              <p id="media-url-help">无需手动下载。支持允许外站读取的 HTTPS 音视频文件直链，暂不支持抖音、B站等播放网页。读取后在本机识别。</p>
+              <p id="media-url-status" class="media-url-status" role="status" aria-live="polite" hidden></p>
+            </div>
             <div class="single-file-picker">
               <label for="single-file-input">手机推荐：直接从文件中选取</label>
               <input id="single-file-input" type="file" />
