@@ -1,0 +1,40 @@
+{
+  "scope": "synthetic clean typography only; no original video, sound, motion, blur or accents",
+  "font_sha256": "2c76254f6fc379fddfce0a7e84fb5385bb135d3e399294f6eeb6680d0365b74b",
+  "worker": {
+    "name": "video-ocr.worker-CiKI78o4.js",
+    "sha256": "cdf2ab04f1d160dc1aa85b570bc0221cb164ca949bbbc9edbe9a1826710b1bb9"
+  },
+  "wasm": {
+    "sha256": "f061472c6e77d6d50d079aacdc0ff9b63fee287ddd2cbf46cf62438d3891de2b"
+  },
+  "rows": [
+    {
+      "scene": "zh",
+      "frame_count": 3,
+      "retained_caption": [
+        "跟着歌声向前走。"
+      ],
+      "credits": [
+        "编剧。",
+        "林明。",
+        "周禾。"
+      ],
+      "expected_credit_count": 3,
+      "pass": true
+    },
+    {
+      "scene": "en",
+      "frame_count": 3,
+      "retained_caption": [
+        "We can start now."
+      ],
+      "credits": [
+        "Written by.",
+        "Ada North."
+      ],
+      "expected_credit_count": 2,
+      "pass": true
+    }
+  ]
+}
